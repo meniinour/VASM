@@ -1,0 +1,66 @@
+<div class="dashboard-wrapper">
+  <!-- Left: Filters and Clients -->
+  <div class="dashboard-main">
+    <div class="filters">
+      <input
+        type="text"
+        placeholder="🔍 Rechercher un client..."
+        class="search-bar"
+        (input)="searchText = $any($event.target).value"
+      />
+      <select class="indicator-filter" (change)="selectedIndicator = $any($event.target).value">
+        <option value="">Tous les indicateurs</option>
+        <option *ngFor="let ind of indicatorOptions" [value]="ind">
+          {{ ind }}
+        </option>
+      </select>
+    </div>
+    <div class="clients-container">
+      <div
+        class="client-card"
+        *ngFor="let client of filteredClients"
+        (click)="goToClientProfile(client.id)"
+      >
+        <img [src]="client.logo" alt="Logo" class="client-logo" />
+        <div class="client-name">{{ client.name }}</div>
+        <div class="indicators">
+          <span class="indicator red" *ngIf="client.indicators.mouvements">
+            {{ client.indicators.mouvements }}
+          </span>
+          <span class="indicator green" *ngIf="client.indicators.joursRetards">
+            {{ client.indicators.joursRetards }}
+          </span>
+          <span class="indicator blue" *ngIf="client.indicators.etablissementsInconnus">
+            {{ client.indicators.etablissementsInconnus }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Legend -->
+  <div class="legend-box">
+    <div class="legend-title">Légende</div>
+    <div class="legend-item">
+      <span class="legend-indicator red"></span> Mouvements
+    </div>
+    <div class="legend-item">
+      <span class="legend-indicator green"></span> Jours de retards d'import
+    </div>
+    <div class="legend-item">
+      <span class="legend-indicator blue"></span> Etablissements inconnus
+    </div>
+    <div class="legend-item">
+      <span class="legend-indicator orange"></span> Imports en attentes
+    </div>
+    <div class="legend-item">
+      <span class="legend-indicator magenta"></span> Factures en attente de paiement
+    </div>
+    <div class="legend-item">
+      <span class="legend-indicator purple"></span> Factures en attente de rapprochement
+    </div>
+    <div class="legend-item">
+      <span class="legend-indicator brown"></span> Rejet import
+    </div>
+  </div>
+</div>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>vASM</title>
+  
+</head>
+<body>
+<div class="container">
+  <app-sidebar></app-sidebar>
+  <div class="content-wrapper">
+    <app-my-header></app-my-header>
+    <div class="main-content">
+      <div class="home-container">
+        <h1>Bienvenue dans l'application de gestion des mails</h1>
+        <p>Cliquez sur "Typage des mails" dans la sidebar pour accéder à la gestion des mails.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Chatbot et son icône -->
+<div class="chatbot-container">
+  <div class="chatbot-icon" (click)="openChatbot()">
+    💬
+  </div>
+  <app-chatbot *ngIf="showChatbot" (close)="closeChatbot()"></app-chatbot>
+</div>
+
+<!-- Notification d'aide -->
+<div class="help-notification" *ngIf="showNotification">
+  <div class="notification-content">
+    <span>Besoin d'aide pour vous connecter ?</span>
+    <button class="close-notification" (click)="closeNotification()">×</button>
+  </div>
+</div>
+</body>
+
+  

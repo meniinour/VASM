@@ -1,0 +1,216 @@
+<app-sidebar></app-sidebar>
+<app-my-header></app-my-header>
+<!-- my-content.component.html -->      
+<div class="content-container">
+    <!-- En-tête -->
+    <div class="content-header">
+        <div class="header-top">
+            <div class="action-buttons">
+                <button class="btn-action">
+                    <span class="material-icons">assignment</span>
+                    Traitement à faire
+                </button>
+                <button class="btn-action">
+                    <span class="material-icons">mail</span>
+                    Email
+                </button>
+            </div>
+        </div>
+        <div class="header-main">
+            <h1>Gestion d'affectation des mails</h1>
+            <button class="btn-sync" (click)="fetchEmails()">
+                Synchroniser
+            </button>
+        </div>
+    </div>
+
+    <!-- Contenu principal en trois colonnes -->
+    <div class="main-content">
+        <!-- Panel gauche (Emails) -->
+        <div class="panel left-panel">
+            <div class="panel-header">
+                <h2>Emails</h2>
+            </div>
+            <div class="search-bar">
+                <input type="text" 
+                       class="search-input" 
+                       placeholder="Rechercher un email..."
+                       [(ngModel)]="searchTerm">
+            </div>
+            <div class="panel-content">
+                <!-- État de chargement -->
+                <div class="loading-state" *ngIf="loading">
+                    <span class="material-icons rotating">sync</span>
+                    <p>Chargement des emails...</p>
+                </div>
+
+                <!-- Message d'erreur -->
+                <div class="error-state" *ngIf="error">
+                    <span class="material-icons">error</span>
+                    <p>{{ error }}</p>
+                    <button (click)="fetchEmails()">Réessayer</button>
+                </div>
+
+                <!-- Liste des emails -->
+                <div class="email-list" *ngIf="!loading && !error">
+                    <div *ngFor="let email of filterEmails()" 
+                         class="email-item"
+                         [class.active]="selectedEmail?.id === email.id"
+                         (click)="selectEmail(email)">
+                        <div class="email-item-content">
+                            <div class="sender">{{ email.sender }}</div>
+                            <div class="subject">{{ email.subject }}</div>
+                            <div class="email-date">{{ email.date }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel central (Contenu) -->
+        <div class="panel center-panel">
+            <div class="panel-header">
+                <h2>Contenu du message</h2>
+            </div>
+            <div class="panel-content">
+                <div class="email-view" *ngIf="selectedEmail; else noEmailSelected">
+                    <div class="email-view-header">
+                        <h3>{{ selectedEmail.subject }}</h3>
+                        <div class="email-metadata">
+                            <span>De: {{ selectedEmail.sender }}</span>
+                            <span>Date: {{ selectedEmail.date }}</span>
+                        </div>
+                    </div>
+                    <div class="email-view-content">
+                        <p>{{ selectedEmail.content }}</p>
+                    </div>
+                </div>
+                <ng-template #noEmailSelected>
+                    <div class="no-email-selected">
+                        <span class="material-icons">mail</span>
+                        <p>Sélectionnez un email pour afficher son contenu</p>
+                    </div>
+                </ng-template>
+            </div>
+        </div>
+
+        <!-- Panel droit (Actions) -->
+        <div class="panel right-panel" [class.visible]="selectedEmail !== null">
+            <div class="panel-header">
+                <h2>Actions</h2>
+            </div>
+            <div class="panel-content">
+                <div class="action-buttons">
+                    <button class="btn-validate" 
+                            [disabled]="!selectedEmail"
+                            (click)="processEmail('validate')">
+                        Valider
+                    </button>
+                    <button class="btn-reject" 
+                            [disabled]="!selectedEmail"
+                            (click)="processEmail('reject')">
+                        Sans traitement
+                    </button>
+                </div>
+
+                <div class="urgent-checkbox">
+                    <input type="checkbox" id="urgent" [disabled]="!selectedEmail">
+                    <label for="urgent">Mail urgent</label>
+                </div>
+
+                <table class="action-table">
+                    <tr>
+                        <td>
+                            <input type="checkbox" id="expleo" [disabled]="!selectedEmail">
+                            <label for="expleo">EXPLEO FRANCE</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" id="assystem" [disabled]="!selectedEmail">
+                            <label for="assystem">ASSYSTEM</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" id="vm" [disabled]="!selectedEmail">
+                            <label for="vm">Traitement des VM</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" id="vm-refusees" [disabled]="!selectedEmail">
+                            <label for="vm-refusees">Traitement des VM Refusées</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" id="vm-acceptees" [disabled]="!selectedEmail">
+                            <label for="vm-acceptees">Traitement des VM Acceptées</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" id="attestations" [disabled]="!selectedEmail">
+                            <label for="attestations">Saisie des Attestations de Suivi ou d'Aptitude</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" id="convocations" [disabled]="!selectedEmail">
+                            <label for="convocations">Envoi aux salariés des convocations reçues par les SPST</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" id="info-spst" [disabled]="!selectedEmail">
+                            <label for="info-spst">Information SPST</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" id="client" [disabled]="!selectedEmail">
+                            <label for="client">Client</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" id="mail-salarie" [disabled]="!selectedEmail">
+                            <label for="mail-salarie">Mail salarié</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" id="planning" [disabled]="!selectedEmail">
+                            <label for="planning">Gestion d'un planning de créneaux</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" id="facturation" [disabled]="!selectedEmail">
+                            <label for="facturation">Facturation et Paiement</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" id="mot-passe" [disabled]="!selectedEmail">
+                            <label for="mot-passe">Mot de passe portail</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" id="adhesions" [disabled]="!selectedEmail">
+                            <label for="adhesions">Adhésions</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" id="declaration-effectifs" [disabled]="!selectedEmail">
+                            <label for="declaration-effectifs">Déclaration des effectifs à faire</label>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

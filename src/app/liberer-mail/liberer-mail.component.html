@@ -1,0 +1,56 @@
+<app-sidebar></app-sidebar>
+<app-my-header></app-my-header>
+<div class="main-content">
+  <!-- En-tête -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <button class="btn btn-secondary retour-btn" (click)="goToHome()">
+      <i class="fas fa-arrow-left me-2"></i> Revenir à l'écran principal
+    </button>
+    
+    <img src="assets/logo.png" class="app-logo" alt="Logo VigiScope" style="max-width: 120px;">
+
+  
+  </div>
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <h2><i class="fas fa-envelope-open-text"></i> Liste des mails affectés</h2>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th><i class="fas fa-envelope"></i> Email</th>
+              <th><i class="fas fa-id-card"></i> Mail ID</th>
+              <th><i class="fas fa-cogs"></i> Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let a of affectations">
+              <td>{{ a.email }}</td>
+              <td>{{ a.mail_id }}</td>
+              <td class="actions">
+                <button class="btn-liberer" (click)="liberer(a.id)">
+                  <i class="fas fa-unlock"></i> Libérer
+                </button>
+                <button class="btn-debloquer" *ngIf="a.bloque" (click)="debloquer(a.id)">
+                  <i class="fas fa-lock-open"></i> Débloquer
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="affectations.length === 0">
+              <td colspan="3" class="no-data">
+                <i class="fas fa-info-circle"></i> Aucun mail affecté
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="alert" *ngIf="message" [ngClass]="{'alert-success': isSuccess, 'alert-error': !isSuccess}">
+        <i class="fas" [ngClass]="{'fa-check-circle': isSuccess, 'fa-exclamation-circle': !isSuccess}"></i>
+        {{ message }}
+      </div>
+    </div>
+  </div>
+</div>

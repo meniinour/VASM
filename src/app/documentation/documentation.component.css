@@ -1,0 +1,105 @@
+
+.sidebar {
+  width: 260px;
+  height: 80vh; /* Ajuster la hauteur si nécessaire */
+  background: linear-gradient(to bottom right, #031e36, #84bdc5);
+  border-radius: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  color: white;
+  padding: 30px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+  position: fixed;
+  top: 50%;
+  left: 40px; /* <-- distance depuis le bord gauche */
+  transform: translateY(-50%);
+  z-index: 1000;
+}
+
+.sidebar ul {
+  width: 100%;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar li {
+  width: 100%;
+}
+
+.sidebar a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  color: white;
+  text-decoration: none;
+  transition: background 0.3s ease;
+}
+
+.sidebar a .material-icons {
+  font-size: 20px;
+}
+
+.sidebar a:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.separator {
+  width: 100%;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.3);
+  margin: 10px 0;
+}
+
+.services > .sub-menu {
+  display: none;
+  padding-left: 20px;
+}
+
+.services:hover > .sub-menu {
+  display: block;
+}
+
+.services > a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  color: white;
+  text-decoration: none;
+}
+
+.services > a:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.sub-menu a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  color: white;
+  text-decoration: none;
+}
+
+.sub-menu a:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.sub-menu a .material-icons {
+  font-size: 18px;
+}
+
+.text {
+  font-weight: bold;
+}
+
+.sidebar .active {
+  background: rgba(255, 255, 255, 0.1);
+}

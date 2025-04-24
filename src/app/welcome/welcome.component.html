@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>vASM</title>
+  
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-left">
+      <img src="../../assets/bridge.jpeg"width="100" height="100" class="logo">
+    </div>
+    <div class="navbar-right">
+      <button class="nav-button">Demander une démo</button>
+      <button class="nav-button" (click)="goToLogin()">Connexion</button>
+
+      <button class="nav-button primary" (click)="goToBesoin()">Besoin d'aide</button>
+    </div>
+  </nav>
+
+  <main class="main-split">
+    <div class="left-side">
+      <h1>BRIDGE</h1>
+      <h2>"Prendre soin de vos équipes, simplement."</h2>
+      <p>Essayer Bridge.</p>
+      <p>Bridge est une application de gestion de la rendez-vous médicaux au travail qui vous aide à suivre et à améliorer le bien-être de vos employés.</p>
+      <div class="button-group">
+        <button class="cta-button" (click)="goToRegister()">Se connecter</button>
+        <button class="nav-button" (click)="goToLogin()">S'inscrire</button>
+      </div>
+    </div>
+  
+    <div class="right-side">
+        <img src="../../assets/demo.gif" class="gif-background" />
+    </div>
+    
+  </main>
+   <!-- Chatbot et son icône -->
+   <div class="chatbot-container">
+    <div class="chatbot-icon" (click)="toggleChatbot()">
+      💬
+    </div>
+    <app-chatbot *ngIf="showChatbot"></app-chatbot>
+  </div>
+
+<!-- Notification d'aide (séparée du chatbot) -->
+<div class="help-notification" *ngIf="showNotification">
+  <div class="notification-content">
+    <span>Besoin d'aide pour vous connecter ?</span>
+    <button class="close-notification" (click)="closeNotification()">×</button>
+  </div>
+</div>
+  
+  
+</body>
+</html>

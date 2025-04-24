@@ -1,0 +1,75 @@
+/* You can add global styles to this file, and also import other style files */
+
+:root {
+    /* Variables pour le thème clair */
+    --background-color: #031e36;
+    --text-color: #333333;
+    --primary-color: #031e36;
+    --secondary-color: #6c757d;
+    --border-color: #dee2e6;
+    --chatbot-bg: #f8f9fa;
+    --user-message-bg: #e3f2fd;
+    --assistant-message-bg: #f5f5f5;
+  }
+  
+  .dark-theme {
+    /* Variables pour le thème sombre */
+    --background-color: #1a1a1a;
+    --text-color: #ffffff;
+    --primary-color: #ff4d4d;
+    --secondary-color: #adb5bd;
+    --border-color: #404040;
+    --chatbot-bg: #2d2d2d;
+    --user-message-bg: #0d47a1;
+    --assistant-message-bg: #424242;
+  }
+  
+  body {
+    background-color: #031e36;
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  /* Ajout de la classe pour le thème sombre */
+  :root {
+    /* Couleurs principales */
+    --primary-red: #031e36;
+    --primary-red-dark: #d10309;
+    --primary-red-light: #ff1f26;
+    --primary-black: #1a1a1a;
+    --primary-black-light: #2c2c2c;
+    --primary-white: #ffffff;
+    
+    /* Couleurs d'accentuation */
+    --accent-blue: #007bff;
+    --accent-blue-dark: #0056b3;
+    
+    /* Couleurs de fond */
+    --bg-dark: #1a1a1a;
+    --bg-light: #f4f4f4;
+    --bg-white: #ffffff;
+    
+    /* Ombres */
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.12);
+    --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
+    
+    /* Transitions */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.4s ease;
+    
+    /* Espacements */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+  }
+  
+  
+  
+html, body { height: 100%; }
+body { background-color:#031e36; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

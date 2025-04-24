@@ -1,0 +1,93 @@
+<app-sidebar></app-sidebar>
+<app-my-header></app-my-header>
+<div class="main-content">
+  <!-- En-tête -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <button class="btn btn-secondary retour-btn" (click)="goToHome()">
+      <i class="fas fa-arrow-left me-2"></i> Revenir à l'écran principal
+    </button>
+    <img src="assets/logo.png" class="app-logo" alt="Logo VigiScope" style="max-width: 120px;">
+  </div>
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <div class="header-content">
+        <h2><i class="fas fa-lock"></i> Nombre des mails à débloquer ({{mailsBloques.length}})</h2>
+        <button class="btn-back"><i class="fas fa-arrow-left"></i> Précédent</button>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="table-header">
+        <h3>Historique des mails bloqués</h3>
+        <div class="table-controls">
+          <div class="entries-control">
+            Afficher
+            <select [(ngModel)]="itemsPerPage" (change)="onItemsPerPageChange()">
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+            </select>
+            entrées
+          </div>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Date <i class="fas fa-sort"></i></th>
+              <th>Client <i class="fas fa-sort"></i></th>
+              <th>Nom <i class="fas fa-sort"></i></th>
+              <th>Sujet <i class="fas fa-sort"></i></th>
+              <th>Traitement <i class="fas fa-sort"></i></th>
+              <th>Date Traitement <i class="fas fa-sort"></i></th>
+              <th>Commentaire <i class="fas fa-sort"></i></th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let mail of mailsBloques">
+              <td>{{mail.date | date:'dd/MM/yy HH:mm'}}</td>
+              <td>{{mail.client}}</td>
+              <td>{{mail.nom}}</td>
+              <td>{{mail.sujet}}</td>
+              <td>{{mail.traitement}}</td>
+              <td>{{mail.dateTraitement | date:'dd/MM/yy HH:mm'}}</td>
+              <td>{{mail.commentaire}}</td>
+              <td>
+                <button class="btn-debloquer" (click)="debloquer(mail.id)">
+                  Débloquer
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="mailsBloques.length === 0">
+              <td colspan="8" class="no-data">
+                <i class="fas fa-info-circle"></i> Aucun mail bloqué
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-footer">
+        <div class="pagination">
+          <button [disabled]="currentPage === 1" (click)="onPageChange(currentPage - 1)">Précédent</button>
+          <div class="page-numbers">
+            <button *ngFor="let page of pages" 
+                    [class.active]="page === currentPage"
+                    (click)="onPageChange(page)">
+              {{page}}
+            </button>
+          </div>
+          <button [disabled]="currentPage === totalPages" (click)="onPageChange(currentPage + 1)">Suivant</button>
+        </div>
+      </div>
+
+      <div class="alert" *ngIf="message" [ngClass]="{'alert-success': isSuccess, 'alert-error': !isSuccess}">
+        <i class="fas" [ngClass]="{'fa-check-circle': isSuccess, 'fa-exclamation-circle': !isSuccess}"></i>
+        {{ message }}
+      </div>
+    </div>
+  </div>
+</div>

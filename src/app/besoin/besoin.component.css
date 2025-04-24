@@ -1,0 +1,110 @@
+/* Conteneur principal de la page d'aide */
+.help-section {
+    background-color: #f9f9f9;
+    padding: 50px 20px;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .help-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+  
+  h2 {
+    text-align: center;
+    font-size: 2rem;
+    color: #e90d16;
+    margin-bottom: 40px;
+    font-weight: bold;
+  }
+  
+  h3 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 15px;
+    text-align: left;
+  }
+  
+  /* Styles des sections */
+  .help-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-top: 30px;
+  }
+  
+  .faq, .chatbot-support, .contact-support, .guides, .ticket-status {
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #f0f0f0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  }
+  
+  .faq ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .faq ul li {
+    margin: 10px 0;
+  }
+  
+  .faq ul li a {
+    text-decoration: none;
+    color: #e90d16;
+    transition: color 0.3s;
+  }
+  
+  .faq ul li a:hover {
+    color: #333;
+  }
+  
+  /* Bouton chatbot */
+  .btn-chatbot, .btn-track {
+    background-color: #e90d16;
+    color: white;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn-chatbot:hover, .btn-track:hover {
+    background-color: #c20813;
+  }
+  
+  /* Formulaire de suivi de ticket */
+  .ticket-status input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+  }
+  
+  .ticket-status input:focus {
+    outline: none;
+    border-color: #e90d16;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .help-content {
+      grid-template-columns: 1fr;
+    }
+    
+    .faq ul li a {
+      font-size: 1rem;
+    }
+  
+    .btn-chatbot, .btn-track {
+      width: 100%;
+    }
+  }
+  

@@ -1,0 +1,129 @@
+.filters {
+
+  display: flex;
+  gap: 1rem;
+  margin: 30px;
+  align-items: center;
+  padding-top: 60px;
+}
+
+.search-bar,
+.indicator-filter {
+  padding: 52px;
+  border-radius: 15px;
+  border: 5px solid #ee0e0e;
+  padding-top: 80px;
+}
+
+.clients-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 50px;
+  padding: 1rem;
+}
+
+.client-card {
+  width: 400px;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    pointer-events: auto;
+  transition: transform 0.2s;
+  gap: 16px; 
+}
+
+.client-card:hover {
+  transform: scale(1.05);
+}
+
+.client-logo {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+.client-name {
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.indicators {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.indicator {
+  font-size: 0.8rem;
+  padding: 3px 6px;
+  border-radius: 4px;
+  color: white;
+}
+
+.indicator.red {
+  background-color: #e74c3c;
+}
+
+.indicator.green {
+  background-color: #2ecc71;
+}
+
+.indicator.blue {
+  background-color: #3498db;
+}
+.dashboard-wrapper {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.dashboard-main {
+  flex: 1;
+}
+
+.legend-box {
+  min-width: 250px;
+  border: 1px solid #222;
+  border-radius: 6px;
+  background: #fff;
+  margin: 80px 30px 0 30px;
+  padding: 18px 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.legend-title {
+  font-weight: bold;
+  font-size: 1.2em;
+  margin-bottom: 12px;
+  text-align: left;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 1em;
+}
+
+.legend-indicator {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  margin-right: 10px;
+  border: 2px solid #eee;
+}
+
+.legend-indicator.red { background-color: #e74c3c; }
+.legend-indicator.green { background-color: #2ecc71; }
+.legend-indicator.blue { background-color: #3498db; }
+.legend-indicator.orange { background-color: #f39c12; }
+.legend-indicator.magenta { background-color: #9b59b6; }
+.legend-indicator.purple { background-color: #8e44ad; }
+.legend-indicator.brown { background-color: #8d5524; }

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inscription - vASM</title>
+</head>
+<body>
+  <app-my-header></app-my-header>
+
+  <div class="auth-container">
+    <div class="auth-card">
+      <div class="auth-header">
+        <img src="./assets/bridge.jpeg" class="auth-logo"  />
+        <h1 class="auth-title">The Bridge,Parce que chaque collaborateur compte </h1>
+        <p class="auth-subtitle">Créez votre compte Bridge pour accéder à toutes les fonctionnalités</p>
+      </div>
+
+      <form class="auth-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
+        <div class="form-group">
+          <div class="input-wrapper">
+            <i class="fas fa-user"></i>
+            <input type="text" formControlName="username" placeholder="Nom d'utilisateur" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="input-wrapper">
+            <i class="fas fa-envelope"></i>
+            <input type="email" formControlName="email" placeholder="Adresse email" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="input-wrapper">
+            <i class="fas fa-lock"></i>
+            <input type="password" formControlName="password" placeholder="Mot de passe" required />
+             <button type="button" class="toggle-password" (click)="togglePasswordVisibility()">
+              <i class="fas" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="input-wrapper">
+            <i class="fas fa-lock"></i>
+            <input type="password" formControlName="confirmPassword" placeholder="Confirmer le mot de passe" required />
+          </div>
+        </div>
+
+        <div class="terms-group">
+          <label class="checkbox-wrapper">
+            <input type="checkbox" formControlName="acceptTerms" required>
+            <span class="terms-text">
+              J'accepte les <a href="#">Termes et conditions</a> et la <a href="#">Politique de confidentialité</a>
+            </span>
+          </label>
+        </div>
+
+        <button type="submit" class="btn-primary" [disabled]="registerForm.invalid || isLoading">
+          <i class="fas fa-user-plus"></i>
+          {{ isLoading ? 'Inscription en cours...' : 'S\'inscrire' }}
+        </button>
+
+        <div class="divider">
+          <span>ou</span>
+        </div>
+
+        <button type="button" class="btn-microsoft" (click)="loginWithMicrosoft()">
+          <img src="./assets/microsoft.png" alt="Microsoft" />
+          Se connecter avec Microsoft
+        </button>
+        <button type="button" class="btn-microsoft"  (click)="loginWithSSO()">
+          <i class="fas fa-key" style="margin-right: 8px;"></i>
+          Authentification unique (SSO)
+        </button>
+
+        <p class="login-link">
+          Vous avez déjà un compte ? 
+          <a routerLink="/login">Se connecter</a>
+        </p>
+        
+        <div class="copyright-text">© 2015 Amploi. All rights reserved</div>
+      </form>
+    </div>
+  </div>
+
+  
+    <!-- Chatbot et son icône -->
+    <div class="chatbot-container">
+      <div class="chatbot-icon" (click)="toggleChatbot()">
+        💬
+      </div>
+      <app-chatbot *ngIf="showChatbot"></app-chatbot>
+    </div>
+
+  <!-- Notification d'aide (séparée du chatbot) -->
+  <div class="help-notification" *ngIf="showNotification">
+    <div class="notification-content">
+      <span>Besoin d'aide pour vous connecter ?</span>
+      <button class="close-notification" (click)="closeNotification()">×</button>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,19 @@
+ <!-- Barre de navigation -->
+ <nav class="navbar">
+  <div class="navbar-content">
+    <span class="navbar-title">vASM</span>
+    <div class="navbar-actions">
+      <button class="theme-toggle" (click)="toggleTheme()">
+        <i class="fas" [class.fa-moon]="!(isDarkMode$ | async)" [class.fa-sun]="isDarkMode$ | async"></i>
+      </button>
+      <a routerLink="/besoin" class="navbar-help" (click)="goToBesoin()">
+        <span class="material-icons">help_outline</span>
+        Besoin d'aide ?
+      </a>
+    </div>
+    <!-- Cette partie n'apparaît pas par erreur, elle est affichée conditionnellement après la navigation -->
+    <app-besoin *ngIf="showAide"></app-besoin>
+  </div>
+</nav>
+  
+

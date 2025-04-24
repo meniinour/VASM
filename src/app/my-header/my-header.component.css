@@ -1,0 +1,108 @@
+/* Styles pour la barre de navigation */
+.navbar {
+  background-color: #031e36; /* Rouge */
+  color: black;
+  padding: 10px 20px;
+  width: 100%;
+  position: fixed; /* Fixe la barre en haut de la page */
+  top: 0;
+  left: 0;
+  z-index: 1000; /* Assure que la barre est au-dessus des autres éléments */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ombre légère */
+  display: flex;
+  justify-content: space-between; /* Espace entre les éléments */
+  align-items: center; /* Aligne verticalement les éléments */
+}
+
+.navbar-content {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+  /* Navigation */
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    background-color: #031e36;
+  }
+  
+ 
+  
+  .navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+
+
+.theme-toggle {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.theme-toggle i {
+  font-size: 1.2rem;
+}
+
+.theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.navbar-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+}
+
+
+.navbar-help {
+  background-color: #84bdc5;
+  color: #031e36;
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: none;
+  border: 1px solid #84bdc5;
+  padding: 0.5rem 1rem;
+  margin-left: 1rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #84bdc5;
+  border-radius: 4px;
+  transition: background-color 0.3s, color 0.3s;
+  
+}
+
+
+
+
+.navbar-help:hover {
+  text-decoration: underline; /* Soulignement au survol */
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.3);
+}
+.navbar-help .material-icons {
+  font-size: 20px;
+}

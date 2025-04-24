@@ -1,0 +1,563 @@
+/* Contenu principal */
+.main-content {
+    padding: 20px;
+    margin: 0;
+    background-color: transparent;
+    min-height: calc(100vh - 64px);
+    width: calc(100% - 250px);
+    box-sizing: border-box;
+    position: relative;
+    top: 64px;
+    margin-left: 150px;
+}
+
+/* Mode sombre */
+:host-context(.dark-theme) .navbar {
+    background-color: #2d2d2d;
+    color: white;
+}
+
+:host-context(.dark-theme) .navbar-title {
+    color: white;
+}
+
+:host-context(.dark-theme) .theme-toggle {
+    color: white;
+}
+
+:host-context(.dark-theme) .theme-toggle:hover {
+    background: #3d3d3d;
+}
+
+:host-context(.dark-theme) .navbar-help {
+    color: white;
+}
+
+:host-context(.dark-theme) .navbar-help:hover {
+    background: #3d3d3d;
+}
+
+/* Styles pour les cartes et le tableau */
+.card {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    margin-bottom: 1rem;
+    border: none;
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.card-body {
+    background: var(--primary-white);
+    border-radius: 8px;
+    box-shadow: var(--shadow-md);
+    margin-bottom: 20px;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table th {
+    font-weight: 600;
+    background-color: #f8f9fa;
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.form-control, .form-select {
+    border-radius: 4px;
+    border: 1px solid #ced4da;
+    padding: 0.5rem 0.75rem;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Section amploi */
+.amploi-section {
+    width: 100%;
+    background: #f8f9fa;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Mode sombre pour le contenu */
+:host-context(.dark-theme) .amploi-section {
+    background: #2d2d2d;
+    color: white;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+
+.subtitle {
+    font-size: 16px;
+    color: #777;
+}
+
+button {
+    margin-right: 10px;
+}
+
+.btn-group {
+    display: flex;
+    gap: 10px;
+}
+
+.table {
+    margin-top: 15px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+body.dark-mode {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+.navbar-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.app-logo {
+    max-width: 100px;
+    margin-right: 10px;
+}
+
+.table th, .table td {
+    vertical-align: middle;
+}
+
+.thead-dark th {
+    background-color: #343a40;
+    color: white;
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* Navbar */
+.navbar {
+    background-color: white;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.navbar-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.navbar-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.theme-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: #666;
+    transition: color 0.3s;
+}
+
+.theme-toggle:hover {
+    color: #333;
+}
+
+.navbar-help {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: #666;
+    transition: color 0.3s;
+}
+
+.navbar-help:hover {
+    color: #333;
+}
+
+.aide-icon {
+    width: 20px;
+    height: 20px;
+}
+
+/* Mode sombre */
+.dark-mode {
+    background-color: #1a1a1a;
+    color: #fff;
+}
+
+.dark-mode .navbar {
+    background-color: #2d2d2d;
+}
+
+.dark-mode .navbar-title {
+    color: #fff;
+}
+
+.dark-mode .theme-toggle,
+.dark-mode .navbar-help {
+    color: #ccc;
+}
+
+.dark-mode .theme-toggle:hover,
+.dark-mode .navbar-help:hover {
+    color: #fff;
+}
+
+/* Informations application */
+.app-info {
+    margin-bottom: 20px;
+}
+
+/* Carte de traitement */
+.traitement-card {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Boutons */
+.btn-group {
+    margin-top: 15px;
+}
+
+.btn {
+    margin: 5px;
+}
+
+.table {
+    margin-top: 15px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.thead-dark th {
+    background-color: #343a40;
+    color: white;
+}
+
+.btn.btn-dark.mode-toggle {
+    background-color: white;
+    color: black;
+    border: 1px solid #ccc;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.btn-custom {
+    font-size: 12px; /* Taille du texte */
+    padding: 5px 10px; /* Réduit l'espace autour du texte */
+    height: auto; /* Ajuste la hauteur automatiquement */
+    width: auto; /* Ajuste la largeur automatiquement */
+}
+
+.filter-tab {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.filter-tab .card-header {
+    background-color: #007bff;
+    max-width: 400px;
+}
+
+.filter-tab .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.filter-tab .btn {
+    font-size: 1.1rem;
+    padding: 10px;
+    text-transform: uppercase;
+}
+
+.card table {
+    font-size: 12px; /* Réduit la taille du texte dans le tableau */
+    width: 100%; /* Assure que le tableau occupe toute la largeur disponible */
+}
+
+.card th, .card td {
+    padding: 5px 10px; /* Réduit l'espace autour du texte dans chaque cellule */
+}
+
+.card h5 {
+    font-size: 16px; /* Réduit la taille du titre */
+    margin-bottom: 15px; /* Ajoute un peu d'espace sous le titre */
+}
+
+.container-fluid {
+    display: flex;
+}
+
+.sidebar {
+    min-height: 100vh;
+}
+
+.retour-btn {
+    transition: all 0.3s ease;
+    padding: 10px 25px;
+    font-weight: 500;
+    border-radius: 0; /* angles droits */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #f8f9fa; /* gris clair (Bootstrap light) */
+    color: #333;
+    border: 1px solid #ced4da;
+}
+
+.titre-vigiscope {
+    color: #000; /* noir */
+    font-weight: 700;
+    font-size: 4rem; /* taille du texte */
+    text-align: center; /* centré horizontalement */
+    margin: 0 auto; /* marge automatique pour centrer */
+    text-shadow: 0px 4px 6px rgba(0, 123, 255, 0.3); /* ombre légère en bas avec une touche bleue */
+}
+
+/* En-tête */
+.d-flex.justify-content-between {
+    margin-bottom: 20px;
+}
+
+/* Tableau */
+.table-responsive {
+    background: var(--primary-white);
+    border-radius: 8px;
+    box-shadow: var(--shadow-md);
+    padding: 20px;
+}
+
+/* Variables */
+:root {
+    --primary-red: #e90d16;
+    --primary-red-dark: #c00c14;
+    --primary-green: #28a745;
+    --primary-black: #1a1a1a;
+    --primary-white: #ffffff;
+    --accent-blue: #007bff;
+    --bg-light: #f4f4f4;
+    --panel-header: #f8f8f8;
+    --panel-header-text: #333333;
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.12);
+    --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-affecter,
+.btn-bloquer,
+.btn-liberer {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-affecter {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.btn-affecter:hover {
+    background-color: #45a049;
+}
+
+.btn-bloquer {
+    background-color: #f44336;
+    color: white;
+}
+
+.btn-bloquer:hover {
+    background-color: #da190b;
+}
+
+.btn-liberer {
+    background-color: #2196F3;
+    color: white;
+}
+
+.btn-liberer:hover {
+    background-color: #0b7dda;
+}
+
+.btn-affecter i,
+.btn-bloquer i,
+.btn-liberer i {
+    font-size: 14px;
+}
+
+/* Styles pour la boîte de dialogue de confirmation */
+.confirmation-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.confirmation-dialog {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+.confirmation-dialog h5 {
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.confirmation-dialog .btn-group {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 15px;
+}
+
+.confirmation-dialog .btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.confirmation-dialog .btn-success {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.confirmation-dialog .btn-success:hover {
+  background-color: #45a049;
+}
+
+.confirmation-dialog .btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.confirmation-dialog .btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+/* Styles pour les boutons d'action */
+.actions .btn-group {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-affecter,
+.btn-bloquer,
+.btn-liberer {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-affecter {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.btn-affecter:hover {
+  background-color: #45a049;
+}
+
+.btn-bloquer {
+  background-color: #f44336;
+  color: white;
+}
+
+.btn-bloquer:hover {
+  background-color: #da190b;
+}
+
+.btn-liberer {
+  background-color: #2196F3;
+  color: white;
+}
+
+.btn-liberer:hover {
+  background-color: #0b7dda;
+}
+
+.btn-changer {
+  background-color: #FFA500;
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-changer:hover {
+  background-color: #FF8C00;
+}
+  
+  
+  

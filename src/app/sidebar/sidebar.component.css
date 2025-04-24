@@ -1,0 +1,354 @@
+/* Sidebar principale */
+.sidebar {
+  padding-top: 200px;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: auto;
+  background-color: #031e36;
+  color: #ffffff;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  padding-top: 60px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--primary-white);
+  z-index: 1000;
+  box-shadow: var(--shadow-dark);
+}
+
+.sidebar a {
+  color: #84bdc5;
+}
+
+.sidebar a:hover {
+  background-color: #84bdc5;
+  color: #031e36;
+}
+
+/* Liste principale */
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  padding-top: 20px;
+  margin: 0;
+}
+
+.sidebar li {
+  position: relative;
+  width: 100%;
+  padding-top: 20px;
+  margin: 5px 0;
+}
+
+/* Style des liens */
+.sidebar a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: var(--primary-white);
+  padding: 12px 15px;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+  border-radius: 0 30px 30px 0;
+  margin-right: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Effet de survol sur les liens */
+.sidebar a:hover {
+  background: linear-gradient(90deg, #84bdc5, transparent 100%);
+  color: var(--primary-white);
+}
+
+/* Effet actif sur les liens */
+.sidebar a:active {
+  transform: translateX(5px) scale(0.98);
+}
+
+/* Style des icônes */
+.material-icons.icon {
+  min-width: 80px;
+  font-size: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.4s ease;
+  color: var(--primary-white);
+}
+
+/* Animation des icônes au survol */
+.sidebar a:hover .material-icons.icon {
+  color: var(--primary-white);
+  transform: scale(1.1);
+}
+
+/* Style du texte */
+.text {
+  opacity: 1;
+  visibility: hidden;
+  transform: translateX(0);
+  margin-left: 10px;
+  font-size: 15px;
+  font-weight: 500;
+  transition: none;
+}
+
+
+/* Animation du texte au survol de la sidebar */
+.sidebar:hover .text {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+}
+
+/* Sous-menu */
+.sub-menu {
+  background: #031e36;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-left: 10px;
+}
+
+/* Animation du sous-menu */
+.services:hover .sub-menu {
+  max-height: 500px;
+  background: linear-gradient(70deg, #031e36, transparent 100%);
+}
+
+.sub-menu li a {
+  padding-left: 30px;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.sub-menu .material-icons.icon {
+  font-size: 20px;
+}
+
+/* Indicateur de sous-menu */
+.services > a::after {
+  content: 'keyboard_arrow_right';
+  font-family: 'Material Icons';
+  position: absolute;
+  right: 15px;
+  transition: transform 0.3s ease;
+  opacity: 0;
+}
+
+.sidebar:hover .services > a::after {
+  opacity: 1;
+}
+
+.services:hover > a::after {
+  transform: rotate(90deg);
+}
+
+/* Effet de ripple au clic */
+.sidebar a::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, rgba(52, 152, 219, 0.2) 0%, rgba(52, 152, 219, 0) 70%);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.sidebar a:active::before {
+  width: 200px;
+  height: 200px;
+}
+
+/* Animations personnalisées */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Application des animations */
+.sidebar:hover .text {
+  animation: slideIn 0.4s ease forwards;
+}
+
+.sidebar:hover .material-icons.icon {
+  animation: fadeIn 0.3s ease forwards;
+}
+
+/* Animation spéciale pour l'icône de synchronisation */
+.sidebar a:hover .material-icons.icon.sync {
+  animation: rotate 1s linear infinite;
+}
+
+/* Styles pour les badges de notification */
+.badge {
+  position: absolute;
+  top: -5px;
+  right: 10px;
+  background: #84bdc5 ;
+  color: white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.3s ease;
+}
+
+.sidebar:hover .badge {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Effet de survol amélioré pour les éléments du sous-menu */
+.sub-menu li a:hover {
+  background: linear-gradient(90deg, rgba(52, 152, 219, 0.1), rgba(52, 152, 219, 0));
+  padding-left: 35px;
+}
+
+/* Séparateur entre les sections */
+.separator {
+  height: 1px;
+  background: linear-gradient(90deg, #84bdc5, transparent);
+  margin: 10px 15px;
+  opacity: 0.3;
+  visibility: hidden;
+}
+
+.sidebar:hover .separator {
+  opacity: 1;
+}
+
+/* Styles des boutons globaux */
+.btn-primary {
+  background-color: #84bdc5;
+  color: var(--primary-white);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #84bdc5  ;
+  box-shadow: var(--shadow-medium);
+}
+
+.btn-secondary {
+  background-color: var(--primary-blue);
+  color: var(--primary-white);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background-color: var(--secondary-blue);
+  box-shadow: var(--shadow-medium);
+}
+
+.container {
+  display: flex;
+  height: 100vh; /* Make the container take the full height of the viewport */
+}
+
+.content {
+  flex: 1; /* Take the remaining space */
+  display: flex;
+  flex-direction: column; /* Stack header and main vertically */
+}
+
+.treatment {
+  background-color: 84bdc5 ;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+}
+
+.email {
+  background-color: green;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+}
+/* Styles globaux */
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  background-color: var(--bg-light);
+}
+/* Animations globales */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+
