@@ -80,8 +80,7 @@ export class ChatbotComponent implements AfterViewChecked, OnInit {
 
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer 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'
-    });
+      });
     
     const body = {
       model: 'gpt-3.5-turbo',
