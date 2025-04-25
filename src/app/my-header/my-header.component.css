@@ -1,44 +1,51 @@
 /* Styles pour la barre de navigation */
 .navbar {
-  background-color: #031e36; /* Rouge */
-  color: black;
+  background-color: #031e36; /* Couleur du fond */
+  color: white;
   padding: 10px 20px;
-  width: 100%;
+  width: 99%;
+  max-width: 100%; /* Limite maximum pour éviter qu'elle devienne trop large sur grands écrans */
+  margin: 10px auto; /* Centre la navbar horizontalement */
   position: fixed; /* Fixe la barre en haut de la page */
-  top: 0;
-  left: 0;
+  top: 0px;
+  left: 10px;
+  right: 20px;
   z-index: 1000; /* Assure que la barre est au-dessus des autres éléments */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ombre légère */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Ombre légère */
   display: flex;
-  justify-content: space-between; /* Espace entre les éléments */
-  align-items: center; /* Aligne verticalement les éléments */
+  justify-content: center; /* Centrer horizontalement */
+  align-items: center; /* Aligner verticalement */
+  border-radius: 20px; /* Coins arrondis */
+  margin: 10px 0; /* Espacement autour de la barre */
+  transition: all 0.3s ease;
+}
+.navbar-logo {
+  height: 40px; /* ajuste selon la taille que tu veux */
+  object-fit: contain;
 }
 
 .navbar-content {
-  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
+  height: 100%;
+  max-width: 100%; /* Limiter la largeur pour un design plus propre */
 }
-  /* Navigation */
-  .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem 2rem;
-    background-color: #031e36;
-  }
-  
- 
-  
-  .navbar-actions {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
 
+.navbar-title {
+  font-size: 22px;
+  font-weight: bold;
+  color: white;
+}
 
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem; /* Espacement entre les éléments de la barre d'actions */
+}
 
+/* Style du bouton de changement de thème */
 .theme-toggle {
   background: none;
   border: none;
@@ -49,60 +56,41 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
+  transition: background 0.3s ease;
 }
 
 .theme-toggle i {
-  font-size: 1.2rem;
+  font-size: 1.5rem; /* Taille de l'icône */
 }
 
 .theme-toggle:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.1); /* Effet au survol */
 }
 
-.navbar-title {
-  font-size: 20px;
-  font-weight: bold;
-  color: white;
-}
-
-
+/* Style du lien d'aide */
 .navbar-help {
   background-color: #84bdc5;
   color: #031e36;
-  color: white;
   text-decoration: none;
   display: flex;
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  border-radius: 4px;
-  transition: all 0.3s ease;
+  border-radius: 25px; /* Coins arrondis */
+  transition: background 0.3s ease, color 0.3s ease;
   font-size: 0.95rem;
   background: rgba(255, 255, 255, 0.2);
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  background: none;
   border: 1px solid #84bdc5;
-  padding: 0.5rem 1rem;
-  margin-left: 1rem;
   cursor: pointer;
-  font-size: 0.9rem;
-  color: #84bdc5;
-  border-radius: 4px;
-  transition: background-color 0.3s, color 0.3s;
-  
 }
-
-
-
 
 .navbar-help:hover {
+  background: rgba(255, 255, 255, 0.3); /* Effet au survol */
+  color: white; /* Changer la couleur du texte au survol */
   text-decoration: underline; /* Soulignement au survol */
-  cursor: pointer;
-  background: rgba(255, 255, 255, 0.3);
 }
+
+/* Icône d'aide */
 .navbar-help .material-icons {
   font-size: 20px;
 }

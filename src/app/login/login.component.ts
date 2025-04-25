@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit {
   userMessage = '';
   messages: { role: 'user' | 'assistant', content: string }[] = [];
   isLoading = false;
-  showNotification = false;
+  showNotification = true;
   showPassword = false; // Nouvelle propriété pour gérer la visibilité du mot de passe
 
   // Données de connexion manuelles pour les tests
@@ -62,8 +62,8 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     // Afficher uniquement la notification après 2 secondes
     setTimeout(() => {
-      this.showNotification = true;
-    }, 2000);
+      this.showNotification = false;
+    }, 3000);
   }
   
   // Méthode pour basculer le thème

@@ -1,3 +1,45 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Arial', sans-serif;
+  background-color: #fbfaf6;
+  overflow-x: hidden;
+}
+
+.login-gif {
+  width: 150%;        /* ou une taille spécifique : 300px */
+  height: 150%;
+  object-fit: cover; 
+  padding-left: 20px; /* ajuste pour que ça remplisse bien le bloc */
+}
+
+/* Empêche le header de chevaucher le contenu */
+app-my-header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+/* Espace pour éviter que le contenu soit caché derrière le header */
+.container {
+  margin-top: 80px; /* ajuste selon la hauteur du header */
+  padding: 20px;
+  flex: 1;
+}
+.chatbot-icon img {
+  width: 50px; /* Ajuster la largeur selon tes besoins */
+  height: 50px; /* Ajuster la hauteur selon tes besoins */
+}
+
+/* Permet de scroller si le contenu dépasse */
+main.main-split {
+  display: flex;
+  flex-wrap: wrap;
+  min-height: 100vh;
+  justify-content: center;
+  align-items: flex-start;
+}
 /* Styles pour les groupes de champs */
 .input-group {
   display: flex;
@@ -15,21 +57,33 @@
   margin-bottom: 5px; /* Espace entre le label et le champ de saisie */
 }
 
+.main-split {
+  display: flex;
+  height: 100vh;
+  overflow: visible;
+  flex-wrap: wrap;
+}
 /* Styles pour centrer le contenu et ajouter des effets */
 .login-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
   padding: 2rem;
-  background-color: var(--background-color);
+  background-color: white;
   padding-top:100px ;
-  box-shadow: 20px 20px 40px #84bdc5;
-  
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
+  width: 95%;
+  max-width: 1300px;
+  margin: 50px auto;
+  border-radius: 12px;
+  height: 100vh;
+  width: 100vw;
+  box-shadow: 0 0 20px #031e36;
 }
 
 .login-box {
-  background: #031e36;
+  background: white;
   padding: 3rem 2rem;
   border-radius: 15px;
   box-shadow: 20px 20px 40px #031e36;
@@ -39,9 +93,57 @@
   position: relative;
   overflow: hidden;
   border: 2px solid #84bdc5;
-  box-shadow: 20px 20px 40px #84bdc5;
+
   padding: 3rem 2rem;
 }
+
+/* Partie gauche (image) */
+.login-left {
+  flex: 1;  /* Prend la moitié de l'écran */
+  background-color: #f4f4f4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f4f4f4;
+}
+
+
+.login-image {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Partie droite (formulaire) */
+.login-right {
+  flex: 1;  /* Prend l'autre moitié de l'écran */
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+}
+
+
+
+.auth-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  color: #031e36;
+  text-align: center;
+  font-family: 'Arial', sans-serif;
+  
+}
+
+.auth-subtitle {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+
+
 
 /* Suppression complète de la bande bleue */
 .login-box::before {
@@ -60,12 +162,16 @@
 
 .input-group {
   margin-bottom: 25px;
+  width: 700px;
+  max-width: 500px; /* Largeur maximum souhaitée */
+  margin: 0 auto 16px auto; /* Centrage + espacement */
+
 }
 
 .input-group label {
   display: block;
   margin-bottom: 8px;
-  color: white;
+  color: #031e36;
   font-weight: 500;
 }
 
@@ -96,6 +202,7 @@
   background: transparent;
   font-size: 1rem;
   color: #333;
+  padding-left: 30px;  /* Pour faire de la place à l'icône */
 }
 
 .input-field input:focus {
@@ -142,7 +249,7 @@
 }
 .auth-title {
   font-size: 1.7rem;
-  color: #84bdc5;
+  color: #031e36;
   margin-bottom: 0.5rem;
   font-weight: 600;
 }
@@ -155,7 +262,7 @@
 .btn {
   width: 100%;
   padding: 12px;
-  background: #84bdc5;
+  background-color: #031e36; /* Couleur de fond */
   color: white;
   border: none;
   border-radius: 10px;
@@ -167,12 +274,12 @@
 }
 
 .btn:hover {
-  background: #84bdc5;
+  background: #031e36;
   transform: translateY(-1px);
 }
 
 .btn:disabled {
-  background: #84bdc5;
+  background-color: #031e36; /* Couleur pour le bouton désactivé */
   cursor: not-allowed;
   transform: none;
 }
@@ -206,7 +313,7 @@
   width: 100%;
   padding: 12px;
   background: white;
-  color: #333;
+  color: #031e36;
   border: 1px solid #ddd;
   border-radius: 10px;
   font-size: 1rem;
@@ -399,11 +506,12 @@
 
 /* Cercle pour le chatbot */
 .chatbot-circle {
-  width: 50px;
-  height: 50px;
+  width: 30px;
+  height: 30px;
   background-color: #84bdc5; /* Nouvelle couleur */
-  border-radius: 50%; /* Cercle */
+  border-radius: 30%; /* Cercle */
   display: flex;
+  padding:4px 10px; ;
   align-items: center;
   justify-content: center;
   color: white;
@@ -417,8 +525,8 @@
   position: fixed;
   bottom: 20px;
   right: 20px;
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   background-color: #84bdc5;
   border-radius: 50%;
   display: flex;
@@ -458,13 +566,13 @@
 
 .help-notification {
   position: fixed;
-  bottom: 90px;
+  bottom: 80px;
   right: 20px;
   background: #84bdc5;
-  padding: 8px 15px;
-  border-radius: 20px;
+  padding: 4px 10px;
+  border-radius: 15px;
   z-index: 999;
-  font-size: 14px;
+  font-size: 12px;
   color: white;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   pointer-events: none;

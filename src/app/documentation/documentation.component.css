@@ -1,21 +1,76 @@
+.main-content {
+  margin-left: 320px; /* 260px sidebar + 60px de marge */
+  padding: 30px;
+  background-color: #fbfaf6;
+  min-height: 100vh;
+}
+body {
+  background-color: #fbfaf6;
+}
+
 
 .sidebar {
+  transition: width 0.3s ease;
   width: 260px;
+  background-color: #fbfaf6;
   height: 80vh; /* Ajuster la hauteur si nécessaire */
   background: linear-gradient(to bottom right, #031e36, #84bdc5);
   border-radius: 30px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  color: white;
+  color: #031e36;
   padding: 30px 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: start;
   position: fixed;
-  top: 50%;
-  left: 40px; /* <-- distance depuis le bord gauche */
+  top: 55%;
+  left: 20px; /* <-- distance depuis le bord gauche */
   transform: translateY(-50%);
   z-index: 1000;
+  
+}
+
+
+.sidebar.collapsed {
+  width: 70px;
+}
+
+.sidebar .text {
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.sidebar.collapsed a {
+  justify-content: center;
+}
+
+.sidebar.collapsed a .material-icons {
+  margin-right: 0;
+}
+
+
+.sidebar.collapsed .text {
+  opacity: 0;
+  visibility: hidden;
+  width: 0;
+  overflow: hidden;
+}
+.sidebar a:hover,
+.sidebar .active {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.sidebar .material-icons.icon {
+  transition: transform 0.3s ease;
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  margin-bottom: 20px;
+  font-size: 24px;
 }
 
 .sidebar ul {
@@ -34,7 +89,7 @@
   align-items: center;
   gap: 10px;
   padding: 14px 20px;
-  color: white;
+  color: #031e36;
   text-decoration: none;
   transition: background 0.3s ease;
 }
@@ -47,17 +102,31 @@
   background: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
 }
+ul {
+  width: 100%;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
 
+li {
+  width: 100%;
+}
 .separator {
   width: 100%;
   height: 1px;
   background-color: rgba(255, 255, 255, 0.3);
   margin: 10px 0;
 }
+.sub-menu {
+  padding-left: 10px;
+  width: 100%;
+}
 
 .services > .sub-menu {
   display: none;
   padding-left: 20px;
+  display: block;
 }
 
 .services:hover > .sub-menu {
@@ -69,7 +138,7 @@
   align-items: center;
   gap: 10px;
   padding: 14px 20px;
-  color: white;
+  color: #031e36;
   text-decoration: none;
 }
 
@@ -81,10 +150,14 @@
 .sub-menu a {
   display: flex;
   align-items: center;
+
   gap: 10px;
   padding: 10px 20px;
-  color: white;
+  color: #031e36;
   text-decoration: none;
+  white-space: normal; /* Évite le débordement */
+  word-wrap: break-word; /* Coupe si trop long */
+
 }
 
 .sub-menu a:hover {
@@ -96,9 +169,7 @@
   font-size: 18px;
 }
 
-.text {
-  font-weight: bold;
-}
+
 
 .sidebar .active {
   background: rgba(255, 255, 255, 0.1);

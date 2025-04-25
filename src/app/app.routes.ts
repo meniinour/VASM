@@ -43,7 +43,7 @@ export const routes: Routes = [
     { path: 'users', component: UserComponent },
     { path: 'client-assign/:id', component: ClientAssignComponent }, // 👈 route pour le profil
     { path: 'documentation' , component: DocumentationComponent } ,// Redirige vers la page d'accueil pour les routes non trouvées
-    { path: 'navbar',component: NavbarComponent}
+    { path: 'navbar',component: NavbarComponent},
 
   
 

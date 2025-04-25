@@ -27,7 +27,7 @@
   }
   
   .logo {
-    height: 32px;
+    height: 150px;
     filter: brightness(0) invert(1); /* pour que le logo soit visible sur fond foncé */
   }
   
@@ -92,6 +92,12 @@
     height: 100vh;
     overflow: hidden;
   }
+
+  .chatbot-icon img {
+    width: 50px; /* Ajuster la largeur selon tes besoins */
+    height: 50px; /* Ajuster la hauteur selon tes besoins */
+  }
+  
   
   .left-side {
     flex: 1;
@@ -362,8 +368,8 @@
   bottom: 90px;
   right: 20px;
   background:#84bdc5;
-  padding: 8px 15px;
-  border-radius: 20px;
+  padding: 4px 10px;
+  border-radius: 15px;
   z-index: 999;
   font-size: 14px;
   color: white;

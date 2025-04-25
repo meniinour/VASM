@@ -4,11 +4,12 @@ import { Location } from "@angular/common";
 import { Router } from "@angular/router";
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { BrowserModule } from "@angular/platform-browser";
+import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: "app-navbar",
   standalone: true,
-  imports: [NgbModal,BrowserModule],
+  imports: [BrowserModule, NgbCollapseModule],
   templateUrl: "./navbar.component.html",
   styleUrls: ["./navbar.component.css"]
 })

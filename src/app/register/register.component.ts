@@ -35,7 +35,7 @@ export class RegisterComponent implements OnInit {
   showChatbot = false;
   showBesoin = false;
   showAide = false;
-  showNotification = false;
+  showNotification = true;
   showPassword = false;
   isDarkTheme = false;
   isDarkMode$: any;
@@ -62,8 +62,8 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit(): void {
     setTimeout(() => {
-      this.showNotification = true;
-    }, 2000);
+      this.showNotification = false;
+    }, 3000);
 
     const savedTheme = localStorage.getItem('theme');
     this.isDarkTheme = savedTheme === 'dark';

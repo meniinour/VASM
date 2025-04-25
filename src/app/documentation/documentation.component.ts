@@ -1,15 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatListModule } from '@angular/material/list';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-declare interface RouteInfo {
+import { MyHeaderComponent } from "../my-header/my-header.component";
+import { CommonModule } from '@angular/common';
+interface RouteInfo {
   path: string;
   title: string;
   rtlTitle: string;
   icon: string;
   class: string;
 }
+
 export const ROUTES: RouteInfo[] = [
   {
     path: "/dashboard",
@@ -30,7 +29,8 @@ export const ROUTES: RouteInfo[] = [
     title: "Maps",
     rtlTitle: "خرائط",
     icon: "icon-pin",
-    class: "" },
+    class: ""
+  },
   {
     path: "/notifications",
     title: "Notifications",
@@ -38,7 +38,6 @@ export const ROUTES: RouteInfo[] = [
     icon: "icon-bell-55",
     class: ""
   },
-
   {
     path: "/user",
     title: "User Profile",
@@ -68,26 +67,32 @@ export const ROUTES: RouteInfo[] = [
     class: ""
   }
 ];
+
 @Component({
   selector: 'app-documentation',
-  imports: [ MatSidenavModule,
-    MatListModule,
-    MatIconModule,
-    MatButtonModule],
   templateUrl: './documentation.component.html',
-  styleUrl: './documentation.component.css',
+  styleUrls: ['./documentation.component.css'],
+  imports: [CommonModule,MyHeaderComponent]
 })
 export class DocumentationComponent implements OnInit {
 
+  // Définir la sidebar comme étendue au démarrage
+  isSidebarExpanded: boolean = true;
+  isServiceMenuOpen: boolean = true;
+
   ngOnInit(): void {
-
-  }
-  
-  isMobileMenu() {
-    if (window.innerWidth > 991) {
-      return false;
-    }
-    return true;
+    // Logique d'initialisation si nécessaire
   }
 
+  toggleSidebar() {
+    this.isSidebarExpanded = !this.isSidebarExpanded;
+  }
+
+  toggleServiceMenu() {
+    this.isServiceMenuOpen = !this.isServiceMenuOpen;
+  }
+
+  isMobileMenu(): boolean {
+    return window.innerWidth <= 991;
+  }
 }

@@ -7,17 +7,22 @@
   </head>
   <body>
     <app-my-header></app-my-header>
-    
-
-    <!-- Contenu principal -->
-    <div class="login-container">
-      <div class="login-box">
-          <img src="./assets/bridge.jpeg" class="logo" width="100" height="100" />
+<div class="container">
       
-        <h1 class="auth-title">The Bridge,Parce que chaque collaborateur compte </h1>
-              <p class="auth-subtitle">Connectez-vous à votre compte Bridge   </p>
-  
-        <!-- Formulaire Angular -->
+    <!-- Conteneur principal pour la mise en page -->
+    <main class="main-split">
+      <!-- Partie gauche : juste l'image -->
+      <div class="login-left">
+        <img src=".../../assets/login.gif" class="login-gif" />
+        </div>
+ <!-- Séparateur entre les deux parties -->
+ <div class="separator"></div>
+      <!-- Partie droite : formulaire -->
+      <div class="login-right">
+        
+        <h1 class="auth-title">The Bridge, Parce que chaque collaborateur compte...</h1>
+        <p class="auth-subtitle">Connectez-vous à votre compte Bridge</p>
+
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
           <!-- Champ Login -->
           <div class="input-group">
@@ -39,34 +44,29 @@
               </button>
             </div>
           </div>
+
           <div class="checkbox-group">
             <input type="checkbox" id="remember-me" />
             <label for="remember-me">Rester connecté</label>
           </div>
-          
-          <!-- Message d'erreur -->
+
           <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
 
-          <!-- Lien "Mot de passe oublié ?" -->
           <a routerLink="/forget-password" (click)="goToForgotPassword()" class="forget-password">Mot de passe oublié ?</a>
 
-          <!-- Bouton de connexion -->
           <button type="submit" class="btn" [disabled]="loginForm.invalid">Connexion</button>
 
-          <!-- Séparateur -->
           <div class="separator">OU</div>
 
-          <!-- Bouton Microsoft -->
           <button type="button" class="btn-microsoft" (click)="loginWithMicrosoft()">
             <img src="./assets/microsoft.png" alt="Microsoft" />
             Se connecter avec Microsoft
           </button>
-          <button type="button" class="btn-microsoft"  (click)="loginWithSSO()">
+          <button type="button" class="btn-microsoft" (click)="loginWithSSO()">
             <i class="fas fa-key" style="margin-right: 8px;"></i>
             Authentification unique (SSO)
           </button>
-          
-          <!-- Section Register -->
+
           <div class="register-link">
             <p>Pas encore de compte ? <a routerLink="/register" (click)="register()">S'inscrire ici</a></p>
           </div>
@@ -74,22 +74,22 @@
           <div class="copyright-text">© 2015 Amploi. All rights reserved</div>
         </form>
       </div>
-    </div>
+    
 
-    <!-- Chatbot et son icône -->
     <div class="chatbot-container">
       <div class="chatbot-icon" (click)="toggleChatbot()">
-        💬
+        <img src="../../assets/chatbot.png" alt="Chatbot Icon" />
       </div>
       <app-chatbot *ngIf="showChatbot"></app-chatbot>
     </div>
 
-    <!-- Notification d'aide (séparée du chatbot) -->
     <div class="help-notification" *ngIf="showNotification">
       <div class="notification-content">
         <span>Besoin d'aide pour vous connecter ?</span>
         <button class="close-notification" (click)="closeNotification()">×</button>
       </div>
     </div>
+  </main>
+  </div>
   </body>
 </html>

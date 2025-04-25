@@ -6,15 +6,24 @@
   <title>Inscription - vASM</title>
 </head>
 <body>
-  <app-my-header></app-my-header>
 
-  <div class="auth-container">
-    <div class="auth-card">
-      <div class="auth-header">
-        <img src="./assets/bridge.jpeg" class="auth-logo"  />
+    <app-my-header></app-my-header>
+
+<div class="container">
+    <!-- Conteneur principal pour la mise en page -->
+  <main class="main-split">
+      <!-- Partie gauche : juste l'image -->
+      <div class="login-left">
+        <img src="../../assets/register.gif" class="login-gif" />
+        </div>
+
+    <!-- Séparateur entre les deux parties -->
+    <div class="separator"></div>
+      <!-- Partie droite : formulaire -->
+    <div class="login-right">
         <h1 class="auth-title">The Bridge,Parce que chaque collaborateur compte </h1>
         <p class="auth-subtitle">Créez votre compte Bridge pour accéder à toutes les fonctionnalités</p>
-      </div>
+      
 
       <form class="auth-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
         <div class="form-group">
@@ -83,23 +92,24 @@
         <div class="copyright-text">© 2015 Amploi. All rights reserved</div>
       </form>
     </div>
-  </div>
 
   
-    <!-- Chatbot et son icône -->
-    <div class="chatbot-container">
-      <div class="chatbot-icon" (click)="toggleChatbot()">
-        💬
-      </div>
-      <app-chatbot *ngIf="showChatbot"></app-chatbot>
-    </div>
+        <!-- Chatbot et son icône -->
+        <div class="chatbot-container">
+          <div class="chatbot-icon" (click)="toggleChatbot()">
+            <img src="../../assets/chatbot.png" alt="Chatbot Icon" />
+          </div>
+          <app-chatbot *ngIf="showChatbot"></app-chatbot>
+        </div>
 
-  <!-- Notification d'aide (séparée du chatbot) -->
-  <div class="help-notification" *ngIf="showNotification">
-    <div class="notification-content">
-      <span>Besoin d'aide pour vous connecter ?</span>
-      <button class="close-notification" (click)="closeNotification()">×</button>
-    </div>
-  </div>
+      <!-- Notification d'aide (séparée du chatbot) -->
+      <div class="help-notification" *ngIf="showNotification">
+        <div class="notification-content">
+          <span>Besoin d'aide pour vous connecter ?</span>
+          <button class="close-notification" (click)="closeNotification()">×</button>
+        </div>
+      </div>
+  </main>
+</div>
 </body>
 </html>
