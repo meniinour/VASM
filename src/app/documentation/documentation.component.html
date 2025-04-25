@@ -9,96 +9,100 @@
   <app-my-header></app-my-header>
 
   <div class="main-content">
-    <div class="sidebar" [class.collapsed]="!isSidebarExpanded">
-      <div class="custom-sidenav">
-        <div class="brand"></div>
-
-        <nav class="nav-links">
-          <ul>
-            <li>
-              <a routerLink="/home" (click)="toggleSidebar()">
-                <span class="material-icons icon">home</span>
-                <span class="text">Accueil</span>
-              </a>
-            </li>
-
-            <li>
-              <a routerLink="/users" (click)="toggleSidebar()">
-                <span class="material-icons icon">people</span>
-                <span class="text">Liste Client</span>
-              </a>
-            </li>
-
-            <li>
-              <a routerLink="/dashboard" (click)="toggleSidebar()">
-                <span class="material-icons icon">dashboard</span>
-                <span class="text">Tableau de bord</span>
-              </a>
-            </li>
-
-            <li class="services" (click)="toggleSidebar()">
-              <a href="javascript:void(0)" (click)="toggleServiceMenu(); toggleSidebar()">
-                <span class="material-icons icon">business</span>
-                <span class="text">Centre de Services</span>
-              </a>
-
-              <ul class="sub-menu" *ngIf="isServiceMenuOpen">
-                <li>
-                  <a routerLink="/mail" routerLinkActive="active" (click)="toggleSidebar()">
-                    <span class="material-icons icon">mail</span>
-                    <span class="text">Traitement centralisé des mails</span>
-                  </a>
-                </li>
-                <li>
-                  <a routerLink="/content" (click)="toggleSidebar()">
-                    <span class="material-icons icon">swap_horiz</span>
-                    <span class="text">Gestion des mouvements</span>
-                  </a>
-                </li>
-                <li>
-                  <a routerLink="/my-content" routerLinkActive="active" (click)="toggleSidebar()">
-                    <span class="material-icons icon">mail</span>
-                    <span class="text">Typage des mails</span>
-                  </a>
-                </li>
-                <li>
-                  <a routerLink="/content" (click)="toggleSidebar()">
-                    <span class="material-icons icon">file_copy</span>
-                    <span class="text">Gestion des imports</span>
-                  </a>
-                </li>
-                <li>
-                  <a routerLink="/content" (click)="toggleSidebar()">
-                    <span class="material-icons icon">group</span>
-                    <span class="text">Déclarations des effectifs</span>
-                  </a>
-                </li>
-                <li>
-                  <a routerLink="/content" (click)="toggleSidebar()">
-                    <span class="material-icons icon">bar_chart</span>
-                    <span class="text">Récapitulatif</span>
-                  </a>
-                </li>
-              </ul>
-            </li>
-
-            <li>
-              <a routerLink="/settings" (click)="toggleSidebar()">
-                <span class="material-icons icon">settings</span>
-                <span class="text">Paramétrage</span>
-              </a>
-            </li>
-
-            <li>
-              <a routerLink="/login" (click)="toggleSidebar()">
-                <span class="material-icons icon">exit_to_app</span>
-                <span class="text">Déconnexion</span>
-              </a>
-            </li>
-          </ul>
-        </nav>
+    <div class="sidebar" [class.expanded]="isSidebarExpanded" [class.with-submenu]="isServiceMenuOpen">
+        <ul class="nav-links">
+          <li>
+            <a (click)="navigateAndExpand()" routerLink="/home">
+              <span class="material-icons icon">home</span>
+              <span class="text" *ngIf="isSidebarExpanded">Accueil</span>
+            </a>
+          </li>
+      
+          <li>
+            <a (click)="navigateAndExpand()" routerLink="/users">
+              <span class="material-icons icon">people</span>
+              <span class="text" *ngIf="isSidebarExpanded">Liste Client</span>
+            </a>
+          </li>
+      
+          <li>
+            <a (click)="navigateAndExpand()" routerLink="/dashboard">
+              <span class="material-icons icon">dashboard</span>
+              <span class="text" *ngIf="isSidebarExpanded">Tableau de bord</span>
+            </a>
+          </li>
+      
+          <li>
+            <a (click)="toggleServiceMenu()">
+              <span class="material-icons icon">business</span>
+              <span class="text" *ngIf="isSidebarExpanded">Centre de Services</span>
+              <span class="material-icons expand-icon" *ngIf="isSidebarExpanded">keyboard_arrow_down</span>
+            </a>
+      
+            <ul class="sub-menu" *ngIf="isServiceMenuOpen">
+              <li>
+                <a routerLink="/mail">
+                  <span class="material-icons icon">mail</span>
+                  <span class="text">Traitement centralisé des mails</span>
+                </a>
+              </li>
+              <li>
+                <a routerLink="/content">
+                  <span class="material-icons icon">swap_horiz</span>
+                  <span class="text">Gestion des mouvements</span>
+                </a>
+              </li>
+              <li>
+                <a routerLink="/my-content">
+                  <span class="material-icons icon">mail</span>
+                  <span class="text">Typage des mails</span>
+                </a>
+              </li>
+              <li>
+                <a routerLink="/content">
+                  <span class="material-icons icon">file_copy</span>
+                  <span class="text">Gestion des imports</span>
+                </a>
+              </li>
+              <li>
+                <a routerLink="/content">
+                  <span class="material-icons icon">group</span>
+                  <span class="text">Déclarations des effectifs</span>
+                </a>
+              </li>
+              <li>
+                <a routerLink="/content">
+                  <span class="material-icons icon">bar_chart</span>
+                  <span class="text">Récapitulatif</span>
+                </a>
+              </li>
+            </ul>
+          </li>
+      
+          <li>
+            <a (click)="navigateAndExpand()" routerLink="/settings">
+              <span class="material-icons icon">settings</span>
+              <span class="text" *ngIf="isSidebarExpanded">Paramétrage</span>
+            </a>
+          </li>
+          <li>
+            <a routerLink="/chatbot">
+              <span class="material-icons icon">chat</span>
+              <span class="text" *ngIf="isSidebarExpanded">Assistant VigiScope</span>
+            </a>
+          </li>
+          <li>
+            <a (click)="navigateAndExpand()" routerLink="/login">
+              <span class="material-icons icon">exit_to_app</span>
+              <span class="text" *ngIf="isSidebarExpanded">Déconnexion</span>
+            </a>
+          </li>
+        </ul>
       </div>
-    </div>
+      
+      
   </div>
+  <app-chatbot *ngIf="showChatbot" (close)="closeChatbot()"></app-chatbot>
+
 </body>
 </html>

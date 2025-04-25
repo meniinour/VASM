@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit,ElementRef  } from '@angular/core';
 import { MyHeaderComponent } from "../my-header/my-header.component";
 import { CommonModule } from '@angular/common';
+import { ChatbotComponent } from "../chatbot/chatbot.component";
 interface RouteInfo {
   path: string;
   title: string;
@@ -72,27 +73,57 @@ export const ROUTES: RouteInfo[] = [
   selector: 'app-documentation',
   templateUrl: './documentation.component.html',
   styleUrls: ['./documentation.component.css'],
-  imports: [CommonModule,MyHeaderComponent]
+  imports: [CommonModule, MyHeaderComponent, ChatbotComponent]
 })
 export class DocumentationComponent implements OnInit {
 
   // Définir la sidebar comme étendue au démarrage
-  isSidebarExpanded: boolean = true;
-  isServiceMenuOpen: boolean = true;
-
+  isSidebarExpanded = false;
+  isServiceMenuOpen = false;
+  isSidebarOpen = false;
+  showChatbot = false;
   ngOnInit(): void {
     // Logique d'initialisation si nécessaire
   }
+  
+  constructor(private eRef: ElementRef) {}
 
-  toggleSidebar() {
-    this.isSidebarExpanded = !this.isSidebarExpanded;
-  }
 
+  /*@HostListener('document:click', ['$event'])
+  clickout(event: MouseEvent) {
+    if (!this.eRef.nativeElement.contains(event.target)) {
+      this.isSidebarExpanded = false;
+      this.isServiceMenuOpen = false;
+    }
+  }*/
   toggleServiceMenu() {
     this.isServiceMenuOpen = !this.isServiceMenuOpen;
+    this.isSidebarExpanded = true;
   }
 
-  isMobileMenu(): boolean {
-    return window.innerWidth <= 991;
+  navigateAndExpand() {
+    this.isSidebarExpanded = true;
+    this.isServiceMenuOpen = false;
   }
-}
+
+    toggleSidebar() {
+      this.isSidebarExpanded = !this.isSidebarExpanded;
+    }
+    isMobileMenu(): boolean {
+        return window.innerWidth <= 991;
+      }
+    openChatbot() {
+        this.showChatbot = true;
+      }
+
+      closeChatbot() {
+        this.showChatbot = false;
+      }
+
+      closeSidebar() {
+        this.isSidebarOpen = false;
+        this.isServiceMenuOpen = false;
+      }  
+
+    }
+
