@@ -86,7 +86,7 @@ export class DocumentationComponent implements OnInit {
     // Logique d'initialisation si nécessaire
   }
   
-  constructor(private eRef: ElementRef) {}
+  /*constructor(private eRef: ElementRef) {}*/
 
 
   /*@HostListener('document:click', ['$event'])
