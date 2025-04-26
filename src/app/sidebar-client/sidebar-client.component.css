@@ -12,7 +12,7 @@
     background-color: var(--bg-color);
     color: var(--text-color);
     position: fixed;
-    top: 0;
+    top: 50px;
     left: 0;
     overflow: hidden;
     transition: width 0.3s ease;
@@ -22,6 +22,7 @@
     padding-top: 20px;
     border-right: 5px solid var(--border-color);
     z-index: 1000;
+    margin-top: 20px;
   }
   
   .sidebar.open {

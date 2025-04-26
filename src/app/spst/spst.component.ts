@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarClientComponent } from '../sidebar-client/sidebar-client.component';
+import { MyHeaderComponent } from '../my-header/my-header.component';
 
 @Component({
   selector: 'app-spst',
   standalone: true,
-  imports: [CommonModule, SidebarClientComponent],
+  imports: [CommonModule, SidebarClientComponent, MyHeaderComponent],
   templateUrl: './spst.component.html',
   styleUrls: ['./spst.component.css']
 })

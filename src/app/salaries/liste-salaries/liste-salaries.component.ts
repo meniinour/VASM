@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SidebarClientComponent } from '../../sidebar-client/sidebar-client.component';
-
+import{ MyHeaderComponent } from '../../my-header/my-header.component';
 interface Salarie {
   id: number;
   nom: string;
@@ -12,7 +12,7 @@ interface Salarie {
 @Component({
   selector: 'app-liste-salaries',
   standalone: true,
-  imports: [CommonModule, FormsModule, SidebarClientComponent],
+  imports: [CommonModule, FormsModule, SidebarClientComponent,MyHeaderComponent],
   templateUrl: './liste-salaries.component.html',
   styleUrls: ['./liste-salaries.component.css']
 })

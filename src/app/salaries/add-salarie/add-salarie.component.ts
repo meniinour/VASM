@@ -2,11 +2,11 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarClientComponent } from '../../sidebar-client/sidebar-client.component';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-
+import { MyHeaderComponent } from '../../my-header/my-header.component';
 @Component({
   selector: 'app-add-salarie',
   standalone: true,
-  imports: [CommonModule, SidebarClientComponent, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, SidebarClientComponent, FormsModule, ReactiveFormsModule,MyHeaderComponent],
   templateUrl: './add-salarie.component.html',
   styleUrls: ['./add-salarie.component.css']
 })

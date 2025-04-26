@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarClientComponent } from '../sidebar-client/sidebar-client.component';
 import { FormsModule } from '@angular/forms';
+import { MyHeaderComponent } from '../my-header/my-header.component';
 
 import Chart from 'chart.js/auto';
 interface VisitDetail {
@@ -17,7 +18,7 @@ interface VisitDetail {
 @Component({
   selector: 'app-statistiques',
   standalone: true,
-  imports: [CommonModule, FormsModule, SidebarClientComponent],
+  imports: [CommonModule, FormsModule, SidebarClientComponent, MyHeaderComponent],
   templateUrl: './statistiques.component.html',
   styleUrl: './statistiques.component.css',
 })

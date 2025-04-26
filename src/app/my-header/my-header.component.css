@@ -18,8 +18,7 @@
   border-radius: 20px; /* Coins arrondis */
   margin: 10px 0; /* Espacement autour de la barre */
   transition: all 0.3s ease;
-  position:fixed;
-}
+  backdrop-filter: blur(10px); /* Flou d'arrière-plan pour un effet de profondeur */}
 .navbar-logo {
   height: 40px; /* ajuste selon la taille que tu veux */
   object-fit: contain;
