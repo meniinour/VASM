@@ -1,18 +1,23 @@
+.dashboard-wrapper {
+  margin-left: 100px;
+}
 .filters {
-
   display: flex;
   gap: 1rem;
   margin: 30px;
   align-items: center;
   padding-top: 60px;
+  background-color: #031e36;
 }
 
 .search-bar,
 .indicator-filter {
-  padding: 52px;
+  padding: 10px;
   border-radius: 15px;
-  border: 5px solid #ee0e0e;
+  border: 5px solid #84bdc5;
   padding-top: 80px;
+  background-color: #031e36;
+
 }
 
 .clients-container {
@@ -20,18 +25,22 @@
   flex-wrap: wrap;
   gap: 50px;
   padding: 1rem;
+  background-color: #031e36;
+
 }
 
 .client-card {
+  border: 5px solid #84bdc5;
   width: 400px;
-  padding: 1rem;
-  background-color: white;
+  padding: 2rem;
   border-radius: 8px;
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    pointer-events: auto;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.155);
+  cursor: pointer;
+  pointer-events: auto;
   transition: transform 0.2s;
-  gap: 16px; 
+  gap: 16px;
+  background-color: #031e36;
+ 
 }
 
 .client-card:hover {
@@ -43,12 +52,17 @@
   height: auto;
   object-fit: contain;
   margin-bottom: 10px;
+  background-color: #031e36;
+
 }
 
 .client-name {
   font-weight: bold;
   text-align: center;
   margin-bottom: 8px;
+  font-size: 30px;
+  color: #84bdc5;
+  background-color: #031e36;
 }
 
 .indicators {
@@ -88,20 +102,25 @@
 }
 
 .legend-box {
+  width: 300px;
   min-width: 250px;
-  border: 1px solid #222;
+  border: 5px solid #84bdc5;
   border-radius: 6px;
   background: #fff;
   margin: 80px 30px 0 30px;
   padding: 18px 20px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  background-color: #031e36;
+margin-right: 150px;
+  
 }
 
 .legend-title {
   font-weight: bold;
   font-size: 1.2em;
   margin-bottom: 12px;
-  text-align: left;
+  text-align: center;
+  color: #84bdc5;
 }
 
 .legend-item {
@@ -109,6 +128,8 @@
   align-items: center;
   margin-bottom: 10px;
   font-size: 1em;
+  color: #84bdc5;
+
 }
 
 .legend-indicator {

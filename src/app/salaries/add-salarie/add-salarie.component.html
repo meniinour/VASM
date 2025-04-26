@@ -1,0 +1,22 @@
+<div class="container">
+    <app-sidebar-client></app-sidebar-client>
+    <div class="content-area" [ngClass]="{'sidebar-expanded': !sidebarCollapsed}">
+      <h1>Ajouter un Salarié</h1>
+      <form [formGroup]="salarieForm" (ngSubmit)="onSubmit()" class="form">
+        <label for="nom">Nom:</label>
+        <input id="nom" formControlName="nom" type="text" placeholder="Nom du salarié" />
+        <div *ngIf="salarieForm.get('nom')?.invalid && salarieForm.get('nom')?.touched" class="error-msg">
+          Le nom est requis.
+        </div>
+  
+        <label for="matricule">Matricule:</label>
+        <input id="matricule" formControlName="matricule" type="text" placeholder="Matricule" />
+        <div *ngIf="salarieForm.get('matricule')?.invalid && salarieForm.get('matricule')?.touched" class="error-msg">
+          Le matricule est requis.
+        </div>
+  
+        <button type="submit" class="btn-primary" [disabled]="salarieForm.invalid">Ajouter</button>
+      </form>
+    </div>
+  </div>
+  

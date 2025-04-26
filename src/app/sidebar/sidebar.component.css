@@ -19,6 +19,7 @@
   box-shadow: var(--shadow-dark);
 }
 
+
 .sidebar a {
   color: #84bdc5;
 }
@@ -351,4 +352,45 @@ body {
   100% { transform: scale(1); }
 }
 
+/* Sidebar réduite (collapsed) */
+.sidebar.collapsed {
+  width: 80px;
+  overflow: hidden;
+}
+
+/* Réduction du padding des icônes dans la sidebar fermée */
+.sidebar.collapsed .material-icons.icon {
+  justify-content: center;
+  margin: auto;
+}
+
+/* Cacher le texte quand la sidebar est fermée */
+.sidebar.collapsed .text {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  width: 0;
+  display: none;
+}
+
+/* Cacher les séparateurs */
+.sidebar.collapsed .separator {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+/* Cacher l'indicateur de sous-menu */
+.sidebar.collapsed .services > a::after {
+  opacity: 0 !important;
+}
+
+/* Réduction du padding des liens */
+.sidebar.collapsed a {
+  padding: 12px 10px;
+  justify-content: center;
+}
+
+/* Réduction des sous-menus dans la sidebar fermée */
+.sidebar.collapsed .sub-menu {
+  display: none;
+}
 

@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common'; // 👈 Import important
 import clientsData from '../../assets/data/clients.json';
-
+import { SidebarComponent } from "../sidebar/sidebar.component";
+import { MyHeaderComponent } from "../my-header/my-header.component";
 @Component({
   selector: 'app-user',
   standalone: true,
-  imports: [CommonModule,RouterModule], // ✅ Ajoute CommonModule ici
+  imports: [CommonModule,RouterModule,SidebarComponent,MyHeaderComponent], // ✅ Ajoute CommonModule ici
   templateUrl: './users.component.html',
   styleUrl: './users.component.css',
 })

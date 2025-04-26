@@ -1,0 +1,186 @@
+<div class="container">
+    <app-sidebar-client></app-sidebar-client>
+    
+    <div class="content-area" [ngClass]="{'sidebar-expanded': !sidebarCollapsed}">
+      <div class="header">
+        <h1>Tableau de Bord</h1>
+        
+        <div class="period-selector">
+          <button (click)="previousPeriod()"><i class="fas fa-chevron-left"></i></button>
+          <span>{{ currentPeriodLabel }}</span>
+          <button (click)="nextPeriod()"><i class="fas fa-chevron-right"></i></button>
+          
+          <div class="view-selector">
+            <button [class.active]="currentView === 'day'" (click)="changeView('day')">Jour</button>
+            <button [class.active]="currentView === 'week'" (click)="changeView('week')">Semaine</button>
+            <button [class.active]="currentView === 'month'" (click)="changeView('month')">Mois</button>
+            <button [class.active]="currentView === 'year'" (click)="changeView('year')">Année</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="dashboard-grid">
+        <!-- Carte: Rendez-vous -->
+        <div class="dashboard-card">
+          <div class="card-header">
+            <h2>Rendez-vous</h2>
+            <div class="card-actions">
+              <button><i class="fas fa-ellipsis-v"></i></button>
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="stat-grid">
+              <div class="stat-item">
+                <div class="stat-value">{{ stats.appointmentsTotal }}</div>
+                <div class="stat-label">Total</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">{{ stats.appointmentsToday }}</div>
+                <div class="stat-label">Aujourd'hui</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">{{ stats.appointmentsCancelled }}</div>
+                <div class="stat-label">Annulés</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">{{ stats.appointmentsNoResponse }}</div>
+                <div class="stat-label">Sans Réponse</div>
+              </div>
+            </div>
+            
+            <div class="chart-container">
+              <canvas id="appointmentsChart"></canvas>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Carte: Visites Médicales -->
+        <div class="dashboard-card">
+          <div class="card-header">
+            <h2>Visites Médicales</h2>
+            <div class="card-actions">
+              <button><i class="fas fa-ellipsis-v"></i></button>
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="stat-grid">
+              <div class="stat-item">
+                <div class="stat-value">{{ stats.visitsTotal }}</div>
+                <div class="stat-label">Total</div>
+              </div>
+              <div class="stat-item status-ok">
+                <div class="stat-value">{{ stats.visitsCompleted }}</div>
+                <div class="stat-label">Effectuées</div>
+              </div>
+              <div class="stat-item status-warning">
+                <div class="stat-value">{{ stats.visitsScheduled }}</div>
+                <div class="stat-label">Programmées</div>
+              </div>
+              <div class="stat-item status-danger">
+                <div class="stat-value">{{ stats.visitsSuspended }}</div>
+                <div class="stat-label">Suspendues</div>
+              </div>
+            </div>
+            
+            <div class="chart-container">
+              <canvas id="visitsChart"></canvas>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Carte: Alertes -->
+        <div class="dashboard-card">
+          <div class="card-header">
+            <h2>Alertes</h2>
+            <div class="card-actions">
+              <button><i class="fas fa-ellipsis-v"></i></button>
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="alerts-list">
+              <div class="alert-item" *ngFor="let alert of alerts">
+                <div class="alert-icon" [ngClass]="alert.severity">
+                  <i [class]="'fas ' + alert.icon"></i>
+                </div>
+                <div class="alert-content">
+                  <div class="alert-title">{{ alert.title }}</div>
+                  <div class="alert-description">{{ alert.description }}</div>
+                  <div class="alert-time">{{ alert.time }}</div>
+                </div>
+                <div class="alert-actions">
+                  <button><i class="fas fa-check"></i></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Carte: Activité Récente -->
+        <div class="dashboard-card">
+          <div class="card-header">
+            <h2>Activité Récente</h2>
+            <div class="card-actions">
+              <button><i class="fas fa-ellipsis-v"></i></button>
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="activity-timeline">
+              <div class="timeline-item" *ngFor="let activity of recentActivities">
+                <div class="timeline-icon" [ngClass]="activity.category">
+                  <i [class]="'fas ' + activity.icon"></i>
+                </div>
+                <div class="timeline-content">
+                  <div class="timeline-title">{{ activity.title }}</div>
+                  <div class="timeline-description">{{ activity.description }}</div>
+                  <div class="timeline-time">{{ activity.time }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Carte: Top Clients -->
+        <div class="dashboard-card">
+          <div class="card-header">
+            <h2>Top Clients</h2>
+            <div class="card-actions">
+              <button><i class="fas fa-ellipsis-v"></i></button>
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="clients-list">
+              <div class="client-item" *ngFor="let client of topClients; let i = index">
+                <div class="client-rank">{{ i + 1 }}</div>
+                <div class="client-details">
+                  <div class="client-name">{{ client.name }}</div>
+                  <div class="client-stats">
+                    <span>{{ client.employees }} salariés</span>
+                    <span>{{ client.visits }} visites</span>
+                  </div>
+                </div>
+                <div class="client-value">
+                  {{ client.value }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Carte: Statuts des Visites -->
+        <div class="dashboard-card">
+          <div class="card-header">
+            <h2>Statuts des Visites</h2>
+            <div class="card-actions">
+              <button><i class="fas fa-ellipsis-v"></i></button>
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="chart-container">
+              <canvas id="visitsStatusChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

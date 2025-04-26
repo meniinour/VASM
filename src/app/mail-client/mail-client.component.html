@@ -1,0 +1,45 @@
+<div class="container">
+    <app-sidebar-client></app-sidebar-client>
+    <div class="mail-container" [ngClass]="{'sidebar-expanded': !sidebarCollapsed}">
+      <div class="mail-header">
+        <h1>Mailbox</h1>
+        <button (click)="showNewMailModal = true" class="btn-primary">New Mail</button>
+        <input type="text" placeholder="Search mails..." [(ngModel)]="searchText" />
+      </div>
+      
+      <div class="mail-list">
+        <ul>
+          <li *ngFor="let mail of displayedMails" (click)="selectMail(mail)" [class.read]="mail.read">
+            <div class="mail-subject">{{ mail.subject }}</div>
+            <div class="mail-sender">{{ mail.sender }}</div>
+            <div class="mail-date">{{ mail.date | date:'short' }}</div>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="mail-content" *ngIf="selectedMail">
+        <h2>{{ selectedMail.subject }}</h2>
+        <p><strong>From:</strong> {{ selectedMail.sender }} ({{ selectedMail.senderEmail }})</p>
+        <p><strong>To:</strong> {{ selectedMail.recipient }} ({{ selectedMail.recipientEmail }})</p>
+        <p>{{ selectedMail.content }}</p>
+      </div>
+      
+      <!-- New Mail Modal -->
+      <div class="modal" *ngIf="showNewMailModal">
+        <div class="modal-content">
+          <h2>New Mail</h2>
+          <form [formGroup]="mailForm" (ngSubmit)="sendMail()">
+            <label for="recipientEmail">To:</label>
+            <input id="recipientEmail" formControlName="recipientEmail" type="email" />
+            <label for="subject">Subject:</label>
+            <input id="subject" formControlName="subject" type="text" />
+            <label for="content">Content:</label>
+            <textarea id="content" formControlName="content"></textarea>
+            <button type="submit" class="btn-primary">Send</button>
+            <button type="button" (click)="showNewMailModal = false" class="btn-secondary">Cancel</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  

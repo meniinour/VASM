@@ -13,7 +13,10 @@ import { ChatbotComponent } from '../chatbot/chatbot.component';
 export class SidebarComponent implements OnInit {
   userName: string = 'Employé'; // Default name, can be updated
   showChatbot = false;
-
+  isSidebarCollapsed = false;
+  toggleSidebar() {
+    this.isSidebarCollapsed = !this.isSidebarCollapsed;
+  }
   constructor(private router: Router, private route: ActivatedRoute) {}
 
   ngOnInit(): void {

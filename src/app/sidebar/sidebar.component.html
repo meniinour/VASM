@@ -1,4 +1,6 @@
-<div class="sidebar">
+<div class="sidebar" [class.collapsed]="isSidebarCollapsed"
+(mouseenter)="isSidebarCollapsed = false"
+(mouseleave)="isSidebarCollapsed = true">
   <ul>
     <li>
       <a routerLink="/home">
