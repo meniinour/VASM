@@ -1,117 +1,43 @@
-<p>employe works!</p>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>vASM</title>
-</head>
-<body>
+<div class="notification-container">
+
+  <!-- En-tête globale -->
   <app-my-header></app-my-header>
+  <app-documentation></app-documentation>
 
-  <div class="main-content">
-    <div class="sidebar" [class.collapsed]="!isSidebarExpanded">
-      <div class="custom-sidenav">
-        <div class="brand"></div>
+  <!-- Section utilisateur -->
+  <div class="notification-header">
+    <div class="user-info">
+      <mat-icon class="user-avatar">account_circle</mat-icon>
+      <div class="user-details">
+        <h3>{{ employee.name }}</h3>
+        <p>{{ employee.position }} • {{ companyName }}</p>
+      </div>
+    </div>
 
-        <nav class="nav-links">
-          <ul>
-            <li>
-              <a routerLink="/home" (click)="toggleSidebar()">
-                <span class="material-icons icon">home</span>
-                <span class="text">Accueil</span>
-              </a>
-            </li>
+    <!-- Boutons d'action utilisateur -->
+    <div class="action-buttons">
+      <button mat-icon-button [matMenuTriggerFor]="menu" matTooltip="Actions utilisateur" aria-label="Menu utilisateur">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="showProfile()">Profil</button>
+        <button mat-menu-item (click)="openSettings()">Paramètres</button>
+        <button mat-menu-item (click)="logout()">Déconnexion</button>
+      </mat-menu>
+    </div>
+  </div>
 
-            <li>
-              <a routerLink="/users" (click)="toggleSidebar()">
-                <span class="material-icons icon">people</span>
-                <span class="text">Liste Client</span>
-              </a>
-            </li>
-
-            <li>
-              <a routerLink="/dashboard" (click)="toggleSidebar()">
-                <span class="material-icons icon">dashboard</span>
-                <span class="text">Tableau de bord</span>
-              </a>
-            </li>
-
-            <li class="services" (click)="toggleSidebar()">
-              <a href="javascript:void(0)" (click)="toggleServiceMenu(); toggleSidebar()">
-                <span class="material-icons icon">business</span>
-                <span class="text">Centre de Services</span>
-              </a>
-
-              <ul class="sub-menu" *ngIf="isServiceMenuOpen">
-                <li>
-                  <a routerLink="/mail" routerLinkActive="active" (click)="toggleSidebar()">
-                    <span class="material-icons icon">mail</span>
-                    <span class="text">Traitement centralisé des mails</span>
-                  </a>
-                </li>
-                <li>
-                  <a routerLink="/content" (click)="toggleSidebar()">
-                    <span class="material-icons icon">swap_horiz</span>
-                    <span class="text">Gestion des mouvements</span>
-                  </a>
-                </li>
-                <li>
-                  <a routerLink="/my-content" routerLinkActive="active" (click)="toggleSidebar()">
-                    <span class="material-icons icon">mail</span>
-                    <span class="text">Typage des mails</span>
-                  </a>
-                </li>
-                <li>
-                  <a routerLink="/content" (click)="toggleSidebar()">
-                    <span class="material-icons icon">file_copy</span>
-                    <span class="text">Gestion des imports</span>
-                  </a>
-                </li>
-                <li>
-                  <a routerLink="/content" (click)="toggleSidebar()">
-                    <span class="material-icons icon">group</span>
-                    <span class="text">Déclarations des effectifs</span>
-                  </a>
-                </li>
-                <li>
-                  <a routerLink="/content" (click)="toggleSidebar()">
-                    <span class="material-icons icon">bar_chart</span>
-                    <span class="text">Récapitulatif</span>
-                  </a>
-                </li>
-              </ul>
-            </li>
-
-            <li>
-              <a routerLink="/settings" (click)="toggleSidebar()">
-                <span class="material-icons icon">settings</span>
-                <span class="text">Paramétrage</span>
-              </a>
-            </li>
-            <div class="separator"></div>
-
-            <li>
-            <a href="javascript:void(0)" (click)="openChatbot()">
-                <span class="material-icons icon">chat</span>
-                <span class="text">Assistant VigiScope</span>
-            </a>
-            </li>
-
-    <div class="separator"></div>
-
-            <li>
-              <a routerLink="/login" (click)="toggleSidebar()">
-                <span class="material-icons icon">exit_to_app</span>
-                <span class="text">Déconnexion</span>
-              </a>
-            </li>
-          </ul>
-        </nav>
+  <!-- Section des notifications -->
+  <div class="notifications-section">
+    <h4>Notifications</h4>
+    <div class="notification-list">
+      <div class="notification-item" *ngFor="let notif of notifications">
+        <mat-icon class="notification-icon">{{ notif.icon }}</mat-icon>
+        <div class="notification-content">
+          <p>{{ notif.message }}</p>
+          <span class="notification-time">{{ notif.time }}</span>
+        </div>
       </div>
     </div>
   </div>
-  <app-chatbot *ngIf="showChatbot" (close)="closeChatbot()"></app-chatbot>
-
-</body>
-</html>
+</div>

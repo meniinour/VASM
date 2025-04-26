@@ -20,6 +20,11 @@ import { UserComponent } from './users/users.component';
 import { ClientAssignComponent } from './client-assign/client-assign.component';
 import { DocumentationComponent } from './documentation/documentation.component';
 import { NavbarComponent } from './navbar/navbar.component';
+import { GestionnaireprofComponent } from './gestionnaireprof/gestionnaireprof.component';
+import { EmployeComponent } from './employe/employe.component';
+import { NotifComponent } from './notif/notif.component';
+import { UprofComponent } from './uprof/uprof.component';
+
 
 
 export const routes: Routes = [
@@ -44,9 +49,11 @@ export const routes: Routes = [
     { path: 'client-assign/:id', component: ClientAssignComponent }, // 👈 route pour le profil
     { path: 'documentation' , component: DocumentationComponent } ,// Redirige vers la page d'accueil pour les routes non trouvées
     { path: 'navbar',component: NavbarComponent},
-
-  
-
+    { path: 'gestionnaireprof' ,component: GestionnaireprofComponent},
+    { path: 'employe' ,component: EmployeComponent},
+    { path: 'notif', component: NotifComponent},
+    
+    { path: 'uprof', component: UprofComponent},
 
 ];
 

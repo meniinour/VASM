@@ -1,0 +1,38 @@
+:host {
+    display: flex;
+    min-height: 100vh;
+    background-color: #fbfaf6;
+  }
+  
+  /* Floating Menu */
+  .floating-menu {
+    position: absolute;
+    top: 4rem;
+    right: 1rem;
+    width: 12rem;
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    padding: 0.5rem 0;
+    z-index: 50;
+  }
+  
+  .floating-menu a {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    color: #4a5568;
+    text-decoration: none;
+  }
+  
+  .floating-menu a:hover {
+    background-color: #f7fafc;
+  }
+  
+  /* Menu button */
+  .menu-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  

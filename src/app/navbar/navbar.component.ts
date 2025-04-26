@@ -9,7 +9,7 @@ import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 @Component({
   selector: "app-navbar",
   standalone: true,
-  imports: [BrowserModule, NgbCollapseModule],
+  imports: [BrowserModule],
   templateUrl: "./navbar.component.html",
   styleUrls: ["./navbar.component.css"]
 })
