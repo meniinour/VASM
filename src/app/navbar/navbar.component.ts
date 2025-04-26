@@ -1,15 +1,14 @@
 import { Component, OnInit, ElementRef, OnDestroy } from "@angular/core";
 import { ROUTES } from "../documentation/documentation.component";
-import { Location } from "@angular/common";
+import { CommonModule, Location } from "@angular/common";
 import { Router } from "@angular/router";
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal,NgbCollapseModule, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { BrowserModule } from "@angular/platform-browser";
-import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: "app-navbar",
   standalone: true,
-  imports: [BrowserModule],
+  imports: [NgbCollapseModule, CommonModule],
   templateUrl: "./navbar.component.html",
   styleUrls: ["./navbar.component.css"]
 })

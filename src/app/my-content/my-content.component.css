@@ -17,7 +17,18 @@
     --panel-text: #333333;
     --transition: all 0.3s ease;
 }
-
+.body {
+    background-color: #fff;
+}
+app-my-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+  }
+  
+  
 
 /* Container principal */
 .content-container {
@@ -28,7 +39,7 @@
     width: calc(100% - 250px);
     box-sizing: border-box;
     position: relative;
-    top: 64px;
+    padding-top: 80px; /* ajuste selon la hauteur de ton header */
     margin-left: 0px;
     display: flex;
     flex-direction: column;

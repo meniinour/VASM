@@ -1,0 +1,260 @@
+<!-- Header - Based on my-header.component -->
+<nav class="fixed top-0 left-0 right-0 mx-2 mt-2 z-50">
+    <div class="bg-[#031e36] text-white px-5 py-3 rounded-3xl shadow-lg flex justify-between items-center w-full">
+      <div class="flex items-center">
+        <img src="../../assets/favicon.png" alt="vASM Logo" class="h-10 object-contain" />
+      </div>
+      
+      <div class="flex items-center space-x-4">
+        <button class="bg-transparent border-none text-white p-2 rounded-full hover:bg-white/10">
+          <i-lucide name="bell" [size]="20"></i-lucide>
+        </button>
+        
+        <button class="flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 border border-[#84bdc5] text-white hover:bg-white/30 hover:underline">
+          <span>Besoin d'aide ?</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+  
+  <div class="flex mt-20">
+    <!-- Sidebar - Based on documentation.component -->
+    <div [ngClass]="{'w-64': isSidebarExpanded, 'w-20': !isSidebarExpanded}" class="fixed top-24 left-5 bottom-5 bg-gradient-to-br from-[#031e36] to-[#84bdc5] rounded-3xl shadow-xl py-5 transition-all duration-300 z-40 overflow-hidden">
+      <ul class="flex flex-col h-full items-center px-2">
+        <li class="w-full">
+          <a class="flex items-center gap-3 py-3 px-4 rounded-2xl text-white hover:bg-white/10 cursor-pointer mb-2">
+            <i-lucide name="home" [size]="24"></i-lucide>
+            <span *ngIf="isSidebarExpanded">Accueil</span>
+          </a>
+        </li>
+        
+        <li class="w-full">
+          <a class="flex items-center gap-3 py-3 px-4 rounded-2xl text-white hover:bg-white/10 cursor-pointer mb-2">
+            <i-lucide name="users" [size]="24"></i-lucide>
+            <span *ngIf="isSidebarExpanded">Liste Client</span>
+          </a>
+        </li>
+        
+        <li class="w-full">
+          <a class="flex items-center gap-3 py-3 px-4 rounded-2xl text-white hover:bg-white/10 cursor-pointer mb-2 bg-white/10">
+            <i-lucide name="calendar" [size]="24"></i-lucide>
+            <span *ngIf="isSidebarExpanded">Rendez-vous</span>
+          </a>
+        </li>
+        
+        <li class="w-full">
+          <a (click)="toggleServiceMenu()" class="flex items-center gap-3 py-3 px-4 rounded-2xl text-white hover:bg-white/10 cursor-pointer mb-2">
+            <i-lucide name="settings" [size]="24"></i-lucide>
+            <ng-container *ngIf="isSidebarExpanded">
+              <span class="flex-1">Centre de Services</span>
+              <i-lucide name="chevron-right" [size]="16" [ngClass]="{'rotate-90': isServiceMenuOpen, '': !isServiceMenuOpen}" class="transition-transform"></i-lucide>
+            </ng-container>
+          </a>
+          
+          <ul class="pl-6 w-full" *ngIf="isServiceMenuOpen && isSidebarExpanded">
+            <li>
+              <a class="flex items-center gap-2 py-2 px-3 rounded-lg text-white hover:bg-white/10 text-sm">
+                <div class="w-5 h-5 flex items-center justify-center">
+                  <span class="text-xs">·</span>
+                </div>
+                <span>Traitement centralisé</span>
+              </a>
+            </li>
+            <li>
+              <a class="flex items-center gap-2 py-2 px-3 rounded-lg text-white hover:bg-white/10 text-sm">
+                <div class="w-5 h-5 flex items-center justify-center">
+                  <span class="text-xs">·</span>
+                </div>
+                <span>Gestion des mouvements</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+        
+        <li class="w-full mt-auto">
+          <a class="flex items-center gap-3 py-3 px-4 rounded-2xl text-white hover:bg-white/10 cursor-pointer mb-2">
+            <i-lucide name="message-circle" [size]="24"></i-lucide>
+            <span *ngIf="isSidebarExpanded">Assistant VigiScope</span>
+          </a>
+        </li>
+        
+        <li class="w-full">
+          <a class="flex items-center gap-3 py-3 px-4 rounded-2xl text-white hover:bg-white/10 cursor-pointer">
+            <i-lucide name="log-out" [size]="24"></i-lucide>
+            <span *ngIf="isSidebarExpanded">Déconnexion</span>
+          </a>
+        </li>
+        
+        <li class="w-full flex justify-center mt-4">
+          <button (click)="toggleSidebar()" class="bg-white/10 p-2 rounded-full hover:bg-white/20">
+            <i-lucide name="chevron-right" [size]="16" [ngClass]="{'rotate-180': isSidebarExpanded, '': !isSidebarExpanded}" class="text-white transition-transform"></i-lucide>
+          </button>
+        </li>
+      </ul>
+    </div>
+    
+    <!-- Main Content -->
+    <div [ngClass]="{'ml-64': isSidebarExpanded, 'ml-20': !isSidebarExpanded}" class="flex-1 transition-all duration-300 pl-8 pr-8 pt-6">
+      <div class="bg-white p-4 rounded-lg shadow-sm mb-6 flex items-center justify-between">
+        <div>
+          <h1 class="text-xl font-semibold text-gray-800">Portail Rendez-vous</h1>
+          <p class="text-gray-500">Gérez vos rendez-vous et suivez vos demandes</p>
+        </div>
+        
+        <div class="flex items-center">
+          <div class="relative mr-4">
+            <button (click)="toggleNotifications()" class="relative p-2">
+              <i-lucide name="bell" [size]="20"></i-lucide>
+              <span class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                {{ getUnreadNotificationsCount() }}
+              </span>
+            </button>
+            
+            <div *ngIf="notificationsOpen" class="absolute right-0 mt-2 w-72 bg-white rounded-lg shadow-lg z-50">
+              <div class="p-3 border-b font-medium flex justify-between items-center">
+                <span>Notifications</span>
+                <span class="text-xs text-blue-500 cursor-pointer">Tout marquer comme lu</span>
+              </div>
+              
+              <div class="max-h-72 overflow-y-auto">
+                <div *ngFor="let notification of notifications" [ngClass]="{'bg-white': notification.read, 'bg-blue-50': !notification.read}" class="p-3 border-b">
+                  <div class="text-sm">{{ notification.text }}</div>
+                  <div class="text-xs text-gray-500 mt-1">{{ notification.time }}</div>
+                </div>
+              </div>
+              
+              <div class="p-2 text-center text-sm text-blue-500 border-t">
+                Voir toutes les notifications
+              </div>
+            </div>
+          </div>
+          
+          <div class="relative">
+            <div class="flex items-center cursor-pointer" (click)="toggleMenu()">
+              <img [src]="employeeInfo.avatar" alt="Profile" class="w-10 h-10 rounded-full" />
+              <div class="ml-2 mr-2">
+                <div class="text-sm font-medium">{{ employeeInfo.name }}</div>
+                <div class="text-xs text-gray-500">{{ employeeInfo.role }}</div>
+              </div>
+              <i-lucide name="chevron-right" [size]="16" [ngClass]="{'rotate-90': menuOpen, '': !menuOpen}" class="transition-transform"></i-lucide>
+            </div>
+            
+            <div *ngIf="menuOpen" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-50">
+              <a href="#" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100">
+                <i-lucide name="user" [size]="16" class="mr-2 text-gray-500"></i-lucide> Mon Profil
+              </a>
+              <a href="#" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100">
+                <i-lucide name="settings" [size]="16" class="mr-2 text-gray-500"></i-lucide> Paramètres
+              </a>
+              <a href="#" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100">
+                <i-lucide name="lock" [size]="16" class="mr-2 text-gray-500"></i-lucide> Verrouiller
+              </a>
+              <a href="#" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100">
+                <i-lucide name="log-out" [size]="16" class="mr-2 text-gray-500"></i-lucide> Déconnexion
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Calendar Section -->
+        <div class="bg-white rounded-lg shadow p-4 md:col-span-2">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold">Calendrier des Rendez-vous</h2>
+            <div class="flex items-center">
+              <button (click)="previousMonth()" class="p-1">
+                <i-lucide name="chevron-right" [size]="16" class="transform rotate-180"></i-lucide>
+              </button>
+              <span class="mx-2">{{ monthNames[currentDate.getMonth()] }} {{ currentDate.getFullYear() }}</span>
+              <button (click)="nextMonth()" class="p-1">
+                <i-lucide name="chevron-right" [size]="16"></i-lucide>
+              </button>
+            </div>
+          </div>
+          
+          <!-- Calendar Grid -->
+          <div>
+            <div class="grid grid-cols-7 gap-1 text-center mb-2">
+              <div *ngFor="let day of weekDays" class="text-xs font-medium text-gray-500">{{ day }}</div>
+            </div>
+            <div class="grid grid-cols-7 gap-1 text-center">
+              <div *ngFor="let day of getMonthDays(); let i = index" class="p-1">
+                <div [ngClass]="getDayClass(day)" class="h-8 w-8 rounded-full flex items-center justify-center cursor-pointer">
+                  {{ day !== null ? day : '' }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Appointments Summary -->
+        <div class="bg-white rounded-lg shadow p-4">
+          <h2 class="text-lg font-semibold mb-4">Mes Rendez-vous</h2>
+          <div class="flex justify-between items-center mb-3">
+            <div class="text-sm">Total rendez-vous</div>
+            <div class="font-semibold">{{ appointments.length }}</div>
+          </div>
+          <div class="flex justify-between items-center mb-3">
+            <div class="text-sm">En attente d'approbation</div>
+            <div class="font-semibold">{{ getPendingAppointmentsCount() }}</div>
+          </div>
+          <div class="flex justify-between items-center mb-3">
+            <div class="text-sm">Approuvés</div>
+            <div class="font-semibold">{{ getApprovedAppointmentsCount() }}</div>
+          </div>
+          <div class="mt-4 pt-4 border-t">
+            <h3 class="font-medium mb-2">À venir</h3>
+            <div *ngFor="let appointment of appointments.slice(0, 2)" class="bg-gray-50 p-3 rounded mb-2">
+              <div class="font-medium">{{ appointment.title }}</div>
+              <div class="text-xs text-gray-500">
+                {{ appointment.date }} à {{ appointment.time }}
+              </div>
+              <div [ngClass]="{'text-green-500': appointment.status === 'approved', 'text-amber-500': appointment.status === 'pending'}" class="text-xs mt-1">
+                {{ appointment.status === 'approved' ? 'Approuvé' : 'En attente d\'approbation' }}
+              </div>
+            </div>
+            <a href="#" class="text-blue-500 text-sm block text-center mt-2">Voir tous les rendez-vous</a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Appointments List -->
+      <div class="mt-6 bg-white rounded-lg shadow p-4">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-lg font-semibold">Rendez-vous récents</h2>
+          <button class="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600">+ Ajouter</button>
+        </div>
+        <table class="min-w-full">
+          <thead>
+            <tr class="border-b">
+              <th class="text-left py-2 text-sm font-medium text-gray-500">Titre</th>
+              <th class="text-left py-2 text-sm font-medium text-gray-500">Date & Heure</th>
+              <th class="text-left py-2 text-sm font-medium text-gray-500">Statut</th>
+              <th class="text-left py-2 text-sm font-medium text-gray-500">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let appointment of appointments" class="border-b">
+              <td class="py-3">{{ appointment.title }}</td>
+              <td class="py-3">{{ appointment.date }} à {{ appointment.time }}</td>
+              <td class="py-3">
+                <span [ngClass]="{
+                  'bg-green-100 text-green-800': appointment.status === 'approved',
+                  'bg-amber-100 text-amber-800': appointment.status === 'pending'
+                }" class="px-2 py-1 rounded-full text-xs">
+                  {{ appointment.status === 'approved' ? 'Approuvé' : 'En attente' }}
+                </span>
+              </td>
+              <td class="py-3">
+                <div class="flex space-x-2">
+                  <button class="text-blue-500 text-sm">Modifier</button>
+                  <button class="text-red-500 text-sm">Annuler</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>

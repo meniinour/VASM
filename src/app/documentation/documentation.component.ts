@@ -71,6 +71,7 @@ export const ROUTES: RouteInfo[] = [
 
 @Component({
   selector: 'app-documentation',
+  standalone: true,
   templateUrl: './documentation.component.html',
   styleUrls: ['./documentation.component.css'],
   imports: [CommonModule, MyHeaderComponent, ChatbotComponent]

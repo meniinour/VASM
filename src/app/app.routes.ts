@@ -24,6 +24,7 @@ import { GestionnaireprofComponent } from './gestionnaireprof/gestionnaireprof.c
 import { EmployeComponent } from './employe/employe.component';
 import { NotifComponent } from './notif/notif.component';
 import { UprofComponent } from './uprof/uprof.component';
+import { EmplDashComponent } from './empl-dash/empl-dash.component';
 
 
 
@@ -46,7 +47,7 @@ export const routes: Routes = [
     { path: 'debloquer-mail', component: DebloquerMailComponent},
     { path: 'liberer-mail', component: LibererMailComponent},
     { path: 'users', component: UserComponent },
-    { path: 'client-assign/:id', component: ClientAssignComponent }, // 👈 route pour le profil
+    { path: 'client-assign/:id', component: ClientAssignComponent }, 
     { path: 'documentation' , component: DocumentationComponent } ,// Redirige vers la page d'accueil pour les routes non trouvées
     { path: 'navbar',component: NavbarComponent},
     { path: 'gestionnaireprof' ,component: GestionnaireprofComponent},
@@ -54,6 +55,8 @@ export const routes: Routes = [
     { path: 'notif', component: NotifComponent},
     
     { path: 'uprof', component: UprofComponent},
+    { path: 'empl-dash', component: EmplDashComponent},
+
 
 ];
 
