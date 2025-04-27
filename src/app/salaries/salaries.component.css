@@ -1,7 +1,10 @@
 :host {
-    --bg-color: #031e36;
+    --bg-color: #dfe8f1;
     --border-color: #84bdc5;
     --text-color: #84bdc5;
+  }
+  .ok {
+    background-color: #ffff;
   }
   
   .container {
@@ -9,6 +12,8 @@
     height: 100vh;
     background-color: var(--bg-color);
     color: var(--text-color);
+    top:auto;
+    margin-top: 70px;
   }
   
   .content-area {

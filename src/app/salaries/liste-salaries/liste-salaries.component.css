@@ -1,7 +1,10 @@
 :host {
-    --bg-color: #031e36;
+    --bg-color: #d5e3ef;
     --border-color: #84bdc5;
     --text-color: #84bdc5;
+  }
+  .ok {
+    background-color: #ffff;
   }
   
   .container {

@@ -1,24 +1,25 @@
-body {
-  background-color: #031e36;
-  color: #f5fafd;
-  font-family: Arial, sans-serif;
-}
 
+.ok {
+  background-color: #fbfdfc;
+}
 /* Main container */
 .container {
-  display: flex;
-  height: 210vh;
-  margin-top: 50px;
+  display:fixed;
+  height: 230vh;
+  margin-top: 90px;
   margin-left: 100px;
+  background-color: #f5f7f9;
 }
 
 /* Content area */
 .content-area {
-  flex: 1;
-  padding: 20px;
-  background-color: #05294a; /* Slightly lighter than main bg */
+  flex: 5;
+  padding: 0px;
+  background-color: #f4f8fb; /* Slightly lighter than main bg */
   border: 5px solid #84bdc5;
   color: #f5fafd;
+  height: 230vh;
+
 }
 
 /* Filters and actions */
@@ -91,6 +92,7 @@ body {
   display: flex;
   justify-content: space-between;
   margin-bottom: 20px;
+  
 }
 
 .collab-info, .spst-info, .contact-info {
@@ -142,7 +144,7 @@ th, td {
 }
 
 th {
-  background-color: #031e36;
+  background-color: #eff2f4;
   color: #84bdc5;
 }
 

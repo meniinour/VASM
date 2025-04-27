@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SidebarClientComponent } from '../sidebar-client/sidebar-client.component';
-
+import{ MyHeaderComponent } from '../my-header/my-header.component';
 interface Mail {
   id: number;
   sender: string;
@@ -21,7 +21,7 @@ interface Mail {
 @Component({
   selector: 'app-mail-client',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, SidebarClientComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, SidebarClientComponent, MyHeaderComponent],
   templateUrl: './mail-client.component.html',
   styleUrls: ['./mail-client.component.css'],
 })

@@ -1,14 +1,19 @@
 :host {
-    --bg-color: #031e36;
+    --bg-color: #deecf9;
     --border-color: #84bdc5;
     --text-color: #84bdc5;
   }
+  .ok {
+    background-color: #ffff;
+  }
   
   .container {
+    top:70px;
     display: flex;
     min-height: 100vh;
     background-color: var(--bg-color);
     color: var(--text-color);
+    margin-top: 70px;
   }
   
   .content-area {

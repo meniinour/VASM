@@ -1,5 +1,5 @@
 :root {
-    --bg-color: #031e36; /* Deep blue background */
+    --bg-color: #fdfeff; /* Deep blue background */
     --border-color: #84bdc5; /* Soft cyan borders */
     --text-primary: #e0f7fa; /* Light cyan/white text */
     --text-secondary: #a2cfd6; /* Grey-cyan detail text */
@@ -12,17 +12,22 @@
     --btn-text: #031e36; /* Dark blue button text */
     --chart-axis: #455a64; /* Axis color for the charts */
   }
+.ok{
+    background-color: #fbfdfc; /* Mint green */
+  }
+
   
   /* General layout */
   .container {
     display: flex;
-    margin-top: 40px;
-    background-color: var(--bg-color);
+    margin-top: 60px;
+    background-color: #f9fdfd;
     color: var(--text-primary);
     min-height: 100vh;
     padding: 20px;
     box-sizing: border-box;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
   }
   
   .content-area {
@@ -37,7 +42,7 @@
   }
   
   .content-area.sidebar-expanded {
-    margin-left: 60px; /* Condensed sidebar width */
+    margin-left: 50px; /* Condensed sidebar width */
   }
   
   /* Header styles */

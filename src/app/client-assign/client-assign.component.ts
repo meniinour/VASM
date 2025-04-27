@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarClientComponent } from '../sidebar-client/sidebar-client.component';
+import { MyHeaderComponent } from '../my-header/my-header.component';
 import { ActivatedRoute } from '@angular/router';
 import clientsData from '../../assets/data/clients.json'; // Assuming path to your clients.json
 interface Client {
@@ -27,7 +28,7 @@ interface Client {
 @Component({
   selector: 'app-client-assign',
   standalone: true,
-  imports: [CommonModule, SidebarClientComponent],
+  imports: [CommonModule, SidebarClientComponent, MyHeaderComponent],
   templateUrl: './client-assign.component.html',
   styleUrls: ['./client-assign.component.css']
 })

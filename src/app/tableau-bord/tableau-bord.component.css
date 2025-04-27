@@ -1,5 +1,5 @@
 :root {
-    --bg-color: #031e36;          /* Deep blue background */
+    --bg-color: #e0eaf4;          /* Deep blue background */
     --border-color: #84bdc5;      /* Soft cyan borders */
     --text-primary: #e0f7fa;      /* Light cyan/white text */
     --text-secondary: #a2cfd6;    /* Grey-cyan detail text */
@@ -11,6 +11,9 @@
     --btn-hover-bg: #00bfa5;      /* Darker mint hover */
     --btn-text: #031e36;          /* Dark blue button text */
     --chart-axis: #455a64;        /* Axis color for the charts */
+  }
+  .ok {
+    background-color: #fbfdfc; /* Mint green */
   }
   
   /* General layout */
