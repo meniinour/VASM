@@ -1,0 +1,33 @@
+:host {
+    --bg-color: #031e36;
+    --border-color: #84bdc5;
+    --text-color: #84bdc5;
+  }
+  
+  .container {
+    display: flex;
+    height: 100vh;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+  }
+  
+  .content-area {
+    flex: 1;
+    margin-left: 60px;
+    padding: 20px;
+    border: 5px solid var(--border-color);
+    transition: margin-left 0.3s ease;
+  }
+  
+  .content-area.sidebar-expanded {
+    margin-left: 250px;
+  }
+  
+  .actions {
+    margin-bottom: 20px;
+  }
+  
+  .actions button {
+    margin-right: 10px;
+  }
+  

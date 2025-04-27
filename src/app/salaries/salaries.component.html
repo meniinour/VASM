@@ -1,0 +1,13 @@
+<app-my-header></app-my-header>
+<div class="container">
+    <app-sidebar-client></app-sidebar-client>
+    <div class="content-area" [ngClass]="{'sidebar-expanded': !sidebarCollapsed}">
+      <h1>Gestion des Salariés</h1>
+      <div class="actions">
+        <button routerLink="/add-salarie" class="btn-primary">Ajouter un Salarié</button>
+        <button routerLink="/liste-salaries" class="btn-primary">Liste des Salariés</button>
+      </div>
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+  

@@ -1,230 +1,200 @@
-<div class="app-container">
-  <!-- Main Content Area -->
-  <div class="main-content">
-    <!-- Header -->
-    <header class="app-header">
-      <div class="brand">
-        <img *ngIf="client" [src]="'assets/logos/' + client.logo" alt="Client Logo" class="client-logo">
-        <h1>VigiScope</h1>
-      </div>
-      <div class="header-right">
-        <div class="notification-badge">
-          <i class="fas fa-bell"></i>
-          <span class="badge">3</span>
-        </div>
-        <button class="help-btn">
-          <i class="fas fa-question-circle"></i>
-          Besoin d'aide ?
-        </button>
-      </div>
-    </header>
-
-    <!-- Filter Area -->
-    <div class="filter-area">
-      <div class="filter-row">
-        <div class="filter-label">
-          <i class="fas fa-search"></i>
-          <span>Filtrage</span>
-        </div>
-        
-        <div class="dropdown-group">
-          <label>Centre médical</label>
-          <select [(ngModel)]="selectedCentreMedical" (change)="applyFilters()">
-            <option value="all">Centre médical</option>
-            <option *ngFor="let centre of centreMedicaux" [value]="centre">{{centre}}</option>
-          </select>
-        </div>
-        
-        <div class="dropdown-group">
-          <label>Centre médical</label>
-          <select [(ngModel)]="selectedCentreMedical" (change)="applyFilters()">
-            <option value="all">Centre médical</option>
-            <option *ngFor="let centre of centreMedicaux" [value]="centre">{{centre}}</option>
-          </select>
-        </div>
-        
-        <div class="dropdown-group">
-          <label>Adhésion</label>
-          <select [(ngModel)]="selectedAdhesion" (change)="applyFilters()">
-            <option value="all">Adhésion</option>
-            <option *ngFor="let adhesion of adhesions" [value]="adhesion">{{adhesion}}</option>
-          </select>
-        </div>
-        
-        <button class="filter-btn" (click)="applyStatusFilter('enRetard')">En Retard</button>
-        <button class="filter-btn" (click)="applyStatusFilter('aConvoquer')">À convoquer</button>
-        
-        <button class="action-btn" (click)="sendEmail('salarie')">
-          <i class="fas fa-envelope"></i>
-          Salarié
-        </button>
-        
-        <button class="action-btn" (click)="planification()">
-          <i class="fas fa-users"></i>
-          Planification
-        </button>
+<div class="container">
+  <app-sidebar-client></app-sidebar-client>
+  <div class="content-area" [ngClass]="{'sidebar-expanded': !sidebarCollapsed}">
+    <!-- Filters and Actions -->
+    <div class="filters-actions">
+      <div class="filters">
+        <select>
+          <option>Type de Suivi Visite:</option>
+        </select>
+        <select>
+          <option>Sans Suivi Medical:</option>
+        </select>
+        <select>
+          <option>Etablissement:</option>
+        </select>
+        <select>
+          <option>Assistante:</option>
+        </select>
+        <select>
+          <option>Type de visite:</option>
+        </select>
+        <select>
+          <option>RDV à annuler</option>
+        </select>
+        <select>
+          <option>Nouvelle Visite</option>
+        </select>
+        <select>
+          <option>Relance</option>
+        </select>
+        <select>
+          <option>RDV Sans Réponse</option>
+        </select>
+        <button><i class="fas fa-search"></i></button>
+        <button><i class="fas fa-times"></i></button>
       </div>
       
-      <div class="filter-row">
-        <div class="dropdown-group">
-          <label>Assistante</label>
-          <select [(ngModel)]="selectedAssistante" (change)="applyFilters()">
-            <option value="all">Assistante</option>
-            <option *ngFor="let assistante of assistantes" [value]="assistante">{{assistante}}</option>
-          </select>
-        </div>
-        
-        <div class="dropdown-group">
-          <label>Type de visite</label>
-          <select [(ngModel)]="selectedTypeVisite" (change)="applyFilters()">
-            <option value="all">Type de visite</option>
-            <option *ngFor="let typeVisite of typesVisites" [value]="typeVisite">{{typeVisite}}</option>
-          </select>
-        </div>
-        
-        <button class="filter-btn" (click)="applyStatusFilter('sansReponse')">Sans Réponse</button>
-        <button class="filter-btn" (click)="applyStatusFilter('rdvAnnuler')">RDV à annuler</button>
-        
-        <button class="action-btn" (click)="sendEmail('manager')">
-          <i class="fas fa-envelope"></i>
-          Manager
-        </button>
-        
-        <button class="action-btn primary" (click)="nouvelleVisite()">
-          <i class="fas fa-plus"></i>
-          Nouvelle Visite
-        </button>
-      </div>
-      
-      <div class="filter-row">
-        <div class="dropdown-group">
-          <label>Établissement</label>
-          <select [(ngModel)]="selectedEtablissement" (change)="applyFilters()">
-            <option value="all">Établissement</option>
-            <option *ngFor="let etablissement of etablissements" [value]="etablissement">{{etablissement}}</option>
-          </select>
-        </div>
-        
-        <div class="dropdown-group">
-          <label>Type de Suivi Visite</label>
-          <select [(ngModel)]="selectedTypeSuiviVisite" (change)="applyFilters()">
-            <option value="all">Type de Suivi Visite</option>
-            <option *ngFor="let typeSuiviVisite of typesSuiviVisites" [value]="typeSuiviVisite">{{typeSuiviVisite}}</option>
-          </select>
-        </div>
-        
-        <button class="filter-btn" (click)="applyStatusFilter('programmees')">Programmées</button>
-        <button class="filter-btn" (click)="applyStatusFilter('sansAS')">Sans AS</button>
-        
-        <button class="action-btn" (click)="sendEmail('assistanteSPST')">
-          <i class="fas fa-envelope"></i>
-          Assistante SPST
-        </button>
-        
-        <button class="action-btn" (click)="nouveauRDV()">
-          <i class="fas fa-calendar-plus"></i>
-          Nouveau RDV
-        </button>
-      </div>
-      
-      <div class="filter-row">
-        <div class="search-group">
-          <input type="text" [(ngModel)]="searchTerm" placeholder="Nom, Prénom et/ou matricule...">
-          <button class="search-btn green" (click)="searchEmployees()"><i class="fas fa-search"></i></button>
-          <button class="search-btn red" (click)="clearSearch()"><i class="fas fa-times"></i></button>
-        </div>
-        
-        <button class="filter-btn" (click)="applyStatusFilter('suspendues')">Suspendues</button>
-        <button class="filter-btn" (click)="applyStatusFilter('sensiblesEn')">Sensibles en</button>
-        
-        <button class="action-btn" (click)="sendEmail('RRHClient')">
-          <i class="fas fa-envelope"></i>
-          RRH Client
-        </button>
-        
-        <button class="action-btn warning" (click)="reportIncident()">
-          <i class="fas fa-exclamation-triangle"></i>
-          Déclarer un incident
-        </button>
-      </div>
-      
-      <div class="pagination">
-        <span>1 / 2</span>
-      </div>
-    </div>
-
-    <!-- Employee Content -->
-    <div class="content-section">
-      <div class="navigation">
-        <button class="nav-prev-btn" (click)="navigatePrevious()">
-          <i class="fas fa-chevron-left"></i>
-        </button>
-      </div>
-      
-      <div class="employee-info">
-        <div class="info-header">
-          <i class="fas fa-user"></i>
-          <span *ngIf="currentEmployee">Collaborateur {{currentEmployee.employeeNumber}}</span>
-        </div>
-        
-        <div class="employee-details">
-          <p *ngIf="currentEmployee" class="employee-name">Monsieur {{currentEmployee.firstName}} {{currentEmployee.lastName}} né le {{currentEmployee.birthDate}}</p>
-          <p *ngIf="currentEmployee" class="employee-contract">En {{currentEmployee.contractType}} depuis le {{currentEmployee.contractStartDate}}</p>
-          <p *ngIf="currentEmployee" class="employee-position">{{currentEmployee.department}} / {{currentEmployee.position}}</p>
-          <p *ngIf="currentEmployee" class="employee-monitoring">
-            Surveillance Médicale : <strong>SIR A</strong>
-            <i class="fas fa-info-circle"></i>
-            <span class="pcs-code">code PCS : 387C</span>
-          </p>
-          
-          <div class="action-buttons">
-            <button class="icon-btn"><i class="fas fa-edit"></i></button>
-            <button class="icon-btn"><i class="fas fa-user-cog"></i></button>
-            <button class="icon-btn"><i class="fas fa-file"></i></button>
-          </div>
-        </div>
-      </div>
-      
-      <div class="spst-info">
-        <div class="info-header">
-          <span *ngIf="currentEmployee">SPST {{currentEmployee.establishment?.identifier}}</span>
-        </div>
-        
-        <div class="spst-details">
-          <p *ngIf="currentEmployee">{{currentEmployee.establishment?.name}} - {{currentEmployee.establishment?.address}}</p>
-          <p *ngIf="currentEmployee">{{currentEmployee.establishment?.postalCode}} {{currentEmployee.establishment?.city}}</p>
-          <p *ngIf="currentEmployee">Téléphone : {{currentEmployee.establishment?.phone}}</p>
-          <p *ngIf="currentEmployee">Url portail : <a href="#">{{currentEmployee.establishment?.portalUrl}}</a></p>
-          <p *ngIf="currentEmployee">Identifiant : {{currentEmployee.establishment?.identifier}}</p>
-          
-          <button class="access-btn">
-            <i class="fas fa-arrow-right"></i> Accéder
-          </button>
-          
-          <div class="action-buttons">
-            <button class="icon-btn"><i class="fas fa-edit"></i></button>
-            <button class="icon-btn"><i class="fas fa-arrow-up"></i></button>
-            <button class="icon-btn"><i class="fas fa-arrow-down"></i></button>
-          </div>
-        </div>
-      </div>
-      
-      <div class="contact-info">
-        <div class="info-header">
-          <span>Contact</span>
-        </div>
-      </div>
-      
-      <div class="navigation">
-        <button class="nav-next-btn" (click)="navigateNext()">
-          <i class="fas fa-chevron-right"></i>
-        </button>
+      <div class="actions">
+        <button><i class="fas fa-envelope"></i> Manager</button>
+        <button><i class="fas fa-envelope"></i> Assistante SPST</button>
+        <button><i class="fas fa-envelope"></i> RRH Client</button>
+        <button><i class="fas fa-calendar-plus"></i> Nouveau RDV</button>
+        <button><i class="fas fa-ambulance"></i> Déclarer un incident</button>
       </div>
     </div>
     
-    <!-- Visits & Appointments Section -->
-    <div class="tabs-section">
-      <!-- Tabs will go here -->
+    <!-- Indicator Stats -->
+    <div class="indicator-stats">
+      <div class="indicator">Programmées: <span>145</span></div>
+      <div class="indicator">Suspendues: <span>73</span></div>
+      <div class="indicator">Sensibles en: <span>12</span></div>
+      <div class="indicator">Sans AS: <span>13</span></div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Collab Info -->
+      <div class="collab-info">
+        <div class="title">
+          Collaborateur
+          <button><i class="fas fa-chevron-left"></i></button>
+          <span>23533 / 06</span>
+          <button><i class="fas fa-chevron-right"></i></button>
+        </div>
+        
+        <div class="content">
+          <p>Monsieur Louis MANAS né le 12/09/1996</p>
+          <p>En CDI depuis le 11/04/2023</p>
+          <p>ASTBTP13 Marseille / INGENIEUR</p>
+          <p>Surveillance Médicale: SIR B</p>
+          <p>code PCS: 386C</p>
+        </div>
+      </div>
+      
+      <!-- SPST Info -->
+      <div class="spst-info">
+        <div class="title">SPST <span>52012</span></div>
+        <div class="content">
+          <p>ASTBTP - MARSEILLE-MICHELET - 344 bd Michelet</p>
+          <p>13009 MARSEILLE</p>
+          <p>Téléphone: 33 4 91 23 03 30</p>
+          <p>Url portail: url</p>
+          <p>Identifiant: 52012</p>
+          <button><i class="fas fa-arrow-right"></i> Accéder</button>
+          <p>Mme MARTIN Lea en congés jusqu'au 06/09 envoyer à Mme</p>
+        </div>
+      </div>
+      
+      <!-- Contact Info -->
+      <div class="contact-info">
+        <div class="title">Contact</div>
+        <div class="content">
+          <p>Assistant-e: MATTONE SABRINA - 33 4 91 23 01 59 - test-salaries&#64;vigiscope.fr</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Tables -->
+    <div class="tables">
+      <!-- Visites Table -->
+      <div class="visites-table">
+        <div class="table-title">Visites</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Etat</th>
+              <th>Envisagée</th>
+              <th>Effectuée</th>
+              <th>Suivi</th>
+              <th>Apte</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>VIPP</td>
+              <td>Programmée</td>
+              <td>17/04/2025</td>
+              <td></td>
+              <td>SIR B</td>
+              <td><input type="checkbox" disabled></td>
+              <td>
+                <button><i class="fas fa-pencil-alt"></i></button>
+                <button><i class="fas fa-eye"></i></button>
+                <button><i class="fas fa-trash"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td>VIPP</td>
+              <td>Effectuée</td>
+              <td>30/06/2025</td>
+              <td>30/06/2025</td>
+              <td>SIR B</td>
+              <td><input type="checkbox" disabled></td>
+              <td>
+                <button><i class="fas fa-pencil-alt"></i></button>
+                <button><i class="fas fa-eye"></i></button>
+                <button><i class="fas fa-trash"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td>VIPI</td>
+              <td>Effectuée</td>
+              <td>04/02/2024</td>
+              <td>04/07/2023</td>
+              <td>SIR B</td>
+              <td><input type="checkbox" checked disabled></td>
+              <td>
+                <button><i class="fas fa-pencil-alt"></i></button>
+                <button><i class="fas fa-eye"></i></button>
+                <button><i class="fas fa-trash"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+          <!-- Rendez-Vous Table -->
+      <div class="rdv-table">
+        <div class="table-title">Rendez-Vous</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Envoi</th>
+              <th>AR</th>
+              <th>Ordonnance</th>
+              <th>Accepté</th>
+              <th>Excusable</th>
+              <th>Reporté</th>
+              <th>Honoré</th>
+              <th>Motif</th>
+              <th>Commentaire</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>04/03/2025 15:40</td>
+              <td>28/02/2025</td>
+              <td><input type="checkbox" disabled></td>
+              <td><input type="checkbox" disabled></td>
+              <td><input type="checkbox" disabled></td>
+              <td><input type="checkbox" disabled></td>
+              <td><input type="checkbox" disabled></td>
+              <td><input type="checkbox" disabled></td>
+              <td></td>
+              <td></td>
+              <td>
+                <button><i class="fas fa-pencil-alt"></i></button>
+                <button><i class="fas fa-eye"></i></button>
+                <button><i class="fas fa-trash"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>

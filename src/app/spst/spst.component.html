@@ -1,0 +1,21 @@
+<app-my-header></app-my-header>
+<div class="container">
+    <app-sidebar-client></app-sidebar-client>
+    <div class="content-area" [ngClass]="{'sidebar-expanded': !sidebarCollapsed}">
+      <h1>Service de Prévention et de Santé au Travail (SPST)</h1>
+      <div class="spst-info-card">
+        <h2>Votre SPST</h2>
+        <p><strong>Nom :</strong> ASTBTP - MARSEILLE-MICHELET</p>
+        <p><strong>Adresse :</strong> 344 bd Michelet, 13009 MARSEILLE</p>
+        <p><strong>Téléphone :</strong> 04 91 23 03 30</p>
+        <p><strong>Email :</strong> contact&#64;astbtp.fr</p>
+        <p><strong>Référent :</strong> Mme MARTIN Lea</p>
+        <button class="btn-primary">Accéder au portail SPST</button>
+      </div>
+      <div class="spst-actions">
+        <button class="btn-secondary">Prendre rendez-vous</button>
+        <button class="btn-secondary">Envoyer un message</button>
+      </div>
+    </div>
+  </div>
+  

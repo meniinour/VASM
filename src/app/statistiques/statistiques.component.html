@@ -1,0 +1,169 @@
+<app-my-header></app-my-header>
+  <div class="container">
+    <app-sidebar-client></app-sidebar-client>
+    <div class="content-area" [ngClass]="{'sidebar-expanded': !sidebarCollapsed}">
+        <div class="header">
+          <h1>Statistiques</h1>
+          
+          <div class="period-selector">
+            <button (click)="previousPeriod()"><i class="fas fa-chevron-left"></i></button>
+            <span>{{ currentPeriodLabel }}</span>
+            <button (click)="nextPeriod()"><i class="fas fa-chevron-right"></i></button>
+            
+            <div class="view-selector">
+              <button [class.active]="currentView === 'month'" (click)="changeView('month')">Mois</button>
+              <button [class.active]="currentView === 'quarter'" (click)="changeView('quarter')">Trimestre</button>
+              <button [class.active]="currentView === 'year'" (click)="changeView('year')">Année</button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="filters">
+          <div class="filter-group">
+            <label for="client-filter">Client:</label>
+            <select id="client-filter" [(ngModel)]="filters.client">
+              <option value="">Tous les clients</option>
+              <option *ngFor="let client of clients" [value]="client.id">{{ client.name }}</option>
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label for="type-filter">Type de visite:</label>
+            <select id="type-filter" [(ngModel)]="filters.visitType">
+              <option value="">Tous les types</option>
+              <option value="VIPP">VIPP</option>
+              <option value="VIPI">VIPI</option>
+              <option value="SIR">SIR</option>
+            </select>
+          </div>
+          
+          <button class="apply-filters" (click)="applyFilters()">Appliquer</button>
+        </div>
+        
+        <!-- Statistiques Générales -->
+        <div class="stats-section">
+          <h2>Statistiques Générales</h2>
+          
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-calendar-check"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-value">{{ generalStats.totalVisits }}</div>
+                <div class="stat-label">Visites médicales</div>
+              </div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-user-md"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-value">{{ generalStats.totalEmployees }}</div>
+                <div class="stat-label">Salariés suivis</div>
+              </div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-building"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-value">{{ generalStats.totalClients }}</div>
+                <div class="stat-label">Clients actifs</div>
+              </div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-value">{{ generalStats.completionRate }}%</div>
+                <div class="stat-label">Taux de réalisation</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Graphiques -->
+        <div class="charts-section">
+          <div class="chart-container">
+            <h2>Répartition des visites par type</h2>
+            <canvas id="visitTypeChart"></canvas>
+          </div>
+          
+          <div class="chart-container">
+            <h2>Évolution mensuelle des visites</h2>
+            <canvas id="visitsOverTimeChart"></canvas>
+          </div>
+          
+          <div class="chart-container">
+            <h2>Répartition par statut</h2>
+            <canvas id="statusDistributionChart"></canvas>
+          </div>
+          
+          <div class="chart-container">
+            <h2>Top 5 clients</h2>
+            <canvas id="topClientsChart"></canvas>
+          </div>
+        </div>
+        
+        <!-- Tableau de données détaillé -->
+        <div class="data-table-section">
+          <h2>Détails des visites</h2>
+          
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Programmées</th>
+                <th>Effectuées</th>
+                <th>Annulées</th>
+                <th>Sans Réponse</th>
+                <th>Total</th>
+                <th>% Réalisation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let data of visitDetailsData">
+                <td>{{ data.type }}</td>
+                <td>{{ data.scheduled }}</td>
+                <td>{{ data.completed }}</td>
+                <td>{{ data.cancelled }}</td>
+                <td>{{ data.noResponse }}</td>
+                <td>{{ data.total }}</td>
+                <td>{{ data.completionRate }}%</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td><strong>Total</strong></td>
+                <td>{{ getTotalForColumn('scheduled') }}</td>
+                <td>{{ getTotalForColumn('completed') }}</td>
+                <td>{{ getTotalForColumn('cancelled') }}</td>
+                <td>{{ getTotalForColumn('noResponse') }}</td>
+                <td>{{ getTotalForColumn('total') }}</td>
+                <td>{{ getAverageCompletionRate() }}%</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        
+        <!-- Export des données -->
+        <div class="export-section">
+          <button class="export-btn" (click)="exportData('pdf')">
+            <i class="fas fa-file-pdf"></i> Exporter en PDF
+          </button>
+          <button class="export-btn" (click)="exportData('xlsx')">
+            <i class="fas fa-file-excel"></i> Exporter en Excel
+          </button>
+          <button class="export-btn" (click)="exportData('csv')">
+            <i class="fas fa-file-csv"></i> Exporter en CSV
+          </button>
+        </div>
+      </div>
+    </div>
+    >
+  

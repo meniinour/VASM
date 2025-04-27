@@ -1,0 +1,157 @@
+:host {
+    --bg-color: #031e36;
+    --border-color: #84bdc5;
+    --text-color: #84bdc5;
+    --btn-bg: #84bdc5;
+    --btn-hover-bg: #6ab2bd;
+  }
+  
+  .container {
+    display: flex;
+    height: 100vh;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+  }
+  
+  .content-area {
+    flex: 1;
+    margin-left: 60px;
+    padding: 20px;
+    border: 5px solid var(--border-color);
+    transition: margin-left 0.3s ease;
+    overflow-y: auto;
+  }
+  
+  .content-area.sidebar-expanded {
+    margin-left: 250px;
+  }
+  
+  h1 {
+    margin-bottom: 20px;
+  }
+  
+  .tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .tabs button {
+    background: none;
+    border: 2px solid var(--border-color);
+    color: var(--text-color);
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+  }
+  
+  .tabs button.active,
+  .tabs button:hover {
+    background-color: var(--btn-bg);
+    border-color: var(--btn-bg);
+    color: var(--bg-color);
+  }
+  
+  .import-card, .export-card, .print-card {
+    background-color: #042a4e;
+    padding: 20px;
+    border-radius: 8px;
+    border: 2px solid var(--border-color);
+    max-width: 600px;
+  }
+  
+  .upload-zone {
+    border: 2px dashed var(--border-color);
+    padding: 30px;
+    text-align: center;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--text-color);
+    transition: background-color 0.3s ease;
+  }
+  
+  .upload-zone.active {
+    background-color: var(--btn-hover-bg);
+    color: var(--bg-color);
+  }
+  
+  .upload-zone p {
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  
+  .upload-zone button {
+    background-color: var(--btn-bg);
+    border: none;
+    padding: 8px 16px;
+    color: var(--bg-color);
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .selected-file {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--btn-bg);
+    color: var(--bg-color);
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+  }
+  
+  .selected-file button {
+    background: none;
+    border: none;
+    color: var(--bg-color);
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  label {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-weight: 600;
+  }
+  
+  select, input[type="date"], input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    background-color: transparent;
+    color: var(--text-color);
+    box-sizing: border-box;
+  }
+  
+  select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3csvg%20width%3d%2210%22%20height%3d%227%22%20viewBox%3d%220%200%2010%207%22%20xmlns%3d%22http%3a//www.w3.org/2000/svg%22%3e%3cpath%20d%3d%22M0%200l5%207%205-7z%22%20fill%3d%22%2384bdc5%22/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 10px 7px;
+    cursor: pointer;
+  }
+  
+  .btn-primary {
+    margin-top: 20px;
+    background-color: var(--btn-bg);
+    border: none;
+    padding: 10px 20px;
+    color: var(--bg-color);
+    font-weight: 700;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn-primary:hover {
+    background-color: var(--btn-hover-bg);
+  }
+  

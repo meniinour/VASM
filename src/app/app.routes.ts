@@ -28,6 +28,15 @@ import { EmployeComponent } from './employe/employe.component';
 import { DashmangComponent } from './dashmang/dashmang.component';
 import { FormComponent } from './form/form.component';
 import { AccesComponent } from './acces/acces.component';
+import { SpstComponent } from './spst/spst.component';
+import { ImportsExportsComponent } from './imports-exports/imports-exports.component';
+import { TableauBordComponent } from './statistiques/tableau-bord/tableau-bord.component';
+import { ListeSalariesComponent } from './salaries/liste-salaries/liste-salaries.component';
+import { SalariesComponent } from './salaries/salaries.component';
+import { SidebarClientComponent } from './sidebar-client/sidebar-client.component';
+import { AddSalarieComponent } from './salaries/add-salarie/add-salarie.component';
+import { StatistiquesComponent } from './statistiques/statistiques.component';
+import { MailClientComponent } from './mail-client/mail-client.component';
 
 
 
@@ -60,6 +69,18 @@ export const routes: Routes = [
     { path: 'dashmang', component: DashmangComponent},
     { path: 'form', component: FormComponent},
     { path: 'acces', component: AccesComponent},
+    { path: 'sidebar-client', component: SidebarClientComponent },
+    { path: 'mail-client', component: MailClientComponent },
+    { path: 'salaries', component: SalariesComponent },
+    { path: 'add-salarie', component: AddSalarieComponent },
+    { path: 'liste-salaries', component: ListeSalariesComponent },
+    { path: 'statistiques', component: StatistiquesComponent },
+    { path: 'imports', component: ImportsExportsComponent },
+    { path: 'tableau-bord', component: TableauBordComponent },
+    { path: 'spst', component: SpstComponent },
+    { path: 'client-assign/:id', component: ClientAssignComponent }, // 👈 route pour le profil
+    { path: 'documentation' , component: DocumentationComponent } ,// Redirige vers la page d'accueil pour les routes non trouvées
+    { path: 'navbar',component: NavbarComponent},
 
 ];
 

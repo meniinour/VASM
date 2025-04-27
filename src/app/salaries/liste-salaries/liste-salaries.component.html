@@ -1,0 +1,25 @@
+<app-my-header></app-my-header>
+ <div class="container">
+    <app-sidebar-client></app-sidebar-client>
+    <div class="content-area" [ngClass]="{'sidebar-expanded': !sidebarCollapsed}">
+      <h1>Liste des Salariés</h1>
+      <input type="text" placeholder="Rechercher un salarié..." [(ngModel)]="searchText" class="search-input" />
+      <table class="salaries-table">
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Matricule</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let salarie of filteredSalaries">
+            <td>{{ salarie.nom }}</td>
+            <td>{{ salarie.matricule }}</td>
+            <td><button class="btn-primary">Modifier</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
