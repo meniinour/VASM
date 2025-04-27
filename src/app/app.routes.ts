@@ -21,10 +21,11 @@ import { ClientAssignComponent } from './client-assign/client-assign.component';
 import { DocumentationComponent } from './documentation/documentation.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { GestionnaireprofComponent } from './gestionnaireprof/gestionnaireprof.component';
-import { EmployeComponent } from './employe/employe.component';
+
 import { NotifComponent } from './notif/notif.component';
 import { UprofComponent } from './uprof/uprof.component';
 import { EmplDashComponent } from './empl-dash/empl-dash.component';
+import { EmployeComponent } from './employe/employe.component';
 
 
 
@@ -53,7 +54,6 @@ export const routes: Routes = [
     { path: 'gestionnaireprof' ,component: GestionnaireprofComponent},
     { path: 'employe' ,component: EmployeComponent},
     { path: 'notif', component: NotifComponent},
-    
     { path: 'uprof', component: UprofComponent},
     { path: 'empl-dash', component: EmplDashComponent},
 

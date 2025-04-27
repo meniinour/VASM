@@ -59,6 +59,35 @@ export class RegisterComponent implements OnInit {
 
     this.isDarkMode$ = this.themeService.isDarkMode$;
   }
+  userRole = 'Gestionnaire';  // Ce rôle pourrait être récupéré dynamiquement, par exemple depuis un service utilisateur
+
+  // Fonction pour obtenir la classe du rôle
+  getRoleClass(role: string) {
+    switch (role) {
+      case 'Gestionnaire':
+        return 'role-gestionnaire';
+      case 'Employée Société-Client':
+        return 'role-employe-client';
+      case 'Manager Société-Client':
+        return 'role-manager-client';
+      default:
+        return '';
+    }
+  }
+
+  // Fonction pour obtenir l'icône en fonction du rôle
+  getIconClass(role: string) {
+    switch (role) {
+      case 'Gestionnaire':
+        return 'fa-cogs';  // Exemple d'icône pour un gestionnaire
+      case 'Employée Société-Client':
+        return 'fa-user';  // Exemple d'icône pour un employé
+      case 'Manager Société-Client':
+        return 'fa-briefcase';  // Exemple d'icône pour un manager
+      default:
+        return 'fa-envelope';  // Icône par défaut
+    }
+  }
 
   ngOnInit(): void {
     setTimeout(() => {

@@ -1,14 +1,5 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>vASM</title>
-</head>
-<body>
-  <app-my-header></app-my-header>
 
-  <div class="main-content">
+
     <div class="sidebar" [class.expanded]="isSidebarExpanded" [class.with-submenu]="isServiceMenuOpen">
         <ul class="nav-links">
           <li>
@@ -100,9 +91,5 @@
         </ul>
       </div>
       
-      
-  </div>
-  <app-chatbot *ngIf="showChatbot" (close)="closeChatbot()"></app-chatbot>
 
-</body>
-</html>
+  <app-chatbot *ngIf="showChatbot" (close)="closeChatbot()"></app-chatbot>
