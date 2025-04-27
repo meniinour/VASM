@@ -1,0 +1,76 @@
+<!-- Fichier: access-manager.component.html -->
+    <!-- Header -->
+    <header class="navbar">
+        <div class="navbar-content">
+          <img src="./assets/bd.png" alt="Logo" class="navbar-logo" />
+          <div class="navbar-actions">
+            <div class="search-bar">
+              <input type="text" placeholder="Rechercher..." />
+              <i class="fa fa-search"></i>
+            </div>
+            <div class="user-menu">
+              
+              <div class="profile">
+                <img src="../../assets/profil.png" alt="Profile" />
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+<div class="access-manager-container">
+    <h2>Gestion des accès</h2>
+    
+    <div class="managers-list">
+      <h3>Gestionnaires</h3>
+      <div class="manager-cards">
+        <div *ngFor="let manager of managers" 
+             class="manager-card" 
+             [ngClass]="getAccessLevelClass(manager.accessLevel)"
+             (click)="selectManager(manager)">
+          <div class="manager-info">
+            <h4>{{ manager.name }}</h4>
+            <p>{{ manager.position }}</p>
+            <p class="access-indicator">Niveau d'accès: 
+              <span [ngClass]="getAccessLevelClass(manager.accessLevel)">
+                {{ manager.accessLevel === 'high' ? 'Élevé' : 
+                   manager.accessLevel === 'medium' ? 'Moyen' : 'Limité' }}
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="access-details" *ngIf="selectedManager">
+      <h3>Détails de l'accès</h3>
+      
+      <div class="manager-details">
+        <h4>{{ selectedManager.name }}</h4>
+        <p><strong>Email:</strong> {{ selectedManager.email }}</p>
+        <p><strong>Poste:</strong> {{ selectedManager.position }}</p>
+      </div>
+      
+      <div class="access-rights">
+        <h4>Droits d'accès</h4>
+        <div class="rights-grid">
+          <div *ngFor="let right of selectedManager.accessRights" 
+               class="right-item"
+               [ngClass]="{'enabled': right.enabled, 'disabled': !right.enabled}"
+               (click)="toggleAccess(right)">
+            <span class="right-name">{{ right.name }}</span>
+            <span class="right-status">{{ right.enabled ? 'Activé' : 'Désactivé' }}</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="action-buttons">
+        <button class="btn-save" (click)="saveChanges()">Enregistrer</button>
+        <button class="btn-cancel" (click)="cancelChanges()">Annuler</button>
+      </div>
+    </div>
+    
+    <div class="no-selection" *ngIf="!selectedManager">
+      <p>Sélectionnez un gestionnaire pour modifier ses droits d'accès</p>
+    </div>
+  </div>

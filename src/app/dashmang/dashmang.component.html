@@ -115,7 +115,11 @@
         <div class="page-title">
           <h1>Tableau de bord</h1>
           <div class="actions">
-            <button class="btn-primary"><i class="fa fa-plus"></i> Ajouter un gestionnaire</button>
+            <button class="btn-primary" (click)="navigateToForm()"><i class="fa fa-plus"></i> Ajouter un gestionnaire</button>
+            <button type="button" class="btn-primary" (click)="navigateToAccess()">
+                <span class="material-icons icon">security</span>
+                <span class="text" *ngIf="isSidebarExpanded">Gestion des accès</span>
+              </button>
             <button class="btn-secondary"><i class="fa fa-download"></i> Exporter</button>
           </div>
         </div>

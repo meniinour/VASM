@@ -52,7 +52,12 @@ export class DashmangComponent implements OnInit {
       this.selectedManager = this.managers[0];
     }
   }
-  
+  navigateToForm() {
+    this.router.navigate(['/form']);
+  }
+  navigateToAccess(){
+    this.router.navigate(['/acces']);
+  }
   selectManager(manager: Manager): void {
     this.selectedManager = manager;
     this.updateChartData()

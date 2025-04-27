@@ -26,6 +26,8 @@ import { NotifComponent } from './notif/notif.component';
 import { UprofComponent } from './uprof/uprof.component';
 import { EmployeComponent } from './employe/employe.component';
 import { DashmangComponent } from './dashmang/dashmang.component';
+import { FormComponent } from './form/form.component';
+import { AccesComponent } from './acces/acces.component';
 
 
 
@@ -56,7 +58,8 @@ export const routes: Routes = [
     { path: 'notif', component: NotifComponent},
     { path: 'uprof', component: UprofComponent},
     { path: 'dashmang', component: DashmangComponent},
-
+    { path: 'form', component: FormComponent},
+    { path: 'acces', component: AccesComponent},
 
 ];
 
