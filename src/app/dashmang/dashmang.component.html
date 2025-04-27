@@ -1,0 +1,356 @@
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<!-- <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet"> -->
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+<!-- dashboard.component.html -->
+<div class="dashboard-container">
+    <!-- Header -->
+    <header class="navbar">
+        <div class="navbar-content">
+          <img src="./assets/bd.png" alt="Logo" class="navbar-logo" />
+          <div class="navbar-actions">
+            <div class="search-bar">
+              <input type="text" placeholder="Rechercher..." />
+              <i class="fa fa-search"></i>
+            </div>
+            <div class="user-menu">
+              <div class="notifications">
+                <i class="fa fa-bell"></i>
+                <span class="badge">{{notifications}}</span>
+              </div>
+              <div class="messages">
+                <i class="fa fa-envelope"></i>
+                <span class="badge">{{messages}}</span>
+              </div>
+              <div class="profile">
+                <img src="../../assets/profil.png" alt="Profile" />
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+      
+  
+    <!-- Main Content -->
+    <div class="dashboard-content">
+        <span class="title">ManageDash</span>
+      <!-- Sidebar -->
+      <div class="sidebar" [class.expanded]="isSidebarExpanded" [class.with-submenu]="isServiceMenuOpen">
+        <ul class="nav-links">
+          <li>
+            <a (click)="navigateAndExpand()" routerLink="/dashboard" class="active">
+              <span class="material-icons icon">dashboard</span>
+              <span class="text" *ngIf="isSidebarExpanded">Tableau de bord</span>
+            </a>
+          </li>
+      
+          <li>
+            <a (click)="navigateAndExpand()" routerLink="/users">
+              <span class="material-icons icon">people</span>
+              <span class="text" *ngIf="isSidebarExpanded">Gestionnaires</span>
+            </a>
+          </li>
+      
+          <li>
+            <a (click)="navigateAndExpand()" routerLink="/stats">
+              <span class="material-icons icon">bar_chart</span>
+              <span class="text" *ngIf="isSidebarExpanded">Statistiques</span>
+            </a>
+          </li>
+      
+          <li>
+            <a (click)="toggleServiceMenu()">
+              <span class="material-icons icon">business</span>
+              <span class="text" *ngIf="isSidebarExpanded">Centre de Services</span>
+              <span class="material-icons expand-icon" *ngIf="isSidebarExpanded">keyboard_arrow_down</span>
+            </a>
+      
+            <ul class="sub-menu" *ngIf="isServiceMenuOpen">
+              <li>
+                <a routerLink="/messages">
+                  <span class="material-icons icon">mail</span>
+                  <span class="text">Messagerie</span>
+                </a>
+              </li>
+              <li>
+                <a routerLink="/tasks">
+                  <span class="material-icons icon">assignment</span>
+                  <span class="text">Gestion des tâches</span>
+                </a>
+              </li>
+              <li>
+                <a routerLink="/reports">
+                  <span class="material-icons icon">description</span>
+                  <span class="text">Rapports</span>
+                </a>
+              </li>
+            </ul>
+          </li>
+      
+          <li>
+            <a (click)="navigateAndExpand()" routerLink="/settings">
+              <span class="material-icons icon">settings</span>
+              <span class="text" *ngIf="isSidebarExpanded">Paramètres</span>
+            </a>
+          </li>
+          
+          <li>
+            <a (click)="navigateAndExpand()" routerLink="/access">
+              <span class="material-icons icon">security</span>
+              <span class="text" *ngIf="isSidebarExpanded">Gestion des accès</span>
+            </a>
+          </li>
+          
+          <li>
+            <a (click)="navigateAndExpand()" routerLink="/login">
+              <span class="material-icons icon">exit_to_app</span>
+              <span class="text" *ngIf="isSidebarExpanded">Déconnexion</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+  
+      <!-- Main Area -->
+      <main class="main-area">
+        <div class="page-title">
+          <h1>Tableau de bord</h1>
+          <div class="actions">
+            <button class="btn-primary"><i class="fa fa-plus"></i> Ajouter un gestionnaire</button>
+            <button class="btn-secondary"><i class="fa fa-download"></i> Exporter</button>
+          </div>
+        </div>
+  
+        <!-- Dashboard widgets -->
+        <div class="widgets-container">
+          <!-- Summary Cards -->
+          <div class="stats-summary">
+            <div class="stat-card">
+              <div class="stat-icon blue">
+                <i class="fa fa-users"></i>
+              </div>
+              <div class="stat-details">
+                <h3>Gestionnaires</h3>
+                <p class="stat-number">{{managers.length}}</p>
+                <p class="stat-trend positive">+2 ce mois</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon green">
+                <i class="fa fa-check-circle"></i>
+              </div>
+              <div class="stat-details">
+                <h3>Tâches terminées</h3>
+                <p class="stat-number">157</p>
+                <p class="stat-trend positive">+23% ce mois</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon orange">
+                <i class="fa fa-clock"></i>
+              </div>
+              <div class="stat-details">
+                <h3>En attente</h3>
+                <p class="stat-number">25</p>
+                <p class="stat-trend negative">+5 cette semaine</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon purple">
+                <i class="fa fa-chart-line"></i>
+              </div>
+              <div class="stat-details">
+                <h3>Performance</h3>
+                <p class="stat-number">85%</p>
+                <p class="stat-trend positive">+3% ce mois</p>
+              </div>
+            </div>
+          </div>
+  
+          <!-- Manager Performance -->
+          <div class="widget manager-performance">
+            <div class="widget-header">
+              <h2>Performance des gestionnaires</h2>
+              <div class="widget-actions">
+                <select>
+                  <option>Ce mois</option>
+                  <option>Ce trimestre</option>
+                  <option>Cette année</option>
+                </select>
+              </div>
+            </div>
+            <div class="widget-content">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Nom</th>
+                    <th>Département</th>
+                    <th>Performance</th>
+                    <th>Tâches</th>
+                    <th>En attente</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let manager of managers" [class.selected]="selectedManager?.id === manager.id" (click)="selectManager(manager)">
+                    <td>{{manager.name}}</td>
+                    <td>{{manager.department}}</td>
+                    <td>
+                      <div class="progress-bar">
+                        <div class="progress" [style.width.%]="manager.performance"></div>
+                      </div>
+                      <span>{{manager.performance}}%</span>
+                    </td>
+                    <td>{{manager.tasksCompleted}}</td>
+                    <td>{{manager.pending}}</td>
+                    <td>
+                      <button class="btn-icon"><i class="fa fa-eye"></i></button>
+                      <button class="btn-icon"><i class="fa fa-edit"></i></button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+  
+          <!-- Manager Details -->
+          <div class="widget-row">
+            <div class="widget manager-details" *ngIf="selectedManager">
+              <div class="widget-header">
+                <h2>Détails du gestionnaire</h2>
+              </div>
+              <div class="widget-content">
+                <div class="manager-profile">
+                  <img src="/api/placeholder/80/80" alt="Profile" />
+                  <div class="manager-info">
+                    <h3>{{selectedManager.name}}</h3>
+                    <p>{{selectedManager.department}}</p>
+                    <div class="manager-stats">
+                      <div class="stat">
+                        <span class="label">Performance</span>
+                        <span class="value">{{selectedManager.performance}}%</span>
+                      </div>
+                      <div class="stat">
+                        <span class="label">Tâches terminées</span>
+                        <span class="value">{{selectedManager.tasksCompleted}}</span>
+                      </div>
+                      <div class="stat">
+                        <span class="label">En attente</span>
+                        <span class="value">{{selectedManager.pending}}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="action-buttons">
+                  <button class="btn-primary">Envoyer un message</button>
+                  <button class="btn-secondary">Voir le rapport complet</button>
+                </div>
+              </div>
+            </div>
+  
+            <!-- Recent Activity -->
+            <div class="widget recent-activity">
+              <div class="widget-header">
+                <h2>Activité récente</h2>
+              </div>
+              <div class="widget-content">
+                <ul class="activity-list">
+                  <li class="activity-item">
+                    <div class="activity-icon green">
+                      <i class="fa fa-check"></i>
+                    </div>
+                    <div class="activity-details">
+                      <p><strong>Sophie Martin</strong> a terminé la tâche <a href="#">Rapport trimestriel</a></p>
+                      <span class="activity-time">Il y a 25 minutes</span>
+                    </div>
+                  </li>
+                  <li class="activity-item">
+                    <div class="activity-icon blue">
+                      <i class="fa fa-comment"></i>
+                    </div>
+                    <div class="activity-details">
+                      <p><strong>Thomas Dubois</strong> a commenté sur <a href="#">Plan financier 2025</a></p>
+                      <span class="activity-time">Il y a 2 heures</span>
+                    </div>
+                  </li>
+                  <li class="activity-item">
+                    <div class="activity-icon orange">
+                      <i class="fa fa-file"></i>
+                    </div>
+                    <div class="activity-details">
+                      <p><strong>Claire Lefebvre</strong> a créé un nouveau document <a href="#">Guide de recrutement</a></p>
+                      <span class="activity-time">Il y a 5 heures</span>
+                    </div>
+                  </li>
+                  <li class="activity-item">
+                    <div class="activity-icon red">
+                      <i class="fa fa-bell"></i>
+                    </div>
+                    <div class="activity-details">
+                      <p><strong>Alerte système</strong>: Maintenance prévue à 22h00</p>
+                      <span class="activity-time">Il y a 8 heures</span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+  
+          <!-- Email Preview -->
+          <div class="widget email-preview">
+            <div class="widget-header">
+              <h2>Messagerie</h2>
+              <div class="widget-actions">
+                <button class="btn-text">Voir tout</button>
+              </div>
+            </div>
+            <div class="widget-content">
+              <div class="email-list">
+                <div class="email-item unread">
+                  <div class="email-sender">
+                    <img src="/api/placeholder/40/40" alt="Profile" />
+                  </div>
+                  <div class="email-content">
+                    <div class="email-header">
+                      <span class="sender-name">Thomas Dubois</span>
+                      <span class="email-time">10:25</span>
+                    </div>
+                    <div class="email-subject">Réunion de planification stratégique</div>
+                    <div class="email-preview">Bonjour, pourriez-vous confirmer votre disponibilité pour...</div>
+                  </div>
+                </div>
+                <div class="email-item">
+                  <div class="email-sender">
+                    <img src="/api/placeholder/40/40" alt="Profile" />
+                  </div>
+                  <div class="email-content">
+                    <div class="email-header">
+                      <span class="sender-name">Claire Lefebvre</span>
+                      <span class="email-time">Hier</span>
+                    </div>
+                    <div class="email-subject">Rapport de ressources humaines - T1 2025</div>
+                    <div class="email-preview">Veuillez trouver ci-joint le rapport trimestriel...</div>
+                  </div>
+                </div>
+                <div class="email-item">
+                  <div class="email-sender">
+                    <img src="/api/placeholder/40/40" alt="Profile" />
+                  </div>
+                  <div class="email-content">
+                    <div class="email-header">
+                      <span class="sender-name">Antoine Bernard</span>
+                      <span class="email-time">Hier</span>
+                    </div>
+                    <div class="email-subject">Mise à jour des KPIs opérationnels</div>
+                    <div class="email-preview">Suite à notre discussion de ce matin, voici les indicateurs...</div>
+                  </div>
+                </div>
+              </div>
+              <div class="compose-email">
+                <button class="btn-primary full-width"><i class="fa fa-edit"></i> Nouveau message</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>

@@ -24,8 +24,8 @@ import { GestionnaireprofComponent } from './gestionnaireprof/gestionnaireprof.c
 
 import { NotifComponent } from './notif/notif.component';
 import { UprofComponent } from './uprof/uprof.component';
-import { EmplDashComponent } from './empl-dash/empl-dash.component';
 import { EmployeComponent } from './employe/employe.component';
+import { DashmangComponent } from './dashmang/dashmang.component';
 
 
 
@@ -55,7 +55,7 @@ export const routes: Routes = [
     { path: 'employe' ,component: EmployeComponent},
     { path: 'notif', component: NotifComponent},
     { path: 'uprof', component: UprofComponent},
-    { path: 'empl-dash', component: EmplDashComponent},
+    { path: 'dashmang', component: DashmangComponent},
 
 
 ];

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EmplDashComponent } from './empl-dash.component';
+import { DashmangComponent } from './dashmang.component';
 
-describe('EmplDashComponent', () => {
-  let component: EmplDashComponent;
-  let fixture: ComponentFixture<EmplDashComponent>;
+describe('DashmangComponent', () => {
+  let component: DashmangComponent;
+  let fixture: ComponentFixture<DashmangComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EmplDashComponent]
+      imports: [DashmangComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(EmplDashComponent);
+    fixture = TestBed.createComponent(DashmangComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
