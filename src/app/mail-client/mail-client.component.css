@@ -1,142 +1,178 @@
 :host {
-    --bg-color: #ebf0f5;
-    --border-color: #84bdc5;
-    --text-color: #84bdc5;
-    --text-hover-color: #ffffff;
-  }
-  .ok {
-    background-color: #ffff;
-  }
-  
-  .container {
-    display: flex;
-    height: 100vh;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-  }
-  
-  .mail-container {
-    flex: 1;
-    margin-left: 60px;
-    padding: 20px;
-    border: 5px solid var(--border-color);
-    overflow-y: auto;
-    transition: margin-left 0.3s ease;
-  }
-  
-  .mail-container.sidebar-expanded {
-    margin-left: 250px;
-  }
-  
-  .mail-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-  }
-  
-  .mail-header input[type="text"] {
-    padding: 8px;
-    border-radius: 4px;
-    border: 1px solid var(--border-color);
-    color: var(--text-color);
-    background-color: transparent;
-  }
-  
-  .mail-list ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    max-height: 300px;
-    overflow-y: auto;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-  }
-  
-  .mail-list li {
-    padding: 10px;
-    border-bottom: 1px solid var(--border-color);
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    color: var(--text-color);
-  }
-  
-  .mail-list li.read {
-    opacity: 0.7;
-  }
-  
-  .mail-list li:hover {
-    background-color: var(--border-color);
-    color: var(--text-hover-color);
-  }
-  
-  .mail-content {
-    margin-top: 20px;
-    border: 1px solid var(--border-color);
-    padding: 15px;
-    border-radius: 4px;
-    background-color: #042a4e;
-  }
-  
-  .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(3, 30, 54, 0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2000;
-  }
-  
-  .modal-content {
-    background-color: var(--bg-color);
-    border: 5px solid var(--border-color);
-    padding: 20px;
-    width: 400px;
-    border-radius: 8px;
-    color: var(--text-color);
-  }
-  
-  .modal-content form input,
-  .modal-content form textarea {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 12px;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    background-color: transparent;
-    color: var(--text-color);
-  }
-  
-  .btn-primary {
-    background-color: var(--border-color);
-    border: none;
-    padding: 10px 16px;
-    color: var(--text-hover-color);
-    cursor: pointer;
-    margin-right: 10px;
-    border-radius: 4px;
-  }
-  
-  .btn-primary:hover {
-    background-color: #6ab2bd;
-  }
-  
-  .btn-secondary {
-    background-color: transparent;
-    border: 1px solid var(--border-color);
-    padding: 10px 16px;
-    color: var(--text-color);
-    cursor: pointer;
-    border-radius: 4px;
-  }
-  
-  .btn-secondary:hover {
-    background-color: var(--border-color);
-    color: var(--text-hover-color);
-  }
-  
+  --bg-color: #fbfaf6;           /* Off-white background */
+  --border-color: #031e36;       /* Primary dark blue border */
+  --text-color: #84bdc5;         /* Accent cyan text */
+  --text-hover-color: #ffffff;   /* White text on hover */
+  --mail-content-bg: #031e36;    /* Dark blue background for mail content */
+  --btn-hover-bg: #84bdc5;       /* Accent cyan button hover */
+}
+
+.ok {
+  background-color: var(--bg-color);
+}
+
+.container {
+  margin-top: 70px;
+  display: flex;
+  height: 100vh;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+.mail-container {
+  flex: 1;
+  margin-left: 60px;
+  padding: 20px;
+  border: 5px solid var(--border-color);
+  overflow-y: auto;
+  transition: margin-left 0.3s ease;
+  background-color: #f3f6fa; /* subtle card background */
+  border-radius: 8px;
+}
+
+.mail-container.sidebar-expanded {
+  margin-left: 250px;
+}
+
+.mail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.mail-header input[type="text"] {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  background-color: transparent;
+  font-weight: 500;
+  transition: border-color 0.3s ease, color 0.3s ease;
+}
+
+.mail-header input[type="text"]:focus {
+  outline: none;
+  border-color: var(--border-color);
+  color: var(--border-color);
+  background-color: #f9fbfc;
+}
+
+.mail-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--bg-color);
+}
+
+.mail-list li {
+  padding: 10px;
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.mail-list li.read {
+  opacity: 0.7;
+}
+
+.mail-list li:hover {
+  background-color: var(--border-color);
+  color: var(--text-hover-color);
+}
+
+.mail-content {
+  margin-top: 20px;
+  border: 1px solid var(--border-color);
+  padding: 15px;
+  border-radius: 4px;
+  background-color: var(--mail-content-bg);
+  color: var(--text-hover-color);
+  box-shadow: 0 4px 12px rgba(3, 30, 54, 0.3);
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(3, 30, 54, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.modal-content {
+  background-color: var(--bg-color);
+  border: 5px solid var(--border-color);
+  padding: 20px;
+  width: 400px;
+  border-radius: 8px;
+  color: var(--text-color);
+  box-shadow: 0 6px 20px rgba(3, 30, 54, 0.15);
+}
+
+.modal-content form input,
+.modal-content form textarea {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: transparent;
+  color: var(--text-color);
+  font-weight: 500;
+  transition: border-color 0.3s ease, color 0.3s ease;
+}
+
+.modal-content form input:focus,
+.modal-content form textarea:focus {
+  outline: none;
+  border-color: var(--border-color);
+  color: var(--border-color);
+  background-color: #f9fbfc;
+}
+
+.btn-primary {
+  background-color: var(--border-color);
+  border: none;
+  padding: 10px 16px;
+  color: var(--text-hover-color);
+  cursor: pointer;
+  margin-right: 10px;
+  border-radius: 4px;
+  font-weight: 600;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  box-shadow: 0 3px 8px rgba(3, 30, 54, 0.3);
+}
+
+.btn-primary:hover {
+  background-color: var(--btn-hover-bg);
+  color: var(--border-color);
+  box-shadow: 0 5px 15px rgba(132, 189, 197, 0.6);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  padding: 10px 16px;
+  color: var(--text-color);
+  cursor: pointer;
+  border-radius: 4px;
+  font-weight: 600;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background-color: var(--border-color);
+  color: var(--text-hover-color);
+}

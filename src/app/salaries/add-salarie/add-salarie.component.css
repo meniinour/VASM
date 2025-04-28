@@ -1,73 +1,100 @@
 :host {
-    --bg-color: #dce5ed;
-    --border-color: #84bdc5;
-    --text-color: #84bdc5;
-  }
-  .ok {
-    background-color: #ffff;
-  }
-  
-  .container {
-    display: flex;
-    height: 100vh;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-  }
-  
-  .content-area {
-    flex: 1;
-    margin-left: 60px;
-    padding: 20px;
-    border: 5px solid var(--border-color);
-    transition: margin-left 0.3s ease;
-  }
-  
-  .content-area.sidebar-expanded {
-    margin-left: 250px;
-  }
-  
-  .form {
-    max-width: 400px;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  label {
-    margin-top: 15px;
-    margin-bottom: 5px;
-  }
-  
-  input {
-    padding: 8px;
-    border-radius: 4px;
-    border: 1px solid var(--border-color);
-    background-color: transparent;
-    color: var(--text-color);
-  }
-  
-  input::placeholder {
-    color: #a0c4ca;
-  }
-  
-  .error-msg {
-    color: #f44336;
-    font-size: 12px;
-    margin-top: 4px;
-  }
-  
-  .btn-primary {
-    margin-top: 20px;
-    background-color: var(--border-color);
-    border: none;
-    padding: 10px;
-    color: var(--text-color);
-    font-weight: 600;
-    cursor: pointer;
-    border-radius: 4px;
-  }
-  
-  .btn-primary:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-  
+  --bg-color: #fbfaf6;          /* Off-white background */
+  --border-color: #031e36;      /* Primary dark blue border */
+  --text-color: #84bdc5;        /* Accent cyan text */
+  --placeholder-color: rgba(132, 189, 197, 0.6); /* lighter cyan for placeholders */
+  --error-color: #031e36;       /* Using dark blue for error for palette consistency */
+  --btn-bg: #031e36;            /* Dark blue button background */
+  --btn-hover-bg: #84bdc5;      /* Accent cyan button hover */
+}
+
+.ok {
+  background-color: #fbfaf6; /* off-white background */
+}
+
+.container {
+  display: flex;
+  height: 100vh;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+.content-area {
+  margin-top: 70px;
+  flex: 1;
+  margin-left: 60px;
+  padding: 20px;
+  border: 5px solid var(--border-color);
+  transition: margin-left 0.3s ease;
+  background-color: #f3f6fa; /* subtle card background */
+  border-radius: 8px;
+}
+
+.content-area.sidebar-expanded {
+  margin-left: 250px;
+}
+
+.form {
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-top: 15px;
+  margin-bottom: 5px;
+  color: var(--border-color);
+  font-weight: 600;
+}
+
+input {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  background-color: transparent;
+  color: var(--text-color);
+  font-weight: 500;
+  transition: border-color 0.3s ease, color 0.3s ease;
+}
+
+input::placeholder {
+  color: var(--placeholder-color);
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--btn-bg);
+  color: var(--btn-bg);
+  background-color: #f9fbfc;
+}
+
+.error-msg {
+  color: var(--error-color);
+  font-size: 12px;
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+.btn-primary {
+  margin-top: 20px;
+  background-color: var(--btn-bg);
+  border: none;
+  padding: 10px;
+  color: var(--bg-color);
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  box-shadow: 0 3px 8px rgba(3, 30, 54, 0.3);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--btn-hover-bg);
+  color: var(--btn-bg);
+  box-shadow: 0 5px 15px rgba(132, 189, 197, 0.6);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

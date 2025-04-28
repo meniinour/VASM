@@ -7,8 +7,9 @@
   display:fixed;
   height: 200vh;
   margin-top: 90px;
-  margin-left: 100px;
+  margin-left: 120px;
   background-color: #f5f7f9;
+  position:center;
 }
 
 /* Content area */
