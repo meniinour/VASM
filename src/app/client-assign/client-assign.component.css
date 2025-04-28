@@ -5,7 +5,7 @@
 /* Main container */
 .container {
   display:fixed;
-  height: 230vh;
+  height: 200vh;
   margin-top: 90px;
   margin-left: 100px;
   background-color: #f5f7f9;
@@ -113,10 +113,13 @@
 /* Tables */
 .tables {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column; /* Ajouté */
+  gap: 20px;              /* Optionnel : espace entre les tableaux */
 }
 
-.visites-table, .rdv-table {
+
+.visites-table  {
+  margin-left: 20px;
   width: 48%;
   background-color: #05294a;
   border-radius: 5px;
@@ -124,6 +127,16 @@
   border: 2px solid #84bdc5;
   color: #f5fafd;
 }
+.rdv-table{
+  margin-left: 20px;
+  width: 80%;
+  background-color: #05294a;
+  border-radius: 5px;
+  padding: 10px;
+  border: 2px solid #84bdc5;
+  color: #f5fafd;
+}
+
 
 .table-title {
   font-weight: bold;

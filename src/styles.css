@@ -24,11 +24,7 @@
     --assistant-message-bg: #424242;
   }
   
-  body {
-    background-color: #031e36;
-    color: var(--text-color);
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
+ 
   /* Ajout de la classe pour le thème sombre */
   :root {
     /* Couleurs principales */
@@ -68,8 +64,4 @@
   
   
   
-html, body { height: 100%; }
-body { background-color:#031e36; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

@@ -1,8 +1,8 @@
 :host {
-    --bg-color: #f3f4f5;
-    --border-color: #84bdc5;
+    --bg-color: #fbfaf6;
+    --border-color: #031e36;
     --text-color: #84bdc5;
-    --btn-bg: #84bdc5;
+    --btn-bg: #031e36;
     --btn-hover-bg: #6ab2bd;
   }
   .ok {

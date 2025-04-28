@@ -29,7 +29,7 @@ import { ImportsExportsComponent } from './imports-exports/imports-exports.compo
 import { StatistiquesComponent } from './statistiques/statistiques.component';
 import { TableauBordComponent } from './tableau-bord/tableau-bord.component';
 import { SpstComponent } from './spst/spst.component';
-
+import { FeedbackComponent } from './feedback/feedback.component';
 export const routes: Routes = [
     { path: '', redirectTo: 'welcome', pathMatch: 'full' },
     {path: 'welcome',component: WelcomeComponent},
@@ -61,8 +61,6 @@ export const routes: Routes = [
     { path: 'imports', component: ImportsExportsComponent },
     { path: 'tableau-bord', component: TableauBordComponent },
     { path: 'spst', component: SpstComponent },
-  
-
-
+    {path: 'feedback', component: FeedbackComponent},
 ];
 
