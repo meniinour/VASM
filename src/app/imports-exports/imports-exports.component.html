@@ -1,14 +1,20 @@
 <div class="ok">
-   <div class="container">
+  <div class="container">
     <app-my-header></app-my-header>
     <app-sidebar-client></app-sidebar-client>
     <div class="content-area" [ngClass]="{'sidebar-expanded': !sidebarCollapsed}">
       <h1>Impressions, Imports et Exports</h1>
   
       <div class="tabs">
-        <button [class.active]="activeTab === 'import'" (click)="setActiveTab('import')">Import de fichiers</button>
-        <button [class.active]="activeTab === 'export'" (click)="setActiveTab('export')">Export de données</button>
-        <button [class.active]="activeTab === 'impressions'" (click)="setActiveTab('impressions')">Impressions</button>
+        <button [class.active]="activeTab === 'import'" (click)="setActiveTab('import')">
+          Import de fichiers
+        </button>
+        <button [class.active]="activeTab === 'export'" (click)="setActiveTab('export')">
+          Export de données
+        </button>
+        <button [class.active]="activeTab === 'impressions'" (click)="setActiveTab('impressions')">
+          Impressions
+        </button>
       </div>
   
       <div class="tab-content">
@@ -24,7 +30,7 @@
                  (drop)="onDrop($event)"
                  [class.active]="dragActive">
               <p>Glisser-déposer un fichier ici ou</p>
-              <button (click)="triggerFileInput()">Parcourir</button>
+              <button (click)="triggerFileInput()">Parcourir les fichiers</button>
               <input type="file" id="file-upload" (change)="onFileSelected($event)" accept=".csv,.xlsx" hidden>
             </div>
   
@@ -33,7 +39,9 @@
               <button (click)="removeFile()">×</button>
             </div>
   
-            <button (click)="importFile()" [disabled]="!selectedFile" class="btn-primary">Importer</button>
+            <button (click)="importFile()" [disabled]="!selectedFile" class="btn-primary">
+              Importer
+            </button>
           </div>
         </section>
   
@@ -67,7 +75,9 @@
             <label>au:</label>
             <input type="date" [(ngModel)]="exportDateTo" />
   
-            <button (click)="exportData()" class="btn-primary">Exporter</button>
+            <button (click)="exportData()" class="btn-primary">
+              Exporter
+            </button>
           </div>
         </section>
   
@@ -101,7 +111,9 @@
             <label>au:</label>
             <input type="date" [(ngModel)]="documentDateTo" />
   
-            <button (click)="printDocument()" class="btn-primary">Imprimer</button>
+            <button (click)="printDocument()" class="btn-primary">
+              Imprimer
+            </button>
           </div>
         </section>
       </div>

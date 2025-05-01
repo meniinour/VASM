@@ -1,170 +1,297 @@
-<div class="ok">
- <app-my-header></app-my-header>
-  <div class="container">
-    <app-sidebar-client></app-sidebar-client>
-    <div class="content-area" [ngClass]="{'sidebar-expanded': !sidebarCollapsed}">
-        <div class="header">
-          <h1>Statistiques</h1>
-          
-          <div class="period-selector">
-            <button (click)="previousPeriod()"><i class="fas fa-chevron-left"></i></button>
-            <span>{{ currentPeriodLabel }}</span>
-            <button (click)="nextPeriod()"><i class="fas fa-chevron-right"></i></button>
-            
-            <div class="view-selector">
-              <button [class.active]="currentView === 'month'" (click)="changeView('month')">Mois</button>
-              <button [class.active]="currentView === 'quarter'" (click)="changeView('quarter')">Trimestre</button>
-              <button [class.active]="currentView === 'year'" (click)="changeView('year')">Année</button>
-            </div>
-          </div>
-        </div>
+<app-my-header></app-my-header>
+<div class="container">
+  <app-sidebar-client></app-sidebar-client>
+  <div class="content-area" [ngClass]="{'sidebar-expanded': !sidebarCollapsed}">
+    <div class="header">
+      <h1>Statistiques</h1>
+      
+      <div class="period-selector">
+        <button (click)="previousPeriod()" title="Période précédente"><i class="fas fa-chevron-left"></i></button>
+        <span>{{ currentPeriodLabel }}</span>
+        <button (click)="nextPeriod()" title="Période suivante"><i class="fas fa-chevron-right"></i></button>
         
-        <div class="filters">
-          <div class="filter-group">
-            <label for="client-filter">Client:</label>
-            <select id="client-filter" [(ngModel)]="filters.client">
-              <option value="">Tous les clients</option>
-              <option *ngFor="let client of clients" [value]="client.id">{{ client.name }}</option>
-            </select>
-          </div>
-          
-          <div class="filter-group">
-            <label for="type-filter">Type de visite:</label>
-            <select id="type-filter" [(ngModel)]="filters.visitType">
-              <option value="">Tous les types</option>
-              <option value="VIPP">VIPP</option>
-              <option value="VIPI">VIPI</option>
-              <option value="SIR">SIR</option>
-            </select>
-          </div>
-          
-          <button class="apply-filters" (click)="applyFilters()">Appliquer</button>
-        </div>
-        
-        <!-- Statistiques Générales -->
-        <div class="stats-section">
-          <h2>Statistiques Générales</h2>
-          
-          <div class="stats-grid">
-            <div class="stat-card">
-              <div class="stat-icon">
-                <i class="fas fa-calendar-check"></i>
-              </div>
-              <div class="stat-content">
-                <div class="stat-value">{{ generalStats.totalVisits }}</div>
-                <div class="stat-label">Visites médicales</div>
-              </div>
-            </div>
-            
-            <div class="stat-card">
-              <div class="stat-icon">
-                <i class="fas fa-user-md"></i>
-              </div>
-              <div class="stat-content">
-                <div class="stat-value">{{ generalStats.totalEmployees }}</div>
-                <div class="stat-label">Salariés suivis</div>
-              </div>
-            </div>
-            
-            <div class="stat-card">
-              <div class="stat-icon">
-                <i class="fas fa-building"></i>
-              </div>
-              <div class="stat-content">
-                <div class="stat-value">{{ generalStats.totalClients }}</div>
-                <div class="stat-label">Clients actifs</div>
-              </div>
-            </div>
-            
-            <div class="stat-card">
-              <div class="stat-icon">
-                <i class="fas fa-check-circle"></i>
-              </div>
-              <div class="stat-content">
-                <div class="stat-value">{{ generalStats.completionRate }}%</div>
-                <div class="stat-label">Taux de réalisation</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Graphiques -->
-        <div class="charts-section">
-          <div class="chart-container">
-            <h2>Répartition des visites par type</h2>
-            <canvas id="visitTypeChart"></canvas>
-          </div>
-          
-          <div class="chart-container">
-            <h2>Évolution mensuelle des visites</h2>
-            <canvas id="visitsOverTimeChart"></canvas>
-          </div>
-          
-          <div class="chart-container">
-            <h2>Répartition par statut</h2>
-            <canvas id="statusDistributionChart"></canvas>
-          </div>
-          
-          <div class="chart-container">
-            <h2>Top 5 clients</h2>
-            <canvas id="topClientsChart"></canvas>
-          </div>
-        </div>
-        
-        <!-- Tableau de données détaillé -->
-        <div class="data-table-section">
-          <h2>Détails des visites</h2>
-          
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Type</th>
-                <th>Programmées</th>
-                <th>Effectuées</th>
-                <th>Annulées</th>
-                <th>Sans Réponse</th>
-                <th>Total</th>
-                <th>% Réalisation</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let data of visitDetailsData">
-                <td>{{ data.type }}</td>
-                <td>{{ data.scheduled }}</td>
-                <td>{{ data.completed }}</td>
-                <td>{{ data.cancelled }}</td>
-                <td>{{ data.noResponse }}</td>
-                <td>{{ data.total }}</td>
-                <td>{{ data.completionRate }}%</td>
-              </tr>
-            </tbody>
-            <tfoot>
-              <tr>
-                <td><strong>Total</strong></td>
-                <td>{{ getTotalForColumn('scheduled') }}</td>
-                <td>{{ getTotalForColumn('completed') }}</td>
-                <td>{{ getTotalForColumn('cancelled') }}</td>
-                <td>{{ getTotalForColumn('noResponse') }}</td>
-                <td>{{ getTotalForColumn('total') }}</td>
-                <td>{{ getAverageCompletionRate() }}%</td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-        
-        <!-- Export des données -->
-        <div class="export-section">
-          <button class="export-btn" (click)="exportData('pdf')">
-            <i class="fas fa-file-pdf"></i> Exporter en PDF
-          </button>
-          <button class="export-btn" (click)="exportData('xlsx')">
-            <i class="fas fa-file-excel"></i> Exporter en Excel
-          </button>
-          <button class="export-btn" (click)="exportData('csv')">
-            <i class="fas fa-file-csv"></i> Exporter en CSV
-          </button>
+        <div class="view-selector">
+          <button [class.active]="currentView === 'month'" (click)="changeView('month')">Mois</button>
+          <button [class.active]="currentView === 'quarter'" (click)="changeView('quarter')">Trimestre</button>
+          <button [class.active]="currentView === 'year'" (click)="changeView('year')">Année</button>
         </div>
       </div>
     </div>
-    ></div>
-  
+    
+    <div class="filters">
+      <div class="filter-group">
+        <label for="client-filter">Client:</label>
+        <select id="client-filter" [(ngModel)]="filters.client">
+          <option value="">Tous les clients</option>
+          <option *ngFor="let client of clients" [value]="client.id">{{ client.name }}</option>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <label for="type-filter">Type de visite:</label>
+        <select id="type-filter" [(ngModel)]="filters.visitType">
+          <option value="">Tous les types</option>
+          <option value="VIPP">VIPP</option>
+          <option value="VIPI">VIPI</option>
+          <option value="SIR A">SIR A</option>
+          <option value="SIR B">SIR B</option>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <label for="period-filter">Période:</label>
+        <select id="period-filter" [(ngModel)]="filters.period">
+          <option value="current">Période actuelle</option>
+          <option value="previous">Période précédente</option>
+          <option value="year">Année complète</option>
+        </select>
+      </div>
+      
+      <button class="apply-filters" (click)="applyFilters()">
+        <i class="fas fa-filter"></i> Appliquer
+      </button>
+    </div>
+    
+    <!-- Statistiques Générales -->
+    <div class="stats-section">
+      <h2>Statistiques Générales</h2>
+      
+      <div class="stats-grid">
+        <div class="stat-card" (click)="showVisitDetails()">
+          <div class="stat-icon">
+            <i class="fas fa-calendar-check"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value" data-id="totalVisits">{{ generalStats.totalVisits }}</div>
+            <div class="stat-label">Visites médicales</div>
+          </div>
+        </div>
+        
+        <div class="stat-card" (click)="showEmployeeDetails()">
+          <div class="stat-icon">
+            <i class="fas fa-user-md"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value" data-id="totalEmployees">{{ generalStats.totalEmployees }}</div>
+            <div class="stat-label">Salariés suivis</div>
+          </div>
+        </div>
+        
+        <div class="stat-card" (click)="showClientDetails()">
+          <div class="stat-icon">
+            <i class="fas fa-building"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value" data-id="totalClients">{{ generalStats.totalClients }}</div>
+            <div class="stat-label">Clients actifs</div>
+          </div>
+        </div>
+        
+        <div class="stat-card" (click)="showCompletionDetails()">
+          <div class="stat-icon">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value" data-id="completionRate">{{ generalStats.completionRate }}%</div>
+            <div class="stat-label">Taux de réalisation</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Tendances et Evolution -->
+    <div class="stats-section">
+      <h2>Tendances et Évolution</h2>
+      
+      <div class="stats-grid">
+        <div class="stat-card trend-card" [class.positive]="trends.visits > 0" [class.negative]="trends.visits < 0">
+          <div class="stat-icon">
+            <i class="fas" [ngClass]="trends.visits > 0 ? 'fa-arrow-up' : 'fa-arrow-down'"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value">{{ trends.visits > 0 ? '+' : '' }}{{ trends.visits }}%</div>
+            <div class="stat-label">Évolution des visites</div>
+          </div>
+        </div>
+        
+        <div class="stat-card trend-card" [class.positive]="trends.completion > 0" [class.negative]="trends.completion < 0">
+          <div class="stat-icon">
+            <i class="fas" [ngClass]="trends.completion > 0 ? 'fa-arrow-up' : 'fa-arrow-down'"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value">{{ trends.completion > 0 ? '+' : '' }}{{ trends.completion }}%</div>
+            <div class="stat-label">Évolution du taux de réalisation</div>
+          </div>
+        </div>
+        
+        <div class="stat-card trend-card" [class.positive]="trends.cancellation < 0" [class.negative]="trends.cancellation > 0">
+          <div class="stat-icon">
+            <i class="fas" [ngClass]="trends.cancellation < 0 ? 'fa-arrow-down' : 'fa-arrow-up'"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value">{{ trends.cancellation > 0 ? '+' : '' }}{{ trends.cancellation }}%</div>
+            <div class="stat-label">Évolution des annulations</div>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-star"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value">{{ topPerformer }}</div>
+            <div class="stat-label">Top client du mois</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Graphiques -->
+    <div class="charts-section">
+      <div class="chart-container">
+        <h2>Répartition des visites par type</h2>
+        <div class="chart-legend">
+          <span *ngFor="let type of visitDetailsData; let i = index" class="legend-item">
+            <span class="color-dot" [style.background-color]="chartColors[i % chartColors.length]"></span>
+            {{ type.type }}: {{ type.completed }} visites
+          </span>
+        </div>
+        <canvas id="visitTypeChart"></canvas>
+      </div>
+      
+      <div class="chart-container">
+        <h2>Évolution mensuelle des visites</h2>
+        <div class="chart-controls">
+          <button class="chart-control-btn" [class.active]="activeChartFilter === 'all'" (click)="filterChart('all')">Toutes</button>
+          <button class="chart-control-btn" [class.active]="activeChartFilter === 'scheduled'" (click)="filterChart('scheduled')">Programmées</button>
+          <button class="chart-control-btn" [class.active]="activeChartFilter === 'completed'" (click)="filterChart('completed')">Effectuées</button>
+        </div>
+        <canvas id="visitsOverTimeChart"></canvas>
+      </div>
+      
+      <div class="chart-container">
+        <h2>Répartition par statut</h2>
+        <div class="status-legend">
+          <div class="status-item">
+            <span class="status-dot completed"></span>
+            Effectuées: {{ getTotalForColumn('completed') }} ({{ getAverageCompletionRate() }}%)
+          </div>
+          <div class="status-item">
+            <span class="status-dot cancelled"></span>
+            Annulées: {{ getTotalForColumn('cancelled') }} ({{ Math.round((getTotalForColumn('cancelled')/getTotalForColumn('scheduled'))*100) }}%)
+          </div>
+          <div class="status-item">
+            <span class="status-dot no-response"></span>
+            Sans Réponse: {{ getTotalForColumn('noResponse') }} ({{ Math.round((getTotalForColumn('noResponse')/getTotalForColumn('scheduled'))*100) }}%)
+          </div>
+        </div>
+        <canvas id="statusDistributionChart"></canvas>
+      </div>
+      
+      <div class="chart-container">
+        <h2>Top 5 clients</h2>
+        <div class="top-clients-info">
+          <span class="top-client-label">Total de visites pour les top 5 clients: {{ topClientsTotal }}</span>
+          <span class="top-client-percent">{{ Math.round((topClientsTotal/generalStats.totalVisits)*100) }}% du total des visites</span>
+        </div>
+        <canvas id="topClientsChart"></canvas>
+      </div>
+    </div>
+    
+    <!-- Tableau de données détaillé -->
+    <div class="data-table-section">
+      <div class="table-header">
+        <h2>Détails des visites</h2>
+        <div class="table-actions">
+          <button class="table-action-btn" (click)="refreshData()" title="Rafraîchir les données">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+          <button class="table-action-btn" (click)="toggleTableView()" title="Changer la vue">
+            <i class="fas" [ngClass]="expandedTableView ? 'fa-compress-alt' : 'fa-expand-alt'"></i>
+          </button>
+        </div>
+      </div>
+      
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th (click)="sortTable('type')">
+                Type <i class="fas" [ngClass]="sortConfig.key === 'type' ? (sortConfig.ascending ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+              </th>
+              <th (click)="sortTable('scheduled')">
+                Programmées <i class="fas" [ngClass]="sortConfig.key === 'scheduled' ? (sortConfig.ascending ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+              </th>
+              <th (click)="sortTable('completed')">
+                Effectuées <i class="fas" [ngClass]="sortConfig.key === 'completed' ? (sortConfig.ascending ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+              </th>
+              <th (click)="sortTable('cancelled')">
+                Annulées <i class="fas" [ngClass]="sortConfig.key === 'cancelled' ? (sortConfig.ascending ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+              </th>
+              <th (click)="sortTable('noResponse')">
+                Sans Réponse <i class="fas" [ngClass]="sortConfig.key === 'noResponse' ? (sortConfig.ascending ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+              </th>
+              <th (click)="sortTable('total')">
+                Total <i class="fas" [ngClass]="sortConfig.key === 'total' ? (sortConfig.ascending ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+              </th>
+              <th (click)="sortTable('completionRate')">
+                % Réalisation <i class="fas" [ngClass]="sortConfig.key === 'completionRate' ? (sortConfig.ascending ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of sortedVisitDetailsData; let odd = odd" [class.highlight-row]="data.completionRate > 90" [class.odd-row]="odd">
+              <td><span class="visit-type-badge" [ngClass]="'type-' + data.type.replace(' ', '-').toLowerCase()">{{ data.type }}</span></td>
+              <td>{{ data.scheduled }}</td>
+              <td>{{ data.completed }}</td>
+              <td>{{ data.cancelled }}</td>
+              <td>{{ data.noResponse }}</td>
+              <td>{{ data.total }}</td>
+              <td>
+                <div class="completion-bar-container">
+                  <div class="completion-bar" [style.width.%]="data.completionRate" [ngClass]="getCompletionClass(data.completionRate)"></div>
+                  <span>{{ data.completionRate }}%</span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td><strong>Total</strong></td>
+              <td>{{ getTotalForColumn('scheduled') }}</td>
+              <td>{{ getTotalForColumn('completed') }}</td>
+              <td>{{ getTotalForColumn('cancelled') }}</td>
+              <td>{{ getTotalForColumn('noResponse') }}</td>
+              <td>{{ getTotalForColumn('total') }}</td>
+              <td>
+                <div class="completion-bar-container">
+                  <div class="completion-bar" [style.width.%]="getAverageCompletionRate()" [ngClass]="getCompletionClass(getAverageCompletionRate())"></div>
+                  <span>{{ getAverageCompletionRate() }}%</span>
+                </div>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+    
+    <!-- Export des données -->
+    <div class="export-section">
+      <div class="export-info">
+        <i class="fas fa-info-circle"></i>
+        <span>Les données exportées incluent les filtres appliqués pour {{ currentPeriodLabel }}</span>
+      </div>
+      <div class="export-buttons">
+        <button class="export-btn" (click)="exportData('pdf')">
+          <i class="fas fa-file-pdf"></i> Exporter en PDF
+        </button>
+        <button class="export-btn" (click)="exportData('xlsx')">
+          <i class="fas fa-file-excel"></i> Exporter en Excel
+        </button>
+        <button class="export-btn" (click)="exportData('csv')">
+          <i class="fas fa-file-csv"></i> Exporter en CSV
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
