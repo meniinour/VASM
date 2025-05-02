@@ -1,0 +1,28 @@
+<div class="feedback-container">
+    <h2>Merci de partager votre avis, il nous permet de mieux répondre à vos attentes</h2>
+    <form [formGroup]="feedbackForm" (ngSubmit)="onSubmit()">
+      <textarea
+        id="feedbackText"
+        formControlName="feedbackText"
+        placeholder="Exprimez-vous !..."
+      ></textarea>
+  
+      <div class="rating-container">
+        <span
+          *ngFor="let star of [1, 2, 3, 4, 5]"
+          class="star"
+          [class.filled]="star <= rating"
+          (click)="setRating(star)"
+        >
+          &#9733;
+        </span>
+      </div>
+  
+      <button type="submit">Valider l'envoi</button>
+    </form>
+  
+    <div *ngIf="submitted" class="thank-you">
+      Votre avis compte, merci !
+    </div>
+  </div>
+  

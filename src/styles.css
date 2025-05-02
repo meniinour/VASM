@@ -2,7 +2,7 @@
 
 :root {
     /* Variables pour le thème clair */
-    --background-color: #031e36;
+    --background-color: #fbfaf6;
     --text-color: #333333;
     --primary-color: #031e36;
     --secondary-color: #6c757d;
@@ -25,7 +25,7 @@
   }
   
   body {
-    background-color: #031e36;
+    background-color: #fbfaf6;
     color: var(--text-color);
     transition: background-color 0.3s ease, color 0.3s ease;
   }

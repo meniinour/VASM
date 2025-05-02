@@ -30,13 +30,14 @@ import { FormComponent } from './form/form.component';
 import { AccesComponent } from './acces/acces.component';
 import { SpstComponent } from './spst/spst.component';
 import { ImportsExportsComponent } from './imports-exports/imports-exports.component';
-import { TableauBordComponent } from './statistiques/tableau-bord/tableau-bord.component';
+import { TableauBordComponent } from './tableau-bord/tableau-bord.component';
 import { ListeSalariesComponent } from './salaries/liste-salaries/liste-salaries.component';
 import { SalariesComponent } from './salaries/salaries.component';
 import { SidebarClientComponent } from './sidebar-client/sidebar-client.component';
 import { AddSalarieComponent } from './salaries/add-salarie/add-salarie.component';
 import { StatistiquesComponent } from './statistiques/statistiques.component';
 import { MailClientComponent } from './mail-client/mail-client.component';
+import { PaymentComponent } from './payment/payment.component';
 
 
 
@@ -81,6 +82,7 @@ export const routes: Routes = [
     { path: 'client-assign/:id', component: ClientAssignComponent }, // 👈 route pour le profil
     { path: 'documentation' , component: DocumentationComponent } ,// Redirige vers la page d'accueil pour les routes non trouvées
     { path: 'navbar',component: NavbarComponent},
+    { path: 'payment',component: PaymentComponent},
 
 ];
 

@@ -1,199 +1,443 @@
-<div class="container">
-  <app-sidebar-client></app-sidebar-client>
-  <div class="content-area" [ngClass]="{'sidebar-expanded': !sidebarCollapsed}">
-    <!-- Filters and Actions -->
-    <div class="filters-actions">
-      <div class="filters">
-        <select>
-          <option>Type de Suivi Visite:</option>
-        </select>
-        <select>
-          <option>Sans Suivi Medical:</option>
-        </select>
-        <select>
-          <option>Etablissement:</option>
-        </select>
-        <select>
-          <option>Assistante:</option>
-        </select>
-        <select>
-          <option>Type de visite:</option>
-        </select>
-        <select>
-          <option>RDV à annuler</option>
-        </select>
-        <select>
-          <option>Nouvelle Visite</option>
-        </select>
-        <select>
-          <option>Relance</option>
-        </select>
-        <select>
-          <option>RDV Sans Réponse</option>
-        </select>
-        <button><i class="fas fa-search"></i></button>
-        <button><i class="fas fa-times"></i></button>
-      </div>
-      
-      <div class="actions">
-        <button><i class="fas fa-envelope"></i> Manager</button>
-        <button><i class="fas fa-envelope"></i> Assistante SPST</button>
-        <button><i class="fas fa-envelope"></i> RRH Client</button>
-        <button><i class="fas fa-calendar-plus"></i> Nouveau RDV</button>
-        <button><i class="fas fa-ambulance"></i> Déclarer un incident</button>
-      </div>
-    </div>
+<!-- Main container with sidebar and content -->
+<div class="ok">
+  <app-my-header></app-my-header>
+  <div class="container">
+    <app-sidebar-client></app-sidebar-client>
     
-    <!-- Indicator Stats -->
-    <div class="indicator-stats">
-      <div class="indicator">Programmées: <span>145</span></div>
-      <div class="indicator">Suspendues: <span>73</span></div>
-      <div class="indicator">Sensibles en: <span>12</span></div>
-      <div class="indicator">Sans AS: <span>13</span></div>
-    </div>
-    
-    <!-- Main Content -->
-    <div class="main-content">
-      <!-- Collab Info -->
-      <div class="collab-info">
-        <div class="title">
-          Collaborateur
-          <button><i class="fas fa-chevron-left"></i></button>
-          <span>23533 / 06</span>
-          <button><i class="fas fa-chevron-right"></i></button>
+    <div class="content-area" [class.full-width]="sidebarCollapsed">
+      <!-- Filters and actions bar -->
+      <div class="filters-actions">
+        <div class="filters">
+          <select (change)="onFilterChange($event)">
+            <option value="">Établissement</option>
+            <option *ngFor="let etab of etablissements" [value]="etab">{{ etab }}</option>
+          </select>
+          
+          <select (change)="onFilterChange($event)">
+            <option value="">Assistante</option>
+            <option *ngFor="let assistant of assistants" [value]="assistant">{{ assistant }}</option>
+          </select>
+          
+          <button (click)="applyFilters()">Appliquer filtres</button>
+          <button (click)="clearFilters()">Effacer filtres</button>
         </div>
         
-        <div class="content">
-          <p>Monsieur Louis MANAS né le 12/09/1996</p>
-          <p>En CDI depuis le 11/04/2023</p>
-          <p>ASTBTP13 Marseille / INGENIEUR</p>
-          <p>Surveillance Médicale: SIR B</p>
-          <p>code PCS: 386C</p>
+        <div class="actions">
+          <button (click)="contactManager()">
+            <i class="fas fa-user-tie"></i> Manager
+          </button>
+          <button (click)="contactAssistant()">
+            <i class="fas fa-headset"></i> Assistante SPST
+          </button>
+          <button (click)="contactRRH()">
+            <i class="fas fa-id-card"></i> RRH Client
+          </button>
+          <button (click)="accessSPST()">
+            <i class="fas fa-hospital"></i> Portail SPST
+          </button>
+          <button (click)="declareIncident()">
+            <i class="fas fa-exclamation-triangle"></i> Déclarer incident
+          </button>
         </div>
       </div>
       
-      <!-- SPST Info -->
-      <div class="spst-info">
-        <div class="title">SPST <span>52012</span></div>
-        <div class="content">
-          <p>ASTBTP - MARSEILLE-MICHELET - 344 bd Michelet</p>
-          <p>13009 MARSEILLE</p>
-          <p>Téléphone: 33 4 91 23 03 30</p>
-          <p>Url portail: url</p>
-          <p>Identifiant: 52012</p>
-          <button><i class="fas fa-arrow-right"></i> Accéder</button>
-          <p>Mme MARTIN Lea en congés jusqu'au 06/09 envoyer à Mme</p>
+      <!-- Indicators -->
+      <div class="indicator-stats">
+        <div class="indicator" (click)="filterByStatus('programmees')">
+          <div class="indicator-label">Programmées</div>
+          <span>{{ indicators.programmees }}</span>
+        </div>
+        <div class="indicator" (click)="filterByStatus('suspendues')">
+          <div class="indicator-label">Suspendues</div>
+          <span>{{ indicators.suspendues }}</span>
+        </div>
+        <div class="indicator" (click)="filterByStatus('sensibles')">
+          <div class="indicator-label">Sensibles</div>
+          <span>{{ indicators.sensibles }}</span>
+        </div>
+        <div class="indicator" (click)="filterByStatus('sansAS')">
+          <div class="indicator-label">Sans AS</div>
+          <span>{{ indicators.sansAS }}</span>
         </div>
       </div>
       
-      <!-- Contact Info -->
-      <div class="contact-info">
-        <div class="title">Contact</div>
-        <div class="content">
-          <p>Assistant-e: MATTONE SABRINA - 33 4 91 23 01 59 - test-salaries&#64;vigiscope.fr</p>
+      <!-- Main information cards -->
+      <div class="main-content">
+        <!-- Employee information -->
+        <div class="collab-info">
+          <div class="title">
+            Collaborateur
+            <div class="nav-buttons" *ngIf="totalEmployees > 1">
+              <button (click)="navigateEmployee('prev')" [disabled]="currentEmployeeIndex <= 1">
+                <i class="fas fa-chevron-left"></i>
+              </button>
+              <span>{{ currentEmployeeIndex }}/{{ totalEmployees }}</span>
+              <button (click)="navigateEmployee('next')" [disabled]="currentEmployeeIndex >= totalEmployees">
+                <i class="fas fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+          <div class="content" *ngIf="employee">
+            <p><strong>Nom:</strong> {{ employee.name }}</p>
+            <p><strong>Sexe:</strong> {{ employee.gender }}</p>
+            <p><strong>Date de naissance:</strong> {{ employee.birthdate }}</p>
+            <p><strong>Type de contrat:</strong> {{ employee.contractType }}</p>
+            <p><strong>Date d'embauche:</strong> {{ employee.startDate }}</p>
+            <p><strong>Suivi SPST:</strong> {{ employee.spst }}</p>
+            <p><strong>Fonction:</strong> {{ employee.role }}</p>
+            <p><strong>Surveillance:</strong> {{ employee.surveillance }}</p>
+            <p><strong>Code PCS:</strong> {{ employee.pcsCode }}</p>
+          </div>
+        </div>
+        
+        <!-- SPST information -->
+        <div class="spst-info">
+          <div class="title">Service SPST</div>
+          <div class="content" *ngIf="spst">
+            <p><strong>Nom:</strong> {{ spst.name || 'ASTBTP13 Marseille' }}</p>
+            <p><strong>Adresse:</strong> {{ spst.address || '35 Rue Nau, 13006 Marseille' }}</p>
+            <p><strong>Code postal:</strong> {{ spst.postalCode || '13006' }}</p>
+            <p><strong>Ville:</strong> {{ spst.city || 'Marseille' }}</p>
+            <p><strong>Téléphone:</strong> {{ spst.phone || '04 91 23 03 30' }}</p>
+            <p><strong>Site web:</strong> {{ spst.url || 'https://www.astbtp13.fr' }}</p>
+            <p><strong>Message:</strong> {{ spst.message || 'Service disponible 24/7' }}</p>
+          </div>
+        </div>
+        
+        <!-- Contact information -->
+        <div class="contact-info">
+          <div class="title">Contact Entreprise</div>
+          <div class="content" *ngIf="contact">
+            <p><strong>Adresse:</strong> {{ contact.address }}</p>
+            <p><strong>Ville:</strong> {{ contact.city || 'Marseille' }}</p>
+            <p><strong>Téléphone:</strong> {{ contact.phone }}</p>
+            <p><strong>Email:</strong> {{ contact.email }}</p>
+            <p><strong>Site web:</strong> {{ contact.website }}</p>
+            <p><strong>Contact principal:</strong> {{ contact.person }}</p>
+            <p *ngIf="contact.assistant"><strong>Assistant(e):</strong> {{ contact.assistant }}</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Tables section -->
+      <div class="tables">
+        <!-- Visits table -->
+        <div class="visites-table">
+          <div class="table-title">
+            <span>Visites médicales</span>
+            <div class="table-actions">
+              <button (click)="openNewVisitModal()">
+                <i class="fas fa-plus"></i> Nouvelle visite
+              </button>
+              <button (click)="exportVisits('excel')">
+                <i class="fas fa-file-excel"></i> Excel
+              </button>
+              <button (click)="exportVisits('pdf')">
+                <i class="fas fa-file-pdf"></i> PDF
+              </button>
+            </div>
+          </div>
+          
+          <table>
+            <thead>
+              <tr>
+                <th (click)="sortTable('visites', 'type')">Type <i class="fas fa-sort"></i></th>
+                <th (click)="sortTable('visites', 'etat')">État <i class="fas fa-sort"></i></th>
+                <th (click)="sortTable('visites', 'envisagee')">Date envisagée <i class="fas fa-sort"></i></th>
+                <th (click)="sortTable('visites', 'effectuee')">Date effectuée <i class="fas fa-sort"></i></th>
+                <th (click)="sortTable('visites', 'suivi')">Suivi <i class="fas fa-sort"></i></th>
+                <th (click)="sortTable('visites', 'apte')">Aptitude <i class="fas fa-sort"></i></th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let visite of visites">
+                <td>{{ visite.type }}</td>
+                <td>
+                  <span class="status" [ngClass]="'status-' + visite.etat.toLowerCase()">
+                    {{ visite.etat }}
+                  </span>
+                </td>
+                <td>{{ visite.envisagee }}</td>
+                <td>{{ visite.effectuee || '-' }}</td>
+                <td>{{ visite.suivi }}</td>
+                <td>
+                  <input type="checkbox" [checked]="visite.apte" disabled>
+                </td>
+                <td>
+                  <button (click)="viewVisiteDetails(visite)" title="Voir détails">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                  <button (click)="editVisite(visite)" title="Modifier">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button (click)="confirmDeleteVisite(visite)" title="Supprimer">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <!-- Appointments table -->
+        <div class="rdv-table">
+          <div class="table-title">
+            <span>Rendez-vous</span>
+            <div class="table-actions">
+              <button (click)="openNewAppointmentModal()">
+                <i class="fas fa-plus"></i> Nouveau RDV
+              </button>
+              <button (click)="exportAppointments('excel')">
+                <i class="fas fa-file-excel"></i> Excel
+              </button>
+              <button (click)="exportAppointments('pdf')">
+                <i class="fas fa-file-pdf"></i> PDF
+              </button>
+            </div>
+          </div>
+          
+          <table>
+            <thead>
+              <tr>
+                <th (click)="sortTable('rdv', 'date')">Date <i class="fas fa-sort"></i></th>
+                <th (click)="sortTable('rdv', 'envoi')">Date envoi <i class="fas fa-sort"></i></th>
+                <th (click)="sortTable('rdv', 'ar')">AR <i class="fas fa-sort"></i></th>
+                <th (click)="sortTable('rdv', 'ordonnance')">Ordonnance <i class="fas fa-sort"></i></th>
+                <th (click)="sortTable('rdv', 'accepte')">Accepté <i class="fas fa-sort"></i></th>
+                <th (click)="sortTable('rdv', 'excusable')">Excusable <i class="fas fa-sort"></i></th>
+                <th (click)="sortTable('rdv', 'reporte')">Reporté <i class="fas fa-sort"></i></th>
+                <th (click)="sortTable('rdv', 'honore')">Honoré <i class="fas fa-sort"></i></th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let rdv of rendezVous">
+                <td>{{ rdv.date }}</td>
+                <td>{{ rdv.envoi }}</td>
+                <td>
+                  <input type="checkbox" [checked]="rdv.ar" disabled>
+                </td>
+                <td>
+                  <input type="checkbox" [checked]="rdv.ordonnance" disabled>
+                </td>
+                <td>
+                  <input type="checkbox" [checked]="rdv.accepte" disabled>
+                </td>
+                <td>
+                  <input type="checkbox" [checked]="rdv.excusable" disabled>
+                </td>
+                <td>
+                  <input type="checkbox" [checked]="rdv.reporte" disabled>
+                </td>
+                <td>
+                  <input type="checkbox" [checked]="rdv.honore" disabled>
+                </td>
+                <td>
+                  <button (click)="viewRdvDetails(rdv)" title="Voir détails">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                  <button (click)="editRdv(rdv)" title="Modifier">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button (click)="confirmDeleteRdv(rdv)" title="Supprimer">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
-    
-    <!-- Tables -->
-    <div class="tables">
-      <!-- Visites Table -->
-      <div class="visites-table">
-        <div class="table-title">Visites</div>
-        <table>
-          <thead>
-            <tr>
-              <th>Type</th>
-              <th>Etat</th>
-              <th>Envisagée</th>
-              <th>Effectuée</th>
-              <th>Suivi</th>
-              <th>Apte</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>VIPP</td>
-              <td>Programmée</td>
-              <td>17/04/2025</td>
-              <td></td>
-              <td>SIR B</td>
-              <td><input type="checkbox" disabled></td>
-              <td>
-                <button><i class="fas fa-pencil-alt"></i></button>
-                <button><i class="fas fa-eye"></i></button>
-                <button><i class="fas fa-trash"></i></button>
-              </td>
-            </tr>
-            <tr>
-              <td>VIPP</td>
-              <td>Effectuée</td>
-              <td>30/06/2025</td>
-              <td>30/06/2025</td>
-              <td>SIR B</td>
-              <td><input type="checkbox" disabled></td>
-              <td>
-                <button><i class="fas fa-pencil-alt"></i></button>
-                <button><i class="fas fa-eye"></i></button>
-                <button><i class="fas fa-trash"></i></button>
-              </td>
-            </tr>
-            <tr>
-              <td>VIPI</td>
-              <td>Effectuée</td>
-              <td>04/02/2024</td>
-              <td>04/07/2023</td>
-              <td>SIR B</td>
-              <td><input type="checkbox" checked disabled></td>
-              <td>
-                <button><i class="fas fa-pencil-alt"></i></button>
-                <button><i class="fas fa-eye"></i></button>
-                <button><i class="fas fa-trash"></i></button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+  </div>
+  
+  <!-- Toast notification -->
+  <div class="toast" [class.show]="showToast" [class.success]="toastType === 'success'" [class.error]="toastType === 'error'">
+    {{ toastMessage }}
+  </div>
+  
+  <!-- Appointment Modal -->
+  <div class="modal-overlay" [class.active]="showAppointmentModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">{{ isEditingRdv ? 'Modifier rendez-vous' : 'Nouveau rendez-vous' }}</h2>
+        <button class="modal-close" (click)="closeAppointmentModal()">&times;</button>
       </div>
-          <!-- Rendez-Vous Table -->
-      <div class="rdv-table">
-        <div class="table-title">Rendez-Vous</div>
-        <table>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Envoi</th>
-              <th>AR</th>
-              <th>Ordonnance</th>
-              <th>Accepté</th>
-              <th>Excusable</th>
-              <th>Reporté</th>
-              <th>Honoré</th>
-              <th>Motif</th>
-              <th>Commentaire</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>04/03/2025 15:40</td>
-              <td>28/02/2025</td>
-              <td><input type="checkbox" disabled></td>
-              <td><input type="checkbox" disabled></td>
-              <td><input type="checkbox" disabled></td>
-              <td><input type="checkbox" disabled></td>
-              <td><input type="checkbox" disabled></td>
-              <td><input type="checkbox" disabled></td>
-              <td></td>
-              <td></td>
-              <td>
-                <button><i class="fas fa-pencil-alt"></i></button>
-                <button><i class="fas fa-eye"></i></button>
-                <button><i class="fas fa-trash"></i></button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="modal-body">
+        <form [formGroup]="appointmentForm">
+          <div class="form-group">
+            <label for="date">Date et heure</label>
+            <input type="text" id="date" formControlName="date" class="form-control" placeholder="JJ/MM/AAAA HH:MM">
+          </div>
+          <div class="form-group">
+            <label for="envoi">Date d'envoi</label>
+            <input type="text" id="envoi" formControlName="envoi" class="form-control" placeholder="JJ/MM/AAAA">
+          </div>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" formControlName="ar"> Accusé de réception
+            </label>
+          </div>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" formControlName="ordonnance"> Ordonnance
+            </label>
+          </div>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" formControlName="accepte"> Accepté
+            </label>
+          </div>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" formControlName="excusable"> Excusable
+            </label>
+          </div>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" formControlName="reporte"> Reporté
+            </label>
+          </div>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" formControlName="honore"> Honoré
+            </label>
+          </div>
+          <div class="form-group">
+            <label for="motif">Motif</label>
+            <input type="text" id="motif" formControlName="motif" class="form-control" placeholder="Motif du rendez-vous">
+          </div>
+          <div class="form-group">
+            <label for="commentaire">Commentaire</label>
+            <textarea id="commentaire" formControlName="commentaire" class="form-control" rows="3" placeholder="Commentaire supplémentaire"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="secondary" (click)="closeAppointmentModal()">Annuler</button>
+        <button class="primary" (click)="saveAppointment()">{{ isEditingRdv ? 'Mettre à jour' : 'Créer' }}</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Visit Modal -->
+  <div class="modal-overlay" [class.active]="showVisitModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">{{ isEditingVisite ? 'Modifier visite' : 'Nouvelle visite' }}</h2>
+        <button class="modal-close" (click)="closeVisitModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="visitForm">
+          <div class="form-group">
+            <label for="type">Type</label>
+            <select id="type" formControlName="type" class="form-control">
+              <option value="VIPP">VIPP</option>
+              <option value="VIPI">VIPI</option>
+              <option value="VIP">VIP</option>
+              <option value="VMS">VMS</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="etat">État</label>
+            <select id="etat" formControlName="etat" class="form-control">
+              <option value="Programmée">Programmée</option>
+              <option value="Effectuée">Effectuée</option>
+              <option value="Annulée">Annulée</option>
+              <option value="Reportée">Reportée</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="envisagee">Date envisagée</label>
+            <input type="text" id="envisagee" formControlName="envisagee" class="form-control" placeholder="JJ/MM/AAAA">
+          </div>
+          <div class="form-group" *ngIf="visitForm.get('etat')?.value === 'Effectuée'">
+            <label for="effectuee">Date effectuée</label>
+            <input type="text" id="effectuee" formControlName="effectuee" class="form-control" placeholder="JJ/MM/AAAA">
+          </div>
+          <div class="form-group">
+            <label for="suivi">Suivi</label>
+            <select id="suivi" formControlName="suivi" class="form-control">
+              <option value="SIR A">SIR A</option>
+              <option value="SIR B">SIR B</option>
+              <option value="SIA">SIA</option>
+              <option value="SIG">SIG</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" formControlName="apte"> Apte
+            </label>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="secondary" (click)="closeVisitModal()">Annuler</button>
+        <button class="primary" (click)="saveVisit()">{{ isEditingVisite ? 'Mettre à jour' : 'Créer' }}</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Incident Modal -->
+  <div class="modal-overlay" [class.active]="showIncidentModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Déclarer un incident</h2>
+        <button class="modal-close" (click)="closeIncidentModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="incidentForm">
+          <div class="form-group">
+            <label for="type">Type d'incident</label>
+            <select id="type" formControlName="type" class="form-control">
+              <option value="">Sélectionnez un type</option>
+              <option value="absence">Absence non justifiée</option>
+              <option value="retard">Retard important</option>
+              <option value="comportement">Problème de comportement</option>
+              <option value="technique">Problème technique</option>
+              <option value="autre">Autre</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="severity">Gravité</label>
+            <select id="severity" formControlName="severity" class="form-control">
+              <option value="low">Faible</option>
+              <option value="medium">Moyenne</option>
+              <option value="high">Élevée</option>
+              <option value="critical">Critique</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="date">Date</label>
+            <input type="date" id="date" formControlName="date" class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" formControlName="description" class="form-control" rows="5" placeholder="Décrivez l'incident"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="secondary" (click)="closeIncidentModal()">Annuler</button>
+        <button class="primary" (click)="submitIncident()">Déclarer</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Confirmation Modal -->
+  <div class="modal-overlay" [class.active]="showConfirmationModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Confirmation</h2>
+        <button class="modal-close" (click)="closeConfirmationModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>{{ confirmationMessage }}</p>
+      </div>
+      <div class="modal-footer">
+        <button class="secondary" (click)="closeConfirmationModal()">Annuler</button>
+        <button class="primary" (click)="confirmAction()">Confirmer</button>
       </div>
     </div>
   </div>

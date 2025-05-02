@@ -1,8 +1,11 @@
- <div class="dashboard-wrapper">
-      <app-my-header></app-my-header>
-        <app-documentation></app-documentation>
+<div class="dashboard-wrapper">
+  <app-my-header></app-my-header>
+  <app-sidebar></app-sidebar>
+  
   <!-- Left: Filters and Clients -->
   <div class="dashboard-main">
+    <h1 class="page-title">Tableau de bord clients</h1>
+    
     <div class="filters">
       <input
         type="text"
@@ -10,31 +13,105 @@
         class="search-bar"
         (input)="searchText = $any($event.target).value"
       />
+      
       <select class="indicator-filter" (change)="selectedIndicator = $any($event.target).value">
         <option value="">Tous les indicateurs</option>
         <option *ngFor="let ind of indicatorOptions" [value]="ind">
-          {{ ind }}
+          {{ getIndicatorLabel(ind) }}
         </option>
       </select>
+      
+      <select class="sort-filter" (change)="sortClients($any($event.target).value)">
+        <option value="name_asc">Nom (A-Z)</option>
+        <option value="name_desc">Nom (Z-A)</option>
+        <option value="id_asc">ID (croissant)</option>
+        <option value="id_desc">ID (décroissant)</option>
+        <option value="indicators">Nombre d'indicateurs</option>
+      </select>
+      
+      <div class="view-toggle">
+        <button 
+          [class.active]="viewMode === 'grid'"
+          (click)="viewMode = 'grid'">
+          <i class="fas fa-th-large"></i>
+        </button>
+        <button 
+          [class.active]="viewMode === 'list'"
+          (click)="viewMode = 'list'">
+          <i class="fas fa-list"></i>
+        </button>
+      </div>
     </div>
-    <div class="clients-container">
+    
+    <!-- Loading spinner -->
+    <div class="loading-spinner" *ngIf="isLoading">
+      <div class="spinner"></div>
+    </div>
+    
+    <!-- No results message -->
+    <div class="no-results" *ngIf="!isLoading && filteredClients.length === 0">
+      <div class="no-results-icon">🔍</div>
+      <p>Aucun client ne correspond à votre recherche</p>
+      <button class="action-button primary" (click)="resetFilters()">
+        Réinitialiser les filtres
+      </button>
+    </div>
+    
+    <!-- Client cards -->
+    <div class="clients-container" [class.grid-view]="viewMode === 'grid'" [class.list-view]="viewMode === 'list'" *ngIf="!isLoading && filteredClients.length > 0">
       <div
         class="client-card"
         *ngFor="let client of filteredClients"
         (click)="goToClientProfile(client.id)"
       >
-        <img [src]="client.logo" alt="Logo" class="client-logo" />
+        <div class="client-logo-container">
+          <img [src]="client.logo || 'assets/placeholder-logo.png'" alt="Logo client" class="client-logo" />
+        </div>
+        
         <div class="client-name">{{ client.name }}</div>
+        <div class="client-id">ID: {{ client.id }}</div>
+        
         <div class="indicators">
           <span class="indicator red" *ngIf="client.indicators.mouvements">
+            <i class="fas fa-exchange-alt indicator-icon"></i>
             {{ client.indicators.mouvements }}
           </span>
           <span class="indicator green" *ngIf="client.indicators.joursRetards">
+            <i class="fas fa-clock indicator-icon"></i>
             {{ client.indicators.joursRetards }}
           </span>
           <span class="indicator blue" *ngIf="client.indicators.etablissementsInconnus">
+            <i class="fas fa-building indicator-icon"></i>
             {{ client.indicators.etablissementsInconnus }}
           </span>
+          <span class="indicator orange" *ngIf="client.indicators.importsEnAttente">
+            <i class="fas fa-hourglass-half indicator-icon"></i>
+            {{ client.indicators.importsEnAttente }}
+          </span>
+          <span class="indicator magenta" *ngIf="client.indicators.facturesEnAttente">
+            <i class="fas fa-file-invoice-dollar indicator-icon"></i>
+            {{ client.indicators.facturesEnAttente }}
+          </span>
+          <span class="indicator purple" *ngIf="client.indicators.facturesRapprochement">
+            <i class="fas fa-link indicator-icon"></i>
+            {{ client.indicators.facturesRapprochement }}
+          </span>
+          <span class="indicator brown" *ngIf="client.indicators.rejetImport">
+            <i class="fas fa-times-circle indicator-icon"></i>
+            {{ client.indicators.rejetImport }}
+          </span>
+        </div>
+        
+        <div class="client-actions">
+          <button class="action-button primary" (click)="goToClientProfile(client.id); $event.stopPropagation()">
+            Voir
+          </button>
+          <button class="action-button" (click)="exportClientData(client.id); $event.stopPropagation()">
+            Exporter
+          </button>
+          <button class="action-button" (click)="toggleFavorite(client); $event.stopPropagation()">
+            <i [class]="client.favorite ? 'fas fa-star' : 'far fa-star'"></i>
+          </button>
         </div>
       </div>
     </div>
@@ -42,27 +119,11 @@
 
   <!-- Right: Legend -->
   <div class="legend-box">
-    <div class="legend-title">Légende</div>
-    <div class="legend-item">
-      <span class="legend-indicator red"></span> Mouvements
-    </div>
-    <div class="legend-item">
-      <span class="legend-indicator green"></span> Jours de retards d'import
-    </div>
-    <div class="legend-item">
-      <span class="legend-indicator blue"></span> Etablissements inconnus
-    </div>
-    <div class="legend-item">
-      <span class="legend-indicator orange"></span> Imports en attentes
-    </div>
-    <div class="legend-item">
-      <span class="legend-indicator magenta"></span> Factures en attente de paiement
-    </div>
-    <div class="legend-item">
-      <span class="legend-indicator purple"></span> Factures en attente de rapprochement
-    </div>
-    <div class="legend-item">
-      <span class="legend-indicator brown"></span> Rejet import
+    <div class="legend-title">Légende des indicateurs</div>
+    <div class="legend-item" *ngFor="let indicator of legendItems">
+      <span class="legend-indicator" [ngClass]="indicator.color"></span>
+      {{ indicator.label }}
+      <span class="legend-count">{{ getIndicatorCount(indicator.value) }}</span>
     </div>
   </div>
 </div>

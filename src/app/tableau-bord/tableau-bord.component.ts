@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { SidebarClientComponent } from '../sidebar-client/sidebar-client.component';
 import { Chart } from 'chart.js/auto';
-import { MyHeaderComponent } from '../../my-header/my-header.component';
-import { SidebarClientComponent } from '../../sidebar-client/sidebar-client.component';
-
+import { MyHeaderComponent } from '../my-header/my-header.component';
 
 @Component({
   selector: 'app-tableau-bord',

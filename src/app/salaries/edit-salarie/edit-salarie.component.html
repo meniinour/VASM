@@ -1,0 +1,101 @@
+<div class="ok">
+    <app-my-header></app-my-header>
+    <div class="container">
+      <app-sidebar-client></app-sidebar-client>
+      <div class="content-area" [ngClass]="{'sidebar-expanded': !sidebarCollapsed}">
+        <div class="header-section">
+          <h1>Modifier un Salarié</h1>
+          <div class="breadcrumb">
+            <a routerLink="/salaries">Salaries</a> <span class="separator">/</span> 
+            <a routerLink="/liste-salaries">Liste</a> <span class="separator">/</span> 
+            <span class="current">Modifier</span>
+          </div>
+        </div>
+    
+        <div id="success-message" class="success-message hidden">
+          <div class="success-icon">✓</div>
+          <div class="success-text">Salarié modifié avec succès!</div>
+        </div>
+    
+        <div *ngIf="isLoading" class="loading-container">
+          <div class="loading-spinner-large"></div>
+          <p>Chargement des données...</p>
+        </div>
+    
+        <div *ngIf="notFound && !isLoading" class="not-found">
+          <div class="not-found-icon">❓</div>
+          <h2>Salarié non trouvé</h2>
+          <p>Le salarié que vous cherchez n'existe pas ou a été supprimé.</p>
+          <button routerLink="/liste-salaries" class="btn-primary">Retour à la liste</button>
+        </div>
+    
+        <div *ngIf="!notFound && !isLoading" class="card">
+          <form [formGroup]="salarieForm" (ngSubmit)="onSubmit()" class="form">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="nom">Nom:</label>
+                <input id="nom" formControlName="nom" type="text" placeholder="Nom du salarié" 
+                  [class.input-error]="submitted && salarieForm.get('nom')?.invalid" />
+                <div *ngIf="submitted && salarieForm.get('nom')?.errors" class="error-msg">
+                  <span *ngIf="salarieForm.get('nom')?.errors?.['required']">Le nom est requis.</span>
+                  <span *ngIf="salarieForm.get('nom')?.errors?.['minlength']">Le nom doit contenir au moins 3 caractères.</span>
+                </div>
+              </div>
+    
+              <div class="form-group">
+                <label for="matricule">Matricule:</label>
+                <input id="matricule" formControlName="matricule" type="text" placeholder="Ex: 12345" 
+                  [class.input-error]="submitted && salarieForm.get('matricule')?.invalid" />
+                <div *ngIf="submitted && salarieForm.get('matricule')?.errors" class="error-msg">
+                  <span *ngIf="salarieForm.get('matricule')?.errors?.['required']">Le matricule est requis.</span>
+                  <span *ngIf="salarieForm.get('matricule')?.errors?.['pattern']">Le matricule doit contenir 5 chiffres.</span>
+                </div>
+              </div>
+            </div>
+    
+            <div class="form-row">
+              <div class="form-group">
+                <label for="poste">Poste:</label>
+                <input id="poste" formControlName="poste" type="text" placeholder="Poste occupé" 
+                  [class.input-error]="submitted && salarieForm.get('poste')?.invalid" />
+                <div *ngIf="submitted && salarieForm.get('poste')?.errors?.['required']" class="error-msg">
+                  Le poste est requis.
+                </div>
+              </div>
+    
+              <div class="form-group">
+                <label for="departement">Département:</label>
+                <select id="departement" formControlName="departement" 
+                  [class.input-error]="submitted && salarieForm.get('departement')?.invalid">
+                  <option value="">Sélectionner un département</option>
+                  <option *ngFor="let dept of departments" [value]="dept">{{ dept }}</option>
+                </select>
+                <div *ngIf="submitted && salarieForm.get('departement')?.errors?.['required']" class="error-msg">
+                  Le département est requis.
+                </div>
+              </div>
+            </div>
+    
+            <div class="form-row">
+              <div class="form-group">
+                <label for="dateEmbauche">Date d'embauche:</label>
+                <input id="dateEmbauche" formControlName="dateEmbauche" type="date" 
+                  [class.input-error]="submitted && salarieForm.get('dateEmbauche')?.invalid" />
+                <div *ngIf="submitted && salarieForm.get('dateEmbauche')?.errors?.['required']" class="error-msg">
+                  La date d'embauche est requise.
+                </div>
+              </div>
+            </div>
+    
+            <div class="form-actions">
+              <button type="button" routerLink="/liste-salaries" class="btn-secondary">Annuler</button>
+              <button type="submit" class="btn-primary" [disabled]="isLoading">
+                <span *ngIf="!isLoading">Enregistrer</span>
+                <span *ngIf="isLoading" class="loading-spinner"></span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    </div>

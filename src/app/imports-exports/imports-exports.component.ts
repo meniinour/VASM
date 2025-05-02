@@ -2,11 +2,11 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SidebarClientComponent } from '../sidebar-client/sidebar-client.component';
-
+import { MyHeaderComponent } from '../my-header/my-header.component';
 @Component({
   selector: 'app-imports-exports',
   standalone: true,
-  imports: [CommonModule, FormsModule, SidebarClientComponent],
+  imports: [CommonModule, FormsModule, SidebarClientComponent, MyHeaderComponent],
   templateUrl: './imports-exports.component.html',
   styleUrls: ['./imports-exports.component.css']
 })
