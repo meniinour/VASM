@@ -611,3 +611,43 @@ font-size: 14px; /* Réduction de la taille de l'icône */
 .toggle-password:hover {
 color: #333;
 }
+
+
+.input-wrapper select {
+  border: none;
+  background-color: transparent;
+  outline: none;
+  width: 100%;
+  font-size: 1rem;
+  padding: 8px;
+  border-radius: 5px;
+  text-align: center; /* Centrer le texte */
+}
+
+.input-wrapper select:focus {
+  border-color: #84bdc5;
+  box-shadow: 0 0 5px #84bdc5;
+}
+
+.input-wrapper i {
+  position: absolute;
+  left: 10px;
+  font-size: 1.2rem;
+  color: #888;
+}
+
+input:focus, select:focus {
+  border-color: #84bdc5;
+  box-shadow: 0 0 5px #84bdc5;
+}
+
+option {
+  padding: 10px;
+  text-align: center; /* Centrer le texte dans chaque option */
+  background: linear-gradient(90deg, #84bdc5, #5b9d8e); /* Dégradé de couleurs */
+  color: black;
+}
+
+option:hover {
+  background: linear-gradient(90deg, #5b9d8e, #84bdc5); /* Dégradé inversé au survol */
+}

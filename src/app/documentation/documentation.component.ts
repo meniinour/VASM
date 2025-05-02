@@ -1,5 +1,4 @@
 import { Component, HostListener, OnInit,ElementRef  } from '@angular/core';
-import { MyHeaderComponent } from "../my-header/my-header.component";
 import { CommonModule } from '@angular/common';
 import { ChatbotComponent } from "../chatbot/chatbot.component";
 interface RouteInfo {
@@ -71,9 +70,10 @@ export const ROUTES: RouteInfo[] = [
 
 @Component({
   selector: 'app-documentation',
+  standalone: true,
   templateUrl: './documentation.component.html',
   styleUrls: ['./documentation.component.css'],
-  imports: [CommonModule, MyHeaderComponent, ChatbotComponent]
+  imports: [CommonModule, ChatbotComponent]
 })
 export class DocumentationComponent implements OnInit {
 
@@ -86,16 +86,17 @@ export class DocumentationComponent implements OnInit {
     // Logique d'initialisation si nécessaire
   }
   
-  /*constructor(private eRef: ElementRef) {}*/
+  constructor(private eRef: ElementRef) {}
 
 
-  /*@HostListener('document:click', ['$event'])
+  @HostListener('document:click', ['$event'])
   clickout(event: MouseEvent) {
     if (!this.eRef.nativeElement.contains(event.target)) {
       this.isSidebarExpanded = false;
       this.isServiceMenuOpen = false;
     }
-  }*/
+  }
+  
   toggleServiceMenu() {
     this.isServiceMenuOpen = !this.isServiceMenuOpen;
     this.isSidebarExpanded = true;

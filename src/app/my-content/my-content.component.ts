@@ -2,8 +2,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { SidebarComponent } from "../sidebar/sidebar.component";
 import { MyHeaderComponent } from "../my-header/my-header.component";
+import { DocumentationComponent } from '../documentation/documentation.component';
 
 interface Email {
   id: string;
@@ -17,7 +17,7 @@ interface Email {
 @Component({
   selector: 'app-my-content',
   standalone: true,
-  imports: [CommonModule, FormsModule, SidebarComponent, MyHeaderComponent],
+  imports: [CommonModule, FormsModule, MyHeaderComponent,DocumentationComponent],
   templateUrl: './my-content.component.html',
   styleUrls: ['./my-content.component.css']
 })

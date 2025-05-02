@@ -1,0 +1,181 @@
+<div class="payment-container">
+    <div class="header">
+      <h1>Paiement de Factures</h1>
+      <p>Gérez et payez vos factures en toute simplicité</p>
+    </div>
+  
+    <div class="content">
+      <!-- Résumé des factures -->
+      <div class="summary-section">
+        <h2>Résumé des factures</h2>
+        <div class="summary-card">
+          <p><strong>Total dû:</strong> {{totalAmount | currency:'EUR'}}</p>
+          <p><strong>Factures en attente:</strong> {{unpaidInvoices.length}}</p>
+        </div>
+      </div>
+  
+      <!-- Liste des factures -->
+      <div class="invoices-section">
+        <h2>Vos factures</h2>
+        
+        <div class="filter-bar">
+          <div class="search">
+            <input type="text" placeholder="Rechercher une facture..." [(ngModel)]="searchTerm">
+          </div>
+          <div class="filter">
+            <select [(ngModel)]="statusFilter">
+              <option value="all">Toutes les factures</option>
+              <option value="unpaid">Non payées</option>
+              <option value="paid">Payées</option>
+            </select>
+          </div>
+        </div>
+  
+        <div class="invoices-list">
+          <table>
+            <thead>
+              <tr>
+                <th>
+                  <input type="checkbox" [checked]="allSelected" (change)="toggleSelectAll()">
+                </th>
+                <th (click)="sortBy('reference')">Référence <span *ngIf="sortColumn === 'reference'">{{sortDirection === 'asc' ? '▲' : '▼'}}</span></th>
+                <th (click)="sortBy('date')">Date <span *ngIf="sortColumn === 'date'">{{sortDirection === 'asc' ? '▲' : '▼'}}</span></th>
+                <th (click)="sortBy('amount')">Montant <span *ngIf="sortColumn === 'amount'">{{sortDirection === 'asc' ? '▲' : '▼'}}</span></th>
+                <th (click)="sortBy('status')">Statut <span *ngIf="sortColumn === 'status'">{{sortDirection === 'asc' ? '▲' : '▼'}}</span></th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let invoice of filteredInvoices" [ngClass]="{'overdue': invoice.isOverdue && !invoice.paid}">
+                <td>
+                  <input type="checkbox" [disabled]="invoice.paid" [(ngModel)]="invoice.selected" (change)="updateSelectedCount()">
+                </td>
+                <td>{{invoice.reference}}</td>
+                <td>{{invoice.date | date:'dd/MM/yyyy'}}</td>
+                <td>{{invoice.amount | currency:'EUR'}}</td>
+                <td>
+                  <span class="status-badge" [ngClass]="invoice.paid ? 'paid' : 'unpaid'">
+                    {{invoice.paid ? 'Payée' : 'À payer'}}
+                  </span>
+                </td>
+                <td>
+                  <button class="details-btn" (click)="showDetails(invoice)">Détails</button>
+                  <button *ngIf="!invoice.paid" class="pay-btn" (click)="payInvoice(invoice)">Payer</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+  
+          <div class="no-results" *ngIf="filteredInvoices.length === 0">
+            Aucune facture ne correspond à votre recherche.
+          </div>
+        </div>
+      </div>
+  
+      <!-- Actions pour paiement -->
+      <div class="action-section" *ngIf="hasSelectedInvoices()">
+        <div class="selection-summary">
+          <p>{{selectedCount}} facture(s) sélectionnée(s) pour un total de {{selectedAmount | currency:'EUR'}}</p>
+        </div>
+        <div class="action-buttons">
+          <button class="secondary-btn" (click)="clearSelection()">Annuler</button>
+          <button class="primary-btn" (click)="paySelected()">Payer la sélection</button>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Modale de paiement -->
+    <div class="payment-modal" *ngIf="showPaymentModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Procéder au paiement</h2>
+          <button class="close-btn" (click)="closePaymentModal()">×</button>
+        </div>
+        
+        <div class="modal-body">
+          <div class="payment-summary">
+            <h3>Résumé</h3>
+            <p *ngIf="currentPayment?.multiple">Paiement de {{currentPayment?.invoices?.length}} facture(s)</p>
+
+            <p *ngIf="!currentPayment.multiple">Facture: {{currentPayment.invoice?.reference}}</p>
+            <p class="total-amount">Total: {{currentPayment.amount | currency:'EUR'}}</p>
+          </div>
+          
+          <div class="payment-methods">
+            <h3>Méthode de paiement</h3>
+            <div class="payment-options">
+              <div class="payment-option" [ngClass]="{'selected': paymentMethod === 'card'}" (click)="selectPaymentMethod('card')">
+                <i class="card-icon"></i>
+                <span>Carte bancaire</span>
+              </div>
+              <div class="payment-option" [ngClass]="{'selected': paymentMethod === 'transfer'}" (click)="selectPaymentMethod('transfer')">
+                <i class="transfer-icon"></i>
+                <span>Virement bancaire</span>
+              </div>
+            </div>
+            
+            <div class="card-form" *ngIf="paymentMethod === 'card'">
+              <div class="form-group">
+                <label for="cardNumber">Numéro de carte</label>
+                <input type="text" id="cardNumber" [(ngModel)]="cardDetails.number" placeholder="1234 5678 9012 3456">
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="expiryDate">Date d'expiration</label>
+                  <input type="text" id="expiryDate" [(ngModel)]="cardDetails.expiry" placeholder="MM/AA">
+                </div>
+                <div class="form-group">
+                  <label for="cvv">CVV</label>
+                  <input type="text" id="cvv" [(ngModel)]="cardDetails.cvv" placeholder="123">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="cardName">Nom sur la carte</label>
+                <input type="text" id="cardName" [(ngModel)]="cardDetails.name" placeholder="NOM PRÉNOM">
+              </div>
+            </div>
+            
+            <div class="transfer-form" *ngIf="paymentMethod === 'transfer'">
+              <p>Pour effectuer un virement, utilisez les coordonnées suivantes:</p>
+              <div class="bank-details">
+                <p><strong>IBAN:</strong> FR76 1234 5678 9012 3456 7890 123</p>
+                <p><strong>BIC:</strong> ABCDEFGHIJK</p>
+                <p><strong>Référence:</strong> {{generateTransferReference()}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <button class="secondary-btn" (click)="closePaymentModal()">Annuler</button>
+          <button class="primary-btn" [disabled]="!isPaymentFormValid()" (click)="processPayment()">
+            {{paymentMethod === 'card' ? 'Payer maintenant' : 'Confirmer'}}
+          </button>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Modale de confirmation -->
+    <div class="confirmation-modal" *ngIf="showConfirmationModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Paiement confirmé</h2>
+          <button class="close-btn" (click)="closeConfirmationModal()">×</button>
+        </div>
+        
+        <div class="modal-body confirmation">
+          <div class="success-icon"></div>
+          <h3>Votre paiement a été traité avec succès!</h3>
+          <p>Référence de transaction: {{transactionReference}}</p>
+          <p>Un reçu a été envoyé à votre adresse email.</p>
+        </div>
+        
+        <div class="modal-footer">
+          <button class="primary-btn" (click)="closeConfirmationModal()">Fermer</button>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Overlay pour les modales -->
+    <div class="modal-overlay" *ngIf="showPaymentModal || showConfirmationModal" (click)="closeAllModals()"></div>
+  </div>

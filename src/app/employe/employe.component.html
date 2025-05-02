@@ -1,117 +1,158 @@
-<p>employe works!</p>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>vASM</title>
-</head>
-<body>
-  <app-my-header></app-my-header>
+<!-- employee-dashboard.component.html -->
+<div class="dashboard-container">
+  <!-- Header avec profil et notifications -->
+  <header>
 
-  <div class="main-content">
-    <div class="sidebar" [class.collapsed]="!isSidebarExpanded">
-      <div class="custom-sidenav">
-        <div class="brand"></div>
+  <app-my-header> </app-my-header>
+  <app-documentation></app-documentation>
+  </header> 
 
-        <nav class="nav-links">
+  <div class="header">
+    <div class="header-right">
+      <div class="profile-section">
+        <div class="notification-icon">
+        <i class="fa fa-bell"></i>
+        <span class="notification-badge" *ngIf="notificationCount > 0">{{ notificationCount }}</span>
+      </div>
+      
+        <div class="profile-info" (click)="toggleProfileMenu()">
+          <span class="employee-name">{{ employeeName }}</span>
+          <br />
+          
+          <span class="company-name">{{ companyName }}</span>
+          <div class="profile-avatar">
+            <img src="../../assets/prof.png" alt="Profile" />
+          </div>
+           <!-- C'est ici que le click est déplacé -->
+        <i class="fa fa-caret-down" (click)="toggleProfileMenu()"></i>   
+        </div>
+        <!-- Menu déroulant du profil -->
+        <div class="profile-dropdown" *ngIf="showProfileMenu">
           <ul>
-            <li>
-              <a routerLink="/home" (click)="toggleSidebar()">
-                <span class="material-icons icon">home</span>
-                <span class="text">Accueil</span>
-              </a>
-            </li>
-
-            <li>
-              <a routerLink="/users" (click)="toggleSidebar()">
-                <span class="material-icons icon">people</span>
-                <span class="text">Liste Client</span>
-              </a>
-            </li>
-
-            <li>
-              <a routerLink="/dashboard" (click)="toggleSidebar()">
-                <span class="material-icons icon">dashboard</span>
-                <span class="text">Tableau de bord</span>
-              </a>
-            </li>
-
-            <li class="services" (click)="toggleSidebar()">
-              <a href="javascript:void(0)" (click)="toggleServiceMenu(); toggleSidebar()">
-                <span class="material-icons icon">business</span>
-                <span class="text">Centre de Services</span>
-              </a>
-
-              <ul class="sub-menu" *ngIf="isServiceMenuOpen">
-                <li>
-                  <a routerLink="/mail" routerLinkActive="active" (click)="toggleSidebar()">
-                    <span class="material-icons icon">mail</span>
-                    <span class="text">Traitement centralisé des mails</span>
-                  </a>
-                </li>
-                <li>
-                  <a routerLink="/content" (click)="toggleSidebar()">
-                    <span class="material-icons icon">swap_horiz</span>
-                    <span class="text">Gestion des mouvements</span>
-                  </a>
-                </li>
-                <li>
-                  <a routerLink="/my-content" routerLinkActive="active" (click)="toggleSidebar()">
-                    <span class="material-icons icon">mail</span>
-                    <span class="text">Typage des mails</span>
-                  </a>
-                </li>
-                <li>
-                  <a routerLink="/content" (click)="toggleSidebar()">
-                    <span class="material-icons icon">file_copy</span>
-                    <span class="text">Gestion des imports</span>
-                  </a>
-                </li>
-                <li>
-                  <a routerLink="/content" (click)="toggleSidebar()">
-                    <span class="material-icons icon">group</span>
-                    <span class="text">Déclarations des effectifs</span>
-                  </a>
-                </li>
-                <li>
-                  <a routerLink="/content" (click)="toggleSidebar()">
-                    <span class="material-icons icon">bar_chart</span>
-                    <span class="text">Récapitulatif</span>
-                  </a>
-                </li>
-              </ul>
-            </li>
-
-            <li>
-              <a routerLink="/settings" (click)="toggleSidebar()">
-                <span class="material-icons icon">settings</span>
-                <span class="text">Paramétrage</span>
-              </a>
-            </li>
-            <div class="separator"></div>
-
-            <li>
-            <a href="javascript:void(0)" (click)="openChatbot()">
-                <span class="material-icons icon">chat</span>
-                <span class="text">Assistant VigiScope</span>
-            </a>
-            </li>
-
-    <div class="separator"></div>
-
-            <li>
-              <a routerLink="/login" (click)="toggleSidebar()">
-                <span class="material-icons icon">exit_to_app</span>
-                <span class="text">Déconnexion</span>
-              </a>
-            </li>
+            <li><i class="fa fa-user"></i> Mon Profil</li>
+            <li><i class="fa fa-cog"></i> Paramètres</li>
+            <li><i class="fa fa-lock"></i> Verrouiller</li>
+            <li (click)="logout()"><i class="fa fa-sign-out"></i> Déconnexion</li>
           </ul>
-        </nav>
+        </div>
       </div>
     </div>
   </div>
-  <app-chatbot *ngIf="showChatbot" (close)="closeChatbot()"></app-chatbot>
-
-</body>
-</html>
+  
+  <!-- Contenu principal -->
+  <div class="main-content">
+    <div class="calendar-header">
+      <div class="calendar-title">
+        <h2>Calendrier des rendez-vous</h2>
+      </div>
+      
+      <div class="calendar-controls">
+        <div class="date-navigation">
+          <button (click)="previousPeriod()"><i class="fa fa-chevron-left"></i></button>
+          <span class="current-period">{{ getFormattedDateRange() }}</span>
+          <button (click)="nextPeriod()"><i class="fa fa-chevron-right"></i></button>
+        </div>
+        
+        <div class="view-options">
+          <button [class.active]="viewMode === 'day'" (click)="changeView('day')">Jour</button>
+          <button [class.active]="viewMode === 'week'" (click)="changeView('week')">Semaine</button>
+          <button [class.active]="viewMode === 'month'" (click)="changeView('month')">Mois</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Affichage du calendrier -->
+    <div class="calendar-container" [ngClass]="viewMode">
+      <!-- Jour -->
+      <div class="calendar-day-view" *ngIf="viewMode === 'day'">
+        <!-- Horaires et rendez-vous -->
+        <div class="day-timeline">
+          <div class="hour-marker" *ngFor="let hour of [8,9,10,11,12,13,14,15,16,17,18]">
+            {{ hour }}:00
+          </div>
+        </div>
+        
+        <div class="appointments-list">
+          <div class="appointment-card" *ngFor="let appointment of appointments" 
+               [ngStyle]="{'top': (appointment.date.getHours() - 8) * 60 + appointment.date.getMinutes() + 'px', 
+                          'height': '60px'}" 
+               [ngClass]="appointment.status">
+            <div class="appointment-time">{{ appointment.startTime }} - {{ appointment.endTime }}</div>
+            <div class="appointment-title">{{ appointment.title }}</div>
+            <div class="appointment-actions">
+              <button class="approve-btn" *ngIf="appointment.status === 'pending'" (click)="approveAppointment(appointment.id)">Approuver</button>
+              <button class="modify-btn" (click)="modifyAppointment(appointment.id)">Modifier</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Semaine -->
+      <div class="calendar-week-view" *ngIf="viewMode === 'week'">
+        <div class="week-days">
+          <div class="day-header" *ngFor="let day of ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim']">
+            {{ day }}
+          </div>
+        </div>
+        
+        <div class="week-grid">
+          <!-- Jours de la semaine et rendez-vous -->
+          <div class="day-column" *ngFor="let day of [0,1,2,3,4,5,6]">
+            <div class="appointment-card" *ngFor="let appointment of appointments" 
+                 [ngClass]="appointment.status"
+                 [style.display]="appointment.date.getDay() === ((day + 1) % 7) ? 'block' : 'none'">
+              <div class="appointment-time">{{ appointment.startTime }}</div>
+              <div class="appointment-title">{{ appointment.title }}</div>
+              <div class="appointment-actions">
+                <button class="approve-btn" *ngIf="appointment.status === 'pending'" (click)="approveAppointment(appointment.id)">✓</button>
+                <button class="modify-btn" (click)="modifyAppointment(appointment.id)">✎</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Mois -->
+      <div class="calendar-month-view" *ngIf="viewMode === 'month'">
+        <div class="month-grid">
+          <!-- En-têtes des jours de la semaine -->
+          <div class="month-header" *ngFor="let day of ['L', 'M', 'M', 'J', 'V', 'S', 'D']">
+            {{ day }}
+          </div>
+          
+          <!-- Cellules des jours du mois -->
+          <div class="month-day" *ngFor="let day of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]">
+            <div class="day-number">{{ day }}</div>
+            
+            <div class="month-day-appointments">
+              <div class="appointment-indicator" *ngFor="let appointment of appointments"
+                   [ngClass]="appointment.status" 
+                   [style.display]="appointment.date.getDate() === day ? 'flex' : 'none'">
+                <span class="indicator-time">{{ appointment.startTime }}</span>
+                <span class="indicator-title">{{ appointment.title }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Liste des rendez-vous du jour -->
+    <div class="upcoming-appointments">
+      <h3>Rendez-vous à venir</h3>
+      <div class="appointments-list">
+        <div class="list-appointment" *ngFor="let appointment of appointments" [ngClass]="appointment.status">
+          <div class="list-appointment-left">
+            <div class="list-appointment-time">{{ appointment.startTime }} - {{ appointment.endTime }}</div>
+            <div class="list-appointment-title">{{ appointment.title }}</div>
+            <div class="list-appointment-desc">{{ appointment.description }}</div>
+          </div>
+          <div class="list-appointment-actions">
+            <button class="approve-btn" *ngIf="appointment.status === 'pending'" (click)="approveAppointment(appointment.id)">Approuver</button>
+            <button class="modify-btn" (click)="modifyAppointment(appointment.id)">Modifier</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

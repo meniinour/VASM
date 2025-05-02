@@ -1,0 +1,56 @@
+<div class="flex min-h-screen bg-[#fbfaf6]">
+    <!-- Sidebar -->
+    <div class="w-64 bg-white shadow-lg flex flex-col p-4">
+      <!-- Profile Card -->
+      <div class="flex flex-col items-center">
+        <img class="w-20 h-20 rounded-full" src="https://via.placeholder.com/100" alt="Profile" />
+        <div class="mt-2 font-semibold">John Smith</div>
+        <div class="text-gray-500 text-sm">Administrator</div>
+  
+        <!-- Menu Button -->
+        <button (click)="toggleMenu()" class="mt-4">
+          <span class="material-icons">menu</span>
+        </button>
+  
+        <!-- Floating Menu -->
+        <div *ngIf="menuOpen" class="absolute mt-2 w-48 bg-white rounded-md shadow-xl py-2 right-20 z-50">
+          <a href="#" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100">
+            <span class="material-icons text-gray-500 mr-2">person</span> My Account
+          </a>
+          <a href="#" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100">
+            <span class="material-icons text-gray-500 mr-2">settings</span> Settings
+          </a>
+          <a href="#" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100">
+            <span class="material-icons text-gray-500 mr-2">lock</span> Lock Screen
+          </a>
+          <a href="#" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100">
+            <span class="material-icons text-gray-500 mr-2">logout</span> Logout
+          </a>
+        </div>
+      </div>
+  
+      <!-- Navigation Links -->
+      <div class="mt-8">
+        <div class="text-gray-400 uppercase text-xs font-bold mb-2">Navigation</div>
+        <a href="#" class="flex items-center text-blue-600 p-2 rounded bg-blue-100">
+          <span class="material-icons mr-2">dashboard</span> Dashboard
+        </a>
+      </div>
+  
+      <!-- Authentication Links -->
+      <div class="mt-6">
+        <div class="text-gray-400 uppercase text-xs font-bold mb-2">Authentication</div>
+        <!-- You can add more links here -->
+      </div>
+    </div>
+  
+    <!-- Main Content -->
+    <div class="flex-1 p-6">
+      <app-my-header></app-my-header>
+  
+      <div class="mt-8">
+       <!-- <app-documentation></app-documentation>  -->
+      </div>
+    </div>
+  </div>
+  

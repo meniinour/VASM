@@ -1,12 +1,4 @@
-.main-content {
-  margin-left: 320px; /* 260px sidebar + 60px de marge */
-  padding: 30px;
-  background-color: #fbfaf6;
-  min-height: 100vh;
-}
-body {
-  background-color: #fbfaf6;
-}
+
 
 .sidebar {
   width: 70px;
@@ -40,7 +32,7 @@ body {
   display: flex;              /* ✅ rendre verticalement flexible */
   flex-direction: column;    /* ✅ direction colonne */
   justify-content: center;
-
+  align-items: flex-end; 
   height: 100%;   
 }
 
@@ -159,12 +151,10 @@ body {
   font-size: 28px;
   color: #031e36;
   transition: color 0.3s ease;
-  justify-content: center;
-  justify-content: center;
-  display: flex; /* ✅ pour centrer l'icône */
-  align-items: center; /* ✅ pour centrer l'icône verticalement */
   padding-left: -6%;
-
+    display: flex;
+  justify-content: center;   /* Centre horizontalement */
+  align-items: center;  
 }
 
 .sub-menu .material-icons {

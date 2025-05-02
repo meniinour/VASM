@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord Employé</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3f51b5;
+            --secondary-color: #ff9800;
+            --dark-color: #333;
+            --light-color: #f5f5f5;
+            --danger-color: #e74c3c;
+            --success-color: #2ecc71;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            grid-template-rows: 60px 1fr;
+            height: 100vh;
+        }
+        
+        /* Header */
+        header {
+            grid-column: 1 / 3;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .logo {
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .notification-bell {
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .notification-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--danger-color);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+        }
+        
+        /* Sidebar */
+        aside {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 20px 0;
+        }
+        
+        .profile-card {
+            text-align: center;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .profile-pic {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+            border: 3px solid var(--secondary-color);
+        }
+        
+        .profile-name {
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        
+        .profile-role {
+            font-size: 0.8rem;
+            color: #ccc;
+        }
+        
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+        
+        nav li a {
+            display: block;
+            padding: 12px 20px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        nav li a:hover, nav li a.active {
+            background-color: rgba(255,255,255,0.1);
+            border-left: 3px solid var(--secondary-color);
+        }
+        
+        nav li a i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Main Content */
+        main {
+            padding: 20px;
+            background-color: var(--light-color);
+            overflow-y: auto;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .page-title {
+            font-size: 1.5rem;
+            color: var(--dark-color);
+        }
+        
+        .calendar-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .fc-toolbar-title {
+            font-size: 1.2rem !important;
+        }
+        
+        .upcoming-events {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 20px;
+        }
+        
+        .events-list {
+            margin-top: 15px;
+        }
+        
+        .event-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .event-time {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .event-title {
+            flex-grow: 1;
+            margin-left: 15px;
+        }
+        
+        .event-client {
+            font-size: 0.8rem;
+            color: #777;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            width: 500px;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                grid-template-columns: 1fr;
+                grid-template-rows: 60px 1fr;
+            }
+            
+            aside {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">MonEntreprise</div>
+        <div class="user-actions">
+            <div class="notification-bell">
+                <i class="fas fa-bell"></i>
+                <span class="notification-count">3</span>
+            </div>
+            <div class="user-dropdown">
+                <span>Jean Dupont</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+        </div>
+    </header>
+    
+    <aside>
+        <div class="profile-card">
+            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Photo de profil" class="profile-pic">
+            <h3 class="profile-name">Jean Dupont</h3>
+            <p class="profile-role">Conseiller Commercial</p>
+        </div>
+        
+        <nav>
+            <ul>
+                <li><a href="#" class="active"><i class="fas fa-calendar-alt"></i> Calendrier</a></li>
+                <li><a href="#"><i class="fas fa-user"></i> Profil</a></li>
+                <li><a href="#"><i class="fas fa-envelope"></i> Messagerie</a></li>
+                <li><a href="#"><i class="fas fa-tasks"></i> Tâches</a></li>
+                <li><a href="#"><i class="fas fa-chart-line"></i> Statistiques</a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> Paramètres</a></li>
+                <li><a href="#"><i class="fas fa-sign-out-alt"></i> Déconnexion</a></li>
+            </ul>
+        </nav>
+    </aside>
+    
+    <main>
+        <div class="dashboard-header">
+            <h1 class="page-title">Mon Calendrier</h1>
+            <button id="sync-google" class="btn btn-primary">
+                <i class="fab fa-google"></i> Synchroniser avec Google
+            </button>
+        </div>
+        
+        <div class="calendar-container">
+            <div id="calendar"></div>
+        </div>
+        
+        <div class="upcoming-events">
+            <h2>Prochains Rendez-vous</h2>
+            <div class="events-list">
+                <div class="event-item">
+                    <div class="event-time">10:00 - 11:00</div>
+                    <div class="event-title">
+                        Réunion avec Client <span class="event-client">(Société ABC)</span>
+                    </div>
+                    <i class="fas fa-ellipsis-v"></i>
+                </div>
+                <div class="event-item">
+                    <div class="event-time">14:30 - 15:00</div>
+                    <div class="event-title">
+                        Appel de suivi <span class="event-client">(M. Martin)</span>
+                    </div>
+                    <i class="fas fa-ellipsis-v"></i>
+                </div>
+                <div class="event-item">
+                    <div class="event-time">16:00 - 17:30</div>
+                    <div class="event-title">
+                        Présentation produit <span class="event-client">(Startup XYZ)</span>
+                    </div>
+                    <i class="fas fa-ellipsis-v"></i>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Modal pour les notifications -->
+    <div class="modal" id="notifications-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Notifications (3)</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="notification-item">
+                    <p><strong>Nouveau rendez-vous</strong> - Réunion avec Société ABC demain à 10h</p>
+                    <small>Il y a 2 heures</small>
+                </div>
+                <div class="notification-item">
+                    <p><strong>Rappel</strong> - Envoyer le devis à M. Martin avant vendredi</p>
+                    <small>Hier, 15:30</small>
+                </div>
+                <div class="notification-item">
+                    <p><strong>Message</strong> - Vous avez reçu un nouveau message de votre manager</p>
+                    <small>Hier, 11:45</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal pour les détails du rendez-vous -->
+    <div class="modal" id="event-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Détails du Rendez-vous</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label>Titre</label>
+                        <input type="text" class="form-control" value="Réunion avec Société ABC">
+                    </div>
+                    <div class="form-group">
+                        <label>Date et Heure</label>
+                        <div class="row">
+                            <div class="col">
+                                <input type="date" class="form-control" value="2023-06-15">
+                            </div>
+                            <div class="col">
+                                <input type="time" class="form-control" value="10:00">
+                            </div>
+                            <div class="col">
+                                <input type="time" class="form-control" value="11:00">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Client</label>
+                        <select class="form-control">
+                            <option>Société ABC</option>
+                            <option>M. Martin</option>
+                            <option>Startup XYZ</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea class="form-control" rows="3">Discussion sur le nouveau projet et présentation des spécifications techniques.</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Lieu</label>
+                        <input type="text" class="form-control" value="Bureau principal, Salle de réunion A">
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary">Annuler</button>
+                        <button type="submit" class="btn btn-primary">Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/fr.min.js"></script>
+    <script>
+        // Initialisation du calendrier
+        document.addEventListener('DOMContentLoaded', function() {
+            const calendarEl = document.getElementById('calendar');
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'timeGridWeek',
+                locale: 'fr',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                events: [
+                    {
+                        title: 'Réunion avec Société ABC',
+                        start: '2023-06-15T10:00:00',
+                        end: '2023-06-15T11:00:00',
+                        color: '#3f51b5'
+                    },
+                    {
+                        title: 'Appel de suivi - M. Martin',
+                        start: '2023-06-15T14:30:00',
+                        end: '2023-06-15T15:00:00',
+                        color: '#ff9800'
+                    },
+                    {
+                        title: 'Présentation produit - Startup XYZ',
+                        start: '2023-06-15T16:00:00',
+                        end: '2023-06-15T17:30:00',
+                        color: '#4caf50'
+                    }
+                ],
+                eventClick: function(info) {
+                    // Afficher le modal avec les détails de l'événement
+                    const modal = document.getElementById('event-modal');
+                    modal.style.display = 'flex';
+                    
+                    // Fermer le modal
+                    modal.querySelector('.close-modal').addEventListener('click', function() {
+                        modal.style.display = 'none';
+                    });
+                },
+                dateClick: function(info) {
+                    // Créer un nouvel événement quand on clique sur une date
+                    console.log('Nouveau rendez-vous à', info.dateStr);
+                }
+            });
+            calendar.render();
+            
+            // Gestion des notifications
+            const notifBell = document.querySelector('.notification-bell');
+            const notifModal = document.getElementById('notifications-modal');
+            
+            notifBell.addEventListener('click', function() {
+                notifModal.style.display = 'flex';
+            });
+            
+            notifModal.querySelector('.close-modal').addEventListener('click', function() {
+                notifModal.style.display = 'none';
+            });
+            
+            // Synchronisation avec Google Calendar
+            document.getElementById('sync-google').addEventListener('click', function() {
+                alert('Connexion à Google Calendar en cours...');
+                // Ici, vous implémenteriez l'intégration avec l'API Google Calendar
+            });
+        });
+    </script>
+</body>
+</html>
