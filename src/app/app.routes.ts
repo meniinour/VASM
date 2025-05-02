@@ -25,6 +25,7 @@ import { MailClientComponent } from './mail-client/mail-client.component';
 import { SalariesComponent } from './salaries/salaries.component';
 import { AddSalarieComponent } from '../app/salaries/add-salarie/add-salarie.component';
 import { ListeSalariesComponent } from '../app/salaries/liste-salaries/liste-salaries.component';
+import { EditSalarieComponent } from './salaries/edit-salarie/edit-salarie.component';
 import { ImportsExportsComponent } from './imports-exports/imports-exports.component';
 import { StatistiquesComponent } from './statistiques/statistiques.component';
 import { TableauBordComponent } from './tableau-bord/tableau-bord.component';
@@ -57,6 +58,7 @@ export const routes: Routes = [
     { path: 'salaries', component: SalariesComponent },
     { path: 'add-salarie', component: AddSalarieComponent },
     { path: 'liste-salaries', component: ListeSalariesComponent },
+    { path: 'edit-salarie/:id', component: EditSalarieComponent },
     { path: 'statistiques', component: StatistiquesComponent },
     { path: 'imports', component: ImportsExportsComponent },
     { path: 'tableau-bord', component: TableauBordComponent },

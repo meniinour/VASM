@@ -1,47 +1,148 @@
 <div class="ok">
-<div class="container">
+  <div class="container">
     <app-my-header></app-my-header>
     <app-sidebar-client></app-sidebar-client>
     <div class="mail-container" [ngClass]="{'sidebar-expanded': !sidebarCollapsed}">
       <div class="mail-header">
-        <h1>Mailbox</h1>
-        <button (click)="showNewMailModal = true" class="btn-primary">New Mail</button>
-        <input type="text" placeholder="Search mails..." [(ngModel)]="searchText" />
+        <h1>Mailbox <span class="badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span></h1>
+        
+        <div class="search-box">
+          <i class="fa fa-search"></i>
+          <input type="text" placeholder="Search mails..." [(ngModel)]="searchText" (ngModelChange)="filterMails()" />
+        </div>
+        
+        <div class="action-buttons">
+          <button (click)="showNewMailModal = true" class="btn-primary btn-icon">
+            <i class="fa fa-plus"></i> New Mail
+          </button>
+          <button (click)="refreshMails()" class="btn-secondary btn-icon">
+            <i class="fa fa-refresh"></i> Refresh
+          </button>
+        </div>
       </div>
       
-      <div class="mail-list">
+      <div class="mail-tools">
+        <div class="mail-filters">
+          <select [(ngModel)]="currentFilter" (change)="filterMails()">
+            <option value="all">All</option>
+            <option value="unread">Unread</option>
+            <option value="read">Read</option>
+          </select>
+          <select [(ngModel)]="currentSort" (change)="sortMails()">
+            <option value="date">Date (Newest)</option>
+            <option value="date-asc">Date (Oldest)</option>
+            <option value="sender">Sender</option>
+            <option value="subject">Subject</option>
+          </select>
+        </div>
+        <div *ngIf="selectedMails.length > 0" class="bulk-actions">
+          <button class="btn-secondary btn-icon" (click)="markAsRead()">
+            <i class="fa fa-check"></i> Mark as Read
+          </button>
+          <button class="btn-secondary btn-icon" (click)="deleteMails()">
+            <i class="fa fa-trash"></i> Delete
+          </button>
+        </div>
+      </div>
+      
+      <div class="mail-list" *ngIf="displayedMails.length > 0">
         <ul>
-          <li *ngFor="let mail of displayedMails" (click)="selectMail(mail)" [class.read]="mail.read">
+          <li *ngFor="let mail of displayedMails" 
+              (click)="selectMail(mail)" 
+              [class.read]="mail.read" 
+              [class.unread]="!mail.read"
+              [class.selected]="mail === selectedMail">
             <div class="mail-subject">{{ mail.subject }}</div>
             <div class="mail-sender">{{ mail.sender }}</div>
-            <div class="mail-date">{{ mail.date | date:'short' }}</div>
+            <div class="mail-date">
+              {{ mail.date | date:'short' }}
+              <span *ngIf="mail.attachments && mail.attachments.length > 0" class="attachment-indicator">
+                <i class="fa fa-paperclip"></i> 
+                {{ mail.attachments.length }}
+              </span>
+            </div>
           </li>
         </ul>
       </div>
       
+      <div class="empty-state" *ngIf="displayedMails.length === 0">
+        <i class="fa fa-envelope-open-o"></i>
+        <h3>No emails found</h3>
+        <p>{{ emptyStateMessage }}</p>
+      </div>
+      
       <div class="mail-content" *ngIf="selectedMail">
         <h2>{{ selectedMail.subject }}</h2>
-        <p><strong>From:</strong> {{ selectedMail.sender }} ({{ selectedMail.senderEmail }})</p>
-        <p><strong>To:</strong> {{ selectedMail.recipient }} ({{ selectedMail.recipientEmail }})</p>
-        <p>{{ selectedMail.content }}</p>
+        
+        <div class="mail-details">
+          <p><strong>From:</strong> {{ selectedMail.sender }} <span>&lt;{{ selectedMail.senderEmail }}&gt;</span></p>
+          <p><strong>To:</strong> {{ selectedMail.recipient }} <span>&lt;{{ selectedMail.recipientEmail }}&gt;</span></p>
+          <p><strong>Date:</strong> {{ selectedMail.date | date:'medium' }}</p>
+        </div>
+        
+        <div class="mail-body">
+          <p>{{ selectedMail.content }}</p>
+        </div>
+        
+        <div *ngIf="selectedMail.attachments && selectedMail.attachments.length > 0" class="mail-attachments">
+          <div class="attachment" *ngFor="let attachment of selectedMail.attachments">
+            <i class="fa fa-file"></i>
+            <span>{{ attachment.name }}</span>
+          </div>
+        </div>
+        
+        <div class="mail-actions">
+          <button class="btn-primary btn-icon" (click)="replyToMail(selectedMail)">
+            <i class="fa fa-reply"></i> Reply
+          </button>
+          <button class="btn-secondary btn-icon" (click)="forwardMail(selectedMail)">
+            <i class="fa fa-share"></i> Forward
+          </button>
+          <button class="btn-secondary btn-icon" (click)="deleteMail(selectedMail)">
+            <i class="fa fa-trash"></i> Delete
+          </button>
+        </div>
       </div>
       
       <!-- New Mail Modal -->
       <div class="modal" *ngIf="showNewMailModal">
         <div class="modal-content">
-          <h2>New Mail</h2>
+          <h2>{{ isReply ? 'Reply to Email' : (isForward ? 'Forward Email' : 'New Mail') }}</h2>
           <form [formGroup]="mailForm" (ngSubmit)="sendMail()">
-            <label for="recipientEmail">To:</label>
-            <input id="recipientEmail" formControlName="recipientEmail" type="email" />
-            <label for="subject">Subject:</label>
-            <input id="subject" formControlName="subject" type="text" />
-            <label for="content">Content:</label>
-            <textarea id="content" formControlName="content"></textarea>
-            <button type="submit" class="btn-primary">Send</button>
-            <button type="button" (click)="showNewMailModal = false" class="btn-secondary">Cancel</button>
+            <div class="form-field">
+              <label for="recipientEmail">To:</label>
+              <input id="recipientEmail" formControlName="recipientEmail" type="email" />
+              <div *ngIf="mailForm.get('recipientEmail')?.invalid && mailForm.get('recipientEmail')?.touched" 
+                  class="error-message">
+                Please enter a valid email address
+              </div>
+            </div>
+            
+            <div class="form-field">
+              <label for="subject">Subject:</label>
+              <input id="subject" formControlName="subject" type="text" />
+              <div *ngIf="mailForm.get('subject')?.invalid && mailForm.get('subject')?.touched" 
+                  class="error-message">
+                Subject is required
+              </div>
+            </div>
+            
+            <div class="form-field">
+              <label for="content">Content:</label>
+              <textarea id="content" formControlName="content"></textarea>
+              <div *ngIf="mailForm.get('content')?.invalid && mailForm.get('content')?.touched" 
+                  class="error-message">
+                Content is required
+              </div>
+            </div>
+            
+            <div class="modal-actions">
+              <button type="submit" class="btn-primary" [disabled]="mailForm.invalid">Send</button>
+              <button type="button" (click)="cancelMail()" class="btn-secondary">Cancel</button>
+            </div>
           </form>
         </div>
       </div>
     </div>
   </div>
-  </div>
+</div>

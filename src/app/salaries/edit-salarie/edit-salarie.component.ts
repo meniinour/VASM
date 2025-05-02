@@ -3,27 +3,30 @@ import { CommonModule } from '@angular/common';
 import { SidebarClientComponent } from '../../sidebar-client/sidebar-client.component';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MyHeaderComponent } from '../../my-header/my-header.component';
-import { SalarieService } from '../../services/salarie.service';
-import { Router } from '@angular/router';
+import { SalarieService, Salarie } from '../../services/salarie.service';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-add-salarie',
+  selector: 'app-edit-salarie',
   standalone: true,
-  imports: [CommonModule, SidebarClientComponent, FormsModule, ReactiveFormsModule, MyHeaderComponent],
-  templateUrl: './add-salarie.component.html',
-  styleUrls: ['./add-salarie.component.css']
+  imports: [CommonModule, SidebarClientComponent, FormsModule, ReactiveFormsModule, MyHeaderComponent, RouterModule],
+  templateUrl: './edit-salarie.component.html',
+  styleUrls: ['./edit-salarie.component.css']
 })
-export class AddSalarieComponent implements OnInit {
+export class EditSalarieComponent implements OnInit {
   sidebarCollapsed = false;
   salarieForm: FormGroup;
   submitted = false;
   isLoading = false;
+  notFound = false;
+  salarieId: number = 0;
   departments = ['IT', 'Finances', 'RH', 'Marketing', 'Ventes', 'Créatif', 'Management', 'Production'];
 
   constructor(
-    private fb: FormBuilder, 
+    private fb: FormBuilder,
     private salarieService: SalarieService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.salarieForm = this.fb.group({
       nom: ['', [Validators.required, Validators.minLength(3)]],
@@ -35,8 +38,34 @@ export class AddSalarieComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const today = new Date().toISOString().split('T')[0];
-    this.salarieForm.get('dateEmbauche')?.setValue(today);
+    this.route.params.subscribe(params => {
+      if (params['id']) {
+        this.salarieId = +params['id'];
+        this.loadSalarieData(this.salarieId);
+      }
+    });
+  }
+
+  loadSalarieData(id: number): void {
+    this.isLoading = true;
+    
+    setTimeout(() => {
+      const salarie = this.salarieService.getSalarieById(id);
+      
+      if (salarie) {
+        this.salarieForm.patchValue({
+          nom: salarie.nom,
+          matricule: salarie.matricule,
+          poste: salarie.poste || '',
+          departement: salarie.departement || '',
+          dateEmbauche: salarie.dateEmbauche || ''
+        });
+      } else {
+        this.notFound = true;
+      }
+      
+      this.isLoading = false;
+    }, 800); // Simulated loading delay
   }
 
   onSidebarToggle(collapsed: boolean): void {
@@ -50,7 +79,12 @@ export class AddSalarieComponent implements OnInit {
       this.isLoading = true;
       
       setTimeout(() => {
-        this.salarieService.addSalarie(this.salarieForm.value);
+        const updatedSalarie: Salarie = {
+          id: this.salarieId,
+          ...this.salarieForm.value
+        };
+        
+        this.salarieService.updateSalarie(updatedSalarie);
         this.isLoading = false;
         
         // Show success message
@@ -64,12 +98,5 @@ export class AddSalarieComponent implements OnInit {
         }
       }, 800); // Simulate network delay
     }
-  }
-
-  resetForm(): void {
-    this.submitted = false;
-    this.salarieForm.reset();
-    const today = new Date().toISOString().split('T')[0];
-    this.salarieForm.get('dateEmbauche')?.setValue(today);
   }
 }

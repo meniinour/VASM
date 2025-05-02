@@ -4,6 +4,8 @@
   --text-color: #84bdc5;        /* Accent cyan text */
   --btn-bg: #031e36;            /* Dark blue button background */
   --btn-hover-bg: #84bdc5;      /* Accent cyan button hover */
+  --card-bg: #ffffff;           /* Card background */
+  --shadow-color: rgba(3, 30, 54, 0.15); /* Shadow color */
 }
 
 .ok {
@@ -12,7 +14,7 @@
 
 .container {
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
   background-color: var(--bg-color);
   color: var(--text-color);
   margin-top: 70px;
@@ -34,25 +36,177 @@
   margin-left: 250px;
 }
 
+.header-section {
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.header-section h1 {
+  color: var(--border-color);
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.welcome-text {
+  color: var(--text-color);
+  font-size: 16px;
+  margin-top: 5px;
+}
+
+/* Dashboard Stats */
+.dashboard-stats {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  gap: 20px;
+}
+
+.stat-card {
+  flex: 1;
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 4px 12px var(--shadow-color);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px var(--shadow-color);
+}
+
+.stat-icon {
+  font-size: 28px;
+  margin-right: 15px;
+  background-color: rgba(132, 189, 197, 0.15);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-content h3 {
+  color: var(--border-color);
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.stat-content p {
+  color: var(--text-color);
+  margin: 0;
+}
+
+/* Action Buttons */
 .actions {
-  margin-bottom: 20px;
+  margin-bottom: 30px;
+  display: flex;
+  gap: 15px;
 }
 
 .actions button {
-  margin-right: 10px;
+  display: flex;
+  align-items: center;
   background-color: var(--btn-bg);
   color: var(--bg-color);
   border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
+  padding: 12px 20px;
+  border-radius: 6px;
   cursor: pointer;
   font-weight: 600;
-  transition: background-color 0.3s ease, color 0.3s ease;
-  box-shadow: 0 3px 8px rgba(3, 30, 54, 0.3);
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 8px rgba(3, 30, 54, 0.25);
+}
+
+.btn-icon {
+  margin-right: 8px;
+  font-size: 18px;
 }
 
 .actions button:hover {
   background-color: var(--btn-hover-bg);
   color: var(--btn-bg);
-  box-shadow: 0 5px 15px rgba(132, 189, 197, 0.6);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(132, 189, 197, 0.5);
+}
+
+/* Info Cards */
+.info-section {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.info-card {
+  flex: 1;
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 12px var(--shadow-color);
+}
+
+.info-card h3 {
+  color: var(--border-color);
+  margin-bottom: 15px;
+  font-size: 18px;
+  font-weight: 600;
+  border-bottom: 2px solid rgba(3, 30, 54, 0.1);
+  padding-bottom: 8px;
+}
+
+.info-card p {
+  color: var(--text-color);
+  line-height: 1.5;
+}
+
+.info-card a {
+  color: var(--btn-bg);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.info-card a:hover {
+  color: var(--btn-hover-bg);
+  text-decoration: underline;
+}
+
+.quick-links {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.quick-links li {
+  margin-bottom: 10px;
+  padding-left: 20px;
+  position: relative;
+}
+
+.quick-links li:before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: var(--text-color);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .dashboard-stats,
+  .info-section {
+    flex-direction: column;
+  }
+  
+  .actions {
+    flex-direction: column;
+  }
+  
+  .actions button {
+    width: 100%;
+  }
 }

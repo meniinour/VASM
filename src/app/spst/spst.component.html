@@ -1,22 +1,134 @@
+
 <div class="ok">
-<app-my-header></app-my-header>
-<div class="container">
-    <app-sidebar-client></app-sidebar-client>
-    <div class="content-area" [ngClass]="{'sidebar-expanded': !sidebarCollapsed}">
-      <h1>Service de Prévention et de Santé au Travail (SPST)</h1>
-      <div class="spst-info-card">
-        <h2>Votre SPST</h2>
-        <p><strong>Nom :</strong> ASTBTP - MARSEILLE-MICHELET</p>
-        <p><strong>Adresse :</strong> 344 bd Michelet, 13009 MARSEILLE</p>
-        <p><strong>Téléphone :</strong> 04 91 23 03 30</p>
-        <p><strong>Email :</strong> contact&#64;astbtp.fr</p>
-        <p><strong>Référent :</strong> Mme MARTIN Lea</p>
-        <button class="btn-primary">Accéder au portail SPST</button>
-      </div>
-      <div class="spst-actions">
-        <button class="btn-secondary">Prendre rendez-vous</button>
-        <button class="btn-secondary">Envoyer un message</button>
+  <app-my-header></app-my-header>
+  <div class="container">
+      <app-sidebar-client></app-sidebar-client>
+      <div class="content-area" [ngClass]="{'sidebar-expanded': !sidebarCollapsed}">
+        <h1>Service de Prévention et de Santé au Travail (SPST)</h1>
+        
+        <div class="notifications-container" *ngIf="notifications.length > 0">
+          <button class="btn-secondary" (click)="toggleNotifications()">
+            <i class="fas fa-bell"></i> Notifications <span class="badge">{{notifications.length}}</span>
+          </button>
+          
+          <div class="notification-panel" *ngIf="showNotifications">
+            <div class="notification-item" *ngFor="let notification of notifications">
+              <i [class]="notification.icon"></i>
+              <div>
+                <p>{{notification.message}}</p>
+                <div class="notification-date">{{notification.date | date:'dd/MM/yyyy'}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="tabs">
+          <div class="tab" [ngClass]="{'active': activeTab === 'info'}" (click)="setActiveTab('info')">Informations</div>
+          <div class="tab" [ngClass]="{'active': activeTab === 'visits'}" (click)="setActiveTab('visits')">Visites</div>
+          <div class="tab" [ngClass]="{'active': activeTab === 'documents'}" (click)="setActiveTab('documents')">Documents</div>
+        </div>
+  
+        <div *ngIf="activeTab === 'info'">
+          <div class="spst-info-card">
+            <h2><i class="fas fa-building"></i> Votre SPST</h2>
+            <p><i class="fas fa-signature"></i> <strong>Nom :</strong> ASTBTP - MARSEILLE-MICHELET</p>
+            <p><i class="fas fa-map-marker-alt"></i> <strong>Adresse :</strong> 344 bd Michelet, 13009 MARSEILLE</p>
+            <p><i class="fas fa-phone"></i> <strong>Téléphone :</strong> 04 91 23 03 30</p>
+            <p><i class="fas fa-envelope"></i> <strong>Email :</strong> contact&#64;astbtp.fr</p>
+            <p><i class="fas fa-user-md"></i> <strong>Référent :</strong> Mme MARTIN Lea</p>
+            <p><i class="fas fa-clock"></i> <strong>Horaires :</strong> Lundi-Vendredi 8h30-17h00</p>
+            <div class="card-actions">
+              <button class="btn-primary" (click)="openSpstPortal()">
+                <i class="fas fa-external-link-alt"></i> Accéder au portail SPST
+              </button>
+            </div>
+          </div>
+          
+          <div class="spst-actions">
+            <button class="btn-secondary" (click)="openAppointmentModal()">
+              <i class="fas fa-calendar-plus"></i> Prendre rendez-vous
+            </button>
+            <button class="btn-secondary" (click)="openContactModal()">
+              <i class="fas fa-paper-plane"></i> Envoyer un message
+            </button>
+            <button class="btn-secondary" (click)="openLocationMap()">
+              <i class="fas fa-map-marked-alt"></i> Voir sur la carte
+            </button>
+          </div>
+  
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Rechercher des services ou informations..." [(ngModel)]="searchQuery" (input)="searchServices()">
+          </div>
+  
+          <div class="spst-grid">
+            <div class="spst-card" *ngFor="let service of filteredServices">
+              <h3><i [class]="service.icon"></i> {{service.name}}</h3>
+              <p>{{service.description}}</p>
+              <button class="btn-secondary" (click)="requestService(service)">
+                En savoir plus
+              </button>
+            </div>
+          </div>
+        </div>
+  
+        <div *ngIf="activeTab === 'visits'">
+          <div class="spst-info-card">
+            <h2><i class="fas fa-stethoscope"></i> Vos visites médicales</h2>
+            <p *ngIf="isLoadingVisits" class="loading-state"><span class="loading-spinner"></span> Chargement de vos visites...</p>
+            <p *ngIf="!isLoadingVisits && visits.length === 0">Aucune visite programmée pour le moment.</p>
+          </div>
+  
+          <div class="spst-grid">
+            <div class="spst-card" *ngFor="let visit of visits">
+              <h3><i [class]="visit.icon"></i> {{visit.type}}</h3>
+              <p><strong>Date :</strong> {{visit.date | date:'dd/MM/yyyy à HH:mm'}}</p>
+              <p><strong>Médecin :</strong> {{visit.doctor}}</p>
+              <p><strong>Lieu :</strong> {{visit.location}}</p>
+              <span class="status" [ngClass]="{'status-upcoming': visit.status === 'upcoming', 'status-completed': visit.status === 'completed'}">
+                {{visit.status === 'upcoming' ? 'À venir' : 'Terminée'}}
+              </span>
+              <button *ngIf="visit.status === 'upcoming'" class="btn-secondary" (click)="rescheduleVisit(visit)">
+                <i class="fas fa-calendar-alt"></i> Reprogrammer
+              </button>
+            </div>
+          </div>
+        </div>
+  
+        <div *ngIf="activeTab === 'documents'">
+          <div class="spst-info-card">
+            <h2><i class="fas fa-file-medical"></i> Vos documents</h2>
+            <p *ngIf="isLoadingDocuments" class="loading-state"><span class="loading-spinner"></span> Chargement de vos documents...</p>
+            <p *ngIf="!isLoadingDocuments && documents.length === 0">Aucun document disponible pour le moment.</p>
+          </div>
+  
+          <div class="spst-grid">
+            <div class="spst-card" *ngFor="let document of documents">
+              <h3><i [class]="document.icon"></i> {{document.name}}</h3>
+              <p><strong>Date :</strong> {{document.date | date:'dd/MM/yyyy'}}</p>
+              <p><strong>Type :</strong> {{document.type}}</p>
+              <button class="btn-secondary" (click)="downloadDocument(document)">
+                <i class="fas fa-download"></i> Télécharger
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
+  
+  <!-- Modal pour prendre rendez-vous -->
+  <div class="modal" *ngIf="showAppointmentModal">
+    <!-- Contenu du modal pour rendez-vous -->
   </div>
+  
+  <!-- Modal pour envoyer un message -->
+  <div class="modal" *ngIf="showContactModal">
+    <!-- Contenu du modal pour contact -->
+  </div>
+  
+  <!-- Modal pour afficher la carte -->
+  <div class="modal" *ngIf="showMapModal">
+    <!-- Contenu du modal pour la carte -->
+  </div>
+  

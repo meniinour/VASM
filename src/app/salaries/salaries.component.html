@@ -1,14 +1,63 @@
 <div class="ok">
-<app-my-header></app-my-header>
-<div class="container">
-    <app-sidebar-client></app-sidebar-client>
-    <div class="content-area" [ngClass]="{'sidebar-expanded': !sidebarCollapsed}">
-      <h1>Gestion des Salariés</h1>
-      <div class="actions">
-        <button routerLink="/add-salarie" class="btn-primary">Ajouter un Salarié</button>
-        <button routerLink="/liste-salaries" class="btn-primary">Liste des Salariés</button>
+  <app-my-header></app-my-header>
+  <div class="container">
+      <app-sidebar-client></app-sidebar-client>
+      <div class="content-area" [ngClass]="{'sidebar-expanded': !sidebarCollapsed}">
+        <div class="header-section">
+          <h1>Gestion des Salariés</h1>
+          <p class="welcome-text">Bienvenue dans votre espace de gestion des ressources humaines</p>
+        </div>
+        
+        <div class="dashboard-stats">
+          <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-content">
+              <h3>Employés</h3>
+              <p>Gérez vos salariés</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">📊</div>
+            <div class="stat-content">
+              <h3>Départements</h3>
+              <p>Organisation interne</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">📁</div>
+            <div class="stat-content">
+              <h3>Dossiers</h3>
+              <p>Administration RH</p>
+            </div>
+          </div>
+        </div>
+  
+        <div class="actions">
+          <button routerLink="/add-salarie" class="btn-primary">
+            <span class="btn-icon">➕</span> Ajouter un Salarié
+          </button>
+          <button routerLink="/liste-salaries" class="btn-primary">
+            <span class="btn-icon">📋</span> Liste des Salariés
+          </button>
+        </div>
+        
+        <div class="info-section">
+          <div class="info-card">
+            <h3>Accès Rapide</h3>
+            <ul class="quick-links">
+              <li><a routerLink="/add-salarie">Ajouter un nouveau salarié</a></li>
+              <li><a routerLink="/liste-salaries">Consulter la liste complète</a></li>
+              <li><a routerLink="/imports">Importer des données</a></li>
+              <li><a routerLink="/statistiques">Voir les statistiques</a></li>
+            </ul>
+          </div>
+          <div class="info-card">
+            <h3>Aide</h3>
+            <p>Besoin d'assistance avec la gestion des salariés? Consultez notre <a routerLink="/documentation">documentation</a> ou contactez l'équipe support.</p>
+          </div>
+        </div>
+        
+        <router-outlet></router-outlet>
       </div>
-      <router-outlet></router-outlet>
     </div>
-  </div>
   </div>
