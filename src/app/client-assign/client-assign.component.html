@@ -1,9 +1,9 @@
-<!-- Main container with sidebar and content -->
+<!-- Updated client-assign.component.html with improved styling and additional email modal -->
 <div class="ok">
   <app-my-header></app-my-header>
   <div class="container">
     <app-sidebar-client></app-sidebar-client>
-    
+
     <div class="content-area" [class.full-width]="sidebarCollapsed">
       <!-- Filters and actions bar -->
       <div class="filters-actions">
@@ -12,16 +12,20 @@
             <option value="">Établissement</option>
             <option *ngFor="let etab of etablissements" [value]="etab">{{ etab }}</option>
           </select>
-          
+
           <select (change)="onFilterChange($event)">
             <option value="">Assistante</option>
             <option *ngFor="let assistant of assistants" [value]="assistant">{{ assistant }}</option>
           </select>
-          
-          <button (click)="applyFilters()">Appliquer filtres</button>
-          <button (click)="clearFilters()">Effacer filtres</button>
+
+          <button (click)="applyFilters()">
+            <i class="fas fa-filter"></i> Appliquer filtres
+          </button>
+          <button (click)="clearFilters()">
+            <i class="fas fa-eraser"></i> Effacer filtres
+          </button>
         </div>
-        
+
         <div class="actions">
           <button (click)="contactManager()">
             <i class="fas fa-user-tie"></i> Manager
@@ -40,7 +44,13 @@
           </button>
         </div>
       </div>
-      
+
+      <!-- Page title -->
+      <div class="page-header">
+        <h1>Profil Client: {{ client?.name }}</h1>
+        <div class="page-subtitle">Gestion des employés et visites médicales</div>
+      </div>
+
       <!-- Indicators -->
       <div class="indicator-stats">
         <div class="indicator" (click)="filterByStatus('programmees')">
@@ -60,7 +70,7 @@
           <span>{{ indicators.sansAS }}</span>
         </div>
       </div>
-      
+
       <!-- Main information cards -->
       <div class="main-content">
         <!-- Employee information -->
@@ -79,37 +89,44 @@
           </div>
           <div class="content" *ngIf="employee">
             <p><strong>Nom:</strong> {{ employee.name }}</p>
+            <p><strong>Matricule:</strong> {{ employee.matricule }}</p>
             <p><strong>Sexe:</strong> {{ employee.gender }}</p>
             <p><strong>Date de naissance:</strong> {{ employee.birthdate }}</p>
             <p><strong>Type de contrat:</strong> {{ employee.contractType }}</p>
             <p><strong>Date d'embauche:</strong> {{ employee.startDate }}</p>
             <p><strong>Suivi SPST:</strong> {{ employee.spst }}</p>
             <p><strong>Fonction:</strong> {{ employee.role }}</p>
+            <p><strong>Poste:</strong> {{ employee.poste }}</p>
+            <p><strong>Département:</strong> {{ employee.departement }}</p>
             <p><strong>Surveillance:</strong> {{ employee.surveillance }}</p>
             <p><strong>Code PCS:</strong> {{ employee.pcsCode }}</p>
           </div>
+          <div class="empty-state" *ngIf="!employee">
+            <i class="fas fa-user-slash empty-icon"></i>
+            <p>Aucun collaborateur disponible</p>
+          </div>
         </div>
-        
+
         <!-- SPST information -->
         <div class="spst-info">
           <div class="title">Service SPST</div>
           <div class="content" *ngIf="spst">
-            <p><strong>Nom:</strong> {{ spst.name || 'ASTBTP13 Marseille' }}</p>
-            <p><strong>Adresse:</strong> {{ spst.address || '35 Rue Nau, 13006 Marseille' }}</p>
-            <p><strong>Code postal:</strong> {{ spst.postalCode || '13006' }}</p>
-            <p><strong>Ville:</strong> {{ spst.city || 'Marseille' }}</p>
-            <p><strong>Téléphone:</strong> {{ spst.phone || '04 91 23 03 30' }}</p>
-            <p><strong>Site web:</strong> {{ spst.url || 'https://www.astbtp13.fr' }}</p>
-            <p><strong>Message:</strong> {{ spst.message || 'Service disponible 24/7' }}</p>
+            <p><strong>Nom:</strong> {{ spst.name }}</p>
+            <p><strong>Adresse:</strong> {{ spst.address }}</p>
+            <p><strong>Code postal:</strong> {{ spst.postalCode }}</p>
+            <p><strong>Ville:</strong> {{ spst.city }}</p>
+            <p><strong>Téléphone:</strong> {{ spst.phone }}</p>
+            <p><strong>Site web:</strong> {{ spst.url }}</p>
+            <p><strong>Message:</strong> {{ spst.message }}</p>
           </div>
         </div>
-        
+
         <!-- Contact information -->
         <div class="contact-info">
           <div class="title">Contact Entreprise</div>
           <div class="content" *ngIf="contact">
             <p><strong>Adresse:</strong> {{ contact.address }}</p>
-            <p><strong>Ville:</strong> {{ contact.city || 'Marseille' }}</p>
+            <p><strong>Ville:</strong> {{ contact.city }}</p>
             <p><strong>Téléphone:</strong> {{ contact.phone }}</p>
             <p><strong>Email:</strong> {{ contact.email }}</p>
             <p><strong>Site web:</strong> {{ contact.website }}</p>
@@ -118,7 +135,7 @@
           </div>
         </div>
       </div>
-      
+
       <!-- Tables section -->
       <div class="tables">
         <!-- Visits table -->
@@ -126,319 +143,378 @@
           <div class="table-title">
             <span>Visites médicales</span>
             <div class="table-actions">
-              <button (click)="openNewVisitModal()">
+              <button (click)="openNewVisitModal()" [disabled]="!employee">
                 <i class="fas fa-plus"></i> Nouvelle visite
               </button>
-              <button (click)="exportVisits('excel')">
+              <button (click)="exportVisits('excel')" [disabled]="visites.length === 0">
                 <i class="fas fa-file-excel"></i> Excel
               </button>
-              <button (click)="exportVisits('pdf')">
+              <button (click)="exportVisits('pdf')" [disabled]="visites.length === 0">
                 <i class="fas fa-file-pdf"></i> PDF
               </button>
             </div>
           </div>
-          
-          <table>
-            <thead>
-              <tr>
-                <th (click)="sortTable('visites', 'type')">Type <i class="fas fa-sort"></i></th>
-                <th (click)="sortTable('visites', 'etat')">État <i class="fas fa-sort"></i></th>
-                <th (click)="sortTable('visites', 'envisagee')">Date envisagée <i class="fas fa-sort"></i></th>
-                <th (click)="sortTable('visites', 'effectuee')">Date effectuée <i class="fas fa-sort"></i></th>
-                <th (click)="sortTable('visites', 'suivi')">Suivi <i class="fas fa-sort"></i></th>
-                <th (click)="sortTable('visites', 'apte')">Aptitude <i class="fas fa-sort"></i></th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let visite of visites">
-                <td>{{ visite.type }}</td>
-                <td>
-                  <span class="status" [ngClass]="'status-' + visite.etat.toLowerCase()">
-                    {{ visite.etat }}
-                  </span>
-                </td>
-                <td>{{ visite.envisagee }}</td>
-                <td>{{ visite.effectuee || '-' }}</td>
-                <td>{{ visite.suivi }}</td>
-                <td>
-                  <input type="checkbox" [checked]="visite.apte" disabled>
-                </td>
-                <td>
-                  <button (click)="viewVisiteDetails(visite)" title="Voir détails">
-                    <i class="fas fa-eye"></i>
-                  </button>
-                  <button (click)="editVisite(visite)" title="Modifier">
-                    <i class="fas fa-edit"></i>
-                  </button>
-                  <button (click)="confirmDeleteVisite(visite)" title="Supprimer">
-                    <i class="fas fa-trash"></i>
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+
+          <div class="table-container">
+            <table *ngIf="visites.length > 0">
+              <thead>
+                <tr>
+                  <th (click)="sortTable('visites', 'type')">Type <i class="fas fa-sort"></i></th>
+                  <th (click)="sortTable('visites', 'etat')">État <i class="fas fa-sort"></i></th>
+                  <th (click)="sortTable('visites', 'envisagee')">Date envisagée <i class="fas fa-sort"></i></th>
+                  <th (click)="sortTable('visites', 'effectuee')">Date effectuée <i class="fas fa-sort"></i></th>
+                  <th (click)="sortTable('visites', 'suivi')">Suivi <i class="fas fa-sort"></i></th>
+                  <th (click)="sortTable('visites', 'apte')">Aptitude <i class="fas fa-sort"></i></th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let visite of visites">
+                  <td>{{ visite.type }}</td>
+                  <td>
+                    <span class="status" [ngClass]="'status-' + visite.etat.toLowerCase()">
+                      {{ visite.etat }}
+                    </span>
+                  </td>
+                  <td>{{ visite.envisagee }}</td>
+                  <td>{{ visite.effectuee || '-' }}</td>
+                  <td>{{ visite.suivi }}</td>
+                  <td>
+                    <span class="aptitude" [ngClass]="visite.apte ? 'aptitude-yes' : 'aptitude-no'">
+                      {{ visite.apte ? 'Apte' : 'Non apte' }}
+                    </span>
+                  </td>
+                  <td>
+                    <button (click)="viewVisiteDetails(visite)" title="Voir détails">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button (click)="editVisite(visite)" title="Modifier">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button (click)="confirmDeleteVisite(visite)" title="Supprimer">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="empty-table" *ngIf="visites.length === 0">
+              <i class="fas fa-calendar-times empty-icon"></i>
+              <p>Aucune visite médicale n'est disponible</p>
+              <button class="btn-primary" (click)="openNewVisitModal()" *ngIf="employee">
+                <i class="fas fa-plus"></i> Ajouter une visite
+              </button>
+            </div>
+          </div>
         </div>
-        
+
         <!-- Appointments table -->
         <div class="rdv-table">
           <div class="table-title">
             <span>Rendez-vous</span>
             <div class="table-actions">
-              <button (click)="openNewAppointmentModal()">
+              <button (click)="openNewAppointmentModal()" [disabled]="!employee">
                 <i class="fas fa-plus"></i> Nouveau RDV
               </button>
-              <button (click)="exportAppointments('excel')">
+              <button (click)="exportAppointments('excel')" [disabled]="rendezVous.length === 0">
                 <i class="fas fa-file-excel"></i> Excel
               </button>
-              <button (click)="exportAppointments('pdf')">
+              <button (click)="exportAppointments('pdf')" [disabled]="rendezVous.length === 0">
                 <i class="fas fa-file-pdf"></i> PDF
               </button>
             </div>
           </div>
-          
-          <table>
-            <thead>
-              <tr>
-                <th (click)="sortTable('rdv', 'date')">Date <i class="fas fa-sort"></i></th>
-                <th (click)="sortTable('rdv', 'envoi')">Date envoi <i class="fas fa-sort"></i></th>
-                <th (click)="sortTable('rdv', 'ar')">AR <i class="fas fa-sort"></i></th>
-                <th (click)="sortTable('rdv', 'ordonnance')">Ordonnance <i class="fas fa-sort"></i></th>
-                <th (click)="sortTable('rdv', 'accepte')">Accepté <i class="fas fa-sort"></i></th>
-                <th (click)="sortTable('rdv', 'excusable')">Excusable <i class="fas fa-sort"></i></th>
-                <th (click)="sortTable('rdv', 'reporte')">Reporté <i class="fas fa-sort"></i></th>
-                <th (click)="sortTable('rdv', 'honore')">Honoré <i class="fas fa-sort"></i></th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let rdv of rendezVous">
-                <td>{{ rdv.date }}</td>
-                <td>{{ rdv.envoi }}</td>
-                <td>
-                  <input type="checkbox" [checked]="rdv.ar" disabled>
-                </td>
-                <td>
-                  <input type="checkbox" [checked]="rdv.ordonnance" disabled>
-                </td>
-                <td>
-                  <input type="checkbox" [checked]="rdv.accepte" disabled>
-                </td>
-                <td>
-                  <input type="checkbox" [checked]="rdv.excusable" disabled>
-                </td>
-                <td>
-                  <input type="checkbox" [checked]="rdv.reporte" disabled>
-                </td>
-                <td>
-                  <input type="checkbox" [checked]="rdv.honore" disabled>
-                </td>
-                <td>
-                  <button (click)="viewRdvDetails(rdv)" title="Voir détails">
-                    <i class="fas fa-eye"></i>
-                  </button>
-                  <button (click)="editRdv(rdv)" title="Modifier">
-                    <i class="fas fa-edit"></i>
-                  </button>
-                  <button (click)="confirmDeleteRdv(rdv)" title="Supprimer">
-                    <i class="fas fa-trash"></i>
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+
+          <div class="table-container">
+            <table *ngIf="rendezVous.length > 0">
+              <thead>
+                <tr>
+                  <th (click)="sortTable('rdv', 'date')">Date <i class="fas fa-sort"></i></th>
+                  <th (click)="sortTable('rdv', 'envoi')">Date envoi <i class="fas fa-sort"></i></th>
+                  <th (click)="sortTable('rdv', 'ar')">AR <i class="fas fa-sort"></i></th>
+                  <th (click)="sortTable('rdv', 'ordonnance')">Ordonnance <i class="fas fa-sort"></i></th>
+                  <th (click)="sortTable('rdv', 'accepte')">Accepté <i class="fas fa-sort"></i></th>
+                  <th (click)="sortTable('rdv', 'excusable')">Excusable <i class="fas fa-sort"></i></th>
+                  <th (click)="sortTable('rdv', 'reporte')">Reporté <i class="fas fa-sort"></i></th>
+                  <th (click)="sortTable('rdv', 'honore')">Honoré <i class="fas fa-sort"></i></th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let rdv of rendezVous">
+                  <td>{{ rdv.date }}</td>
+                  <td>{{ rdv.envoi }}</td>
+                  <td>
+                    <i class="fas" [ngClass]="rdv.ar ? 'fa-check-circle text-success' : 'fa-times-circle text-danger'"></i>
+                  </td>
+                  <td>
+                    <i class="fas" [ngClass]="rdv.ordonnance ? 'fa-check-circle text-success' : 'fa-times-circle text-danger'"></i>
+                  </td>
+                  <td>
+                    <i class="fas" [ngClass]="rdv.accepte ? 'fa-check-circle text-success' : 'fa-times-circle text-danger'"></i>
+                  </td>
+                  <td>
+                    <i class="fas" [ngClass]="rdv.excusable ? 'fa-check-circle text-success' : 'fa-times-circle text-danger'"></i>
+                  </td>
+                  <td>
+                    <i class="fas" [ngClass]="rdv.reporte ? 'fa-check-circle text-success' : 'fa-times-circle text-danger'"></i>
+                  </td>
+                  <td>
+                    <i class="fas" [ngClass]="rdv.honore ? 'fa-check-circle text-success' : 'fa-times-circle text-danger'"></i>
+                  </td>
+                  <td>
+                    <button (click)="viewRdvDetails(rdv)" title="Voir détails">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button (click)="editRdv(rdv)" title="Modifier">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button (click)="confirmDeleteRdv(rdv)" title="Supprimer">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="empty-table" *ngIf="rendezVous.length === 0">
+              <i class="fas fa-calendar-times empty-icon"></i>
+              <p>Aucun rendez-vous n'est disponible</p>
+              <button class="btn-primary" (click)="openNewAppointmentModal()" *ngIf="employee">
+                <i class="fas fa-plus"></i> Ajouter un rendez-vous
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
-  
+
   <!-- Toast notification -->
-  <div class="toast" [class.show]="showToast" [class.success]="toastType === 'success'" [class.error]="toastType === 'error'">
+  <div class="toast" [class.show]="showToast" [ngClass]="toastType">
     {{ toastMessage }}
   </div>
-  
-  <!-- Appointment Modal -->
-  <div class="modal-overlay" [class.active]="showAppointmentModal">
+
+  <!-- Email Modal -->
+  <div class="modal-overlay" [class.active]="showEmailModal">
     <div class="modal">
       <div class="modal-header">
-        <h2 class="modal-title">{{ isEditingRdv ? 'Modifier rendez-vous' : 'Nouveau rendez-vous' }}</h2>
-        <button class="modal-close" (click)="closeAppointmentModal()">&times;</button>
-      </div>
-      <div class="modal-body">
-        <form [formGroup]="appointmentForm">
-          <div class="form-group">
-            <label for="date">Date et heure</label>
-            <input type="text" id="date" formControlName="date" class="form-control" placeholder="JJ/MM/AAAA HH:MM">
-          </div>
-          <div class="form-group">
-            <label for="envoi">Date d'envoi</label>
-            <input type="text" id="envoi" formControlName="envoi" class="form-control" placeholder="JJ/MM/AAAA">
-          </div>
-          <div class="form-group">
-            <label>
-              <input type="checkbox" formControlName="ar"> Accusé de réception
-            </label>
-          </div>
-          <div class="form-group">
-            <label>
-              <input type="checkbox" formControlName="ordonnance"> Ordonnance
-            </label>
-          </div>
-          <div class="form-group">
-            <label>
-              <input type="checkbox" formControlName="accepte"> Accepté
-            </label>
-          </div>
-          <div class="form-group">
-            <label>
-              <input type="checkbox" formControlName="excusable"> Excusable
-            </label>
-          </div>
-          <div class="form-group">
-            <label>
-              <input type="checkbox" formControlName="reporte"> Reporté
-            </label>
-          </div>
-          <div class="form-group">
-            <label>
-              <input type="checkbox" formControlName="honore"> Honoré
-            </label>
-          </div>
-          <div class="form-group">
-            <label for="motif">Motif</label>
-            <input type="text" id="motif" formControlName="motif" class="form-control" placeholder="Motif du rendez-vous">
-          </div>
-          <div class="form-group">
-            <label for="commentaire">Commentaire</label>
-            <textarea id="commentaire" formControlName="commentaire" class="form-control" rows="3" placeholder="Commentaire supplémentaire"></textarea>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button class="secondary" (click)="closeAppointmentModal()">Annuler</button>
-        <button class="primary" (click)="saveAppointment()">{{ isEditingRdv ? 'Mettre à jour' : 'Créer' }}</button>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Visit Modal -->
-  <div class="modal-overlay" [class.active]="showVisitModal">
-    <div class="modal">
-      <div class="modal-header">
-        <h2 class="modal-title">{{ isEditingVisite ? 'Modifier visite' : 'Nouvelle visite' }}</h2>
-        <button class="modal-close" (click)="closeVisitModal()">&times;</button>
-      </div>
-      <div class="modal-body">
-        <form [formGroup]="visitForm">
-          <div class="form-group">
-            <label for="type">Type</label>
-            <select id="type" formControlName="type" class="form-control">
-              <option value="VIPP">VIPP</option>
-              <option value="VIPI">VIPI</option>
-              <option value="VIP">VIP</option>
-              <option value="VMS">VMS</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="etat">État</label>
-            <select id="etat" formControlName="etat" class="form-control">
-              <option value="Programmée">Programmée</option>
-              <option value="Effectuée">Effectuée</option>
-              <option value="Annulée">Annulée</option>
-              <option value="Reportée">Reportée</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="envisagee">Date envisagée</label>
-            <input type="text" id="envisagee" formControlName="envisagee" class="form-control" placeholder="JJ/MM/AAAA">
-          </div>
-          <div class="form-group" *ngIf="visitForm.get('etat')?.value === 'Effectuée'">
-            <label for="effectuee">Date effectuée</label>
-            <input type="text" id="effectuee" formControlName="effectuee" class="form-control" placeholder="JJ/MM/AAAA">
-          </div>
-          <div class="form-group">
-            <label for="suivi">Suivi</label>
-            <select id="suivi" formControlName="suivi" class="form-control">
-              <option value="SIR A">SIR A</option>
-              <option value="SIR B">SIR B</option>
-              <option value="SIA">SIA</option>
-              <option value="SIG">SIG</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>
-              <input type="checkbox" formControlName="apte"> Apte
-            </label>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button class="secondary" (click)="closeVisitModal()">Annuler</button>
-        <button class="primary" (click)="saveVisit()">{{ isEditingVisite ? 'Mettre à jour' : 'Créer' }}</button>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Incident Modal -->
-  <div class="modal-overlay" [class.active]="showIncidentModal">
-    <div class="modal">
-      <div class="modal-header">
-        <h2 class="modal-title">Déclarer un incident</h2>
-        <button class="modal-close" (click)="closeIncidentModal()">&times;</button>
-      </div>
-      <div class="modal-body">
-        <form [formGroup]="incidentForm">
-          <div class="form-group">
-            <label for="type">Type d'incident</label>
-            <select id="type" formControlName="type" class="form-control">
-              <option value="">Sélectionnez un type</option>
-              <option value="absence">Absence non justifiée</option>
-              <option value="retard">Retard important</option>
-              <option value="comportement">Problème de comportement</option>
-              <option value="technique">Problème technique</option>
-              <option value="autre">Autre</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="severity">Gravité</label>
-            <select id="severity" formControlName="severity" class="form-control">
-              <option value="low">Faible</option>
-              <option value="medium">Moyenne</option>
-              <option value="high">Élevée</option>
-              <option value="critical">Critique</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="date">Date</label>
-            <input type="date" id="date" formControlName="date" class="form-control">
-          </div>
-          <div class="form-group">
-            <label for="description">Description</label>
-            <textarea id="description" formControlName="description" class="form-control" rows="5" placeholder="Décrivez l'incident"></textarea>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button class="secondary" (click)="closeIncidentModal()">Annuler</button>
-        <button class="primary" (click)="submitIncident()">Déclarer</button>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Confirmation Modal -->
-  <div class="modal-overlay" [class.active]="showConfirmationModal">
-    <div class="modal">
-      <div class="modal-header">
-        <h2 class="modal-title">Confirmation</h2>
-        <button class="modal-close" (click)="closeConfirmationModal()">&times;</button>
-      </div>
-      <div class="modal-body">
-        <p>{{ confirmationMessage }}</p>
-      </div>
-      <div class="modal-footer">
-        <button class="secondary" (click)="closeConfirmationModal()">Annuler</button>
-        <button class="primary" (click)="confirmAction()">Confirmer</button>
-      </div>
-    </div>
-  </div>
+        <h2 class="modal-title">
+         <!-- Continued from the previous code -->
+         <span *ngIf="emailTarget === 'manager'">Contacter le manager</span>
+         <span *ngIf="emailTarget === 'assistant'">Contacter l'assistante SPST</span>
+         <span *ngIf="emailTarget === 'rrh'">Contacter le RRH Client</span>
+       </h2>
+       <button class="modal-close" (click)="closeEmailModal()">&times;</button>
+     </div>
+     <div class="modal-body">
+       <form [formGroup]="emailForm">
+         <div class="form-group">
+           <label for="subject">Sujet</label>
+           <input type="text" id="subject" formControlName="subject" class="form-control" placeholder="Sujet de l'email">
+         </div>
+         <div class="form-group">
+           <label for="message">Message</label>
+           <textarea id="message" formControlName="message" class="form-control" rows="5" placeholder="Votre message..."></textarea>
+         </div>
+       </form>
+     </div>
+     <div class="modal-footer">
+       <button class="secondary" (click)="closeEmailModal()">Annuler</button>
+       <button class="primary" (click)="sendEmail()">Envoyer</button>
+     </div>
+   </div>
+ </div>
+
+ <!-- Appointment Modal -->
+ <div class="modal-overlay" [class.active]="showAppointmentModal">
+   <div class="modal">
+     <div class="modal-header">
+       <h2 class="modal-title">{{ isEditingRdv ? 'Modifier rendez-vous' : 'Nouveau rendez-vous' }}</h2>
+       <button class="modal-close" (click)="closeAppointmentModal()">&times;</button>
+     </div>
+     <div class="modal-body">
+       <form [formGroup]="appointmentForm">
+         <div class="form-group">
+           <label for="date">Date et heure</label>
+           <input type="text" id="date" formControlName="date" class="form-control" placeholder="JJ/MM/AAAA HH:MM">
+         </div>
+         <div class="form-group">
+           <label for="envoi">Date d'envoi</label>
+           <input type="text" id="envoi" formControlName="envoi" class="form-control" placeholder="JJ/MM/AAAA">
+         </div>
+         <div class="checkbox-group">
+           <div class="form-check">
+             <input type="checkbox" id="ar" formControlName="ar" class="form-check-input">
+             <label for="ar" class="form-check-label">Accusé de réception</label>
+           </div>
+           <div class="form-check">
+             <input type="checkbox" id="ordonnance" formControlName="ordonnance" class="form-check-input">
+             <label for="ordonnance" class="form-check-label">Ordonnance</label>
+           </div>
+         </div>
+         <div class="checkbox-group">
+           <div class="form-check">
+             <input type="checkbox" id="accepte" formControlName="accepte" class="form-check-input">
+             <label for="accepte" class="form-check-label">Accepté</label>
+           </div>
+           <div class="form-check">
+             <input type="checkbox" id="excusable" formControlName="excusable" class="form-check-input">
+             <label for="excusable" class="form-check-label">Excusable</label>
+           </div>
+         </div>
+         <div class="checkbox-group">
+           <div class="form-check">
+             <input type="checkbox" id="reporte" formControlName="reporte" class="form-check-input">
+             <label for="reporte" class="form-check-label">Reporté</label>
+           </div>
+           <div class="form-check">
+             <input type="checkbox" id="honore" formControlName="honore" class="form-check-input">
+             <label for="honore" class="form-check-label">Honoré</label>
+           </div>
+         </div>
+         <div class="form-group">
+           <label for="motif">Motif</label>
+           <input type="text" id="motif" formControlName="motif" class="form-control" placeholder="Motif du rendez-vous">
+         </div>
+         <div class="form-group">
+           <label for="commentaire">Commentaire</label>
+           <textarea id="commentaire" formControlName="commentaire" class="form-control" rows="3" placeholder="Commentaire supplémentaire"></textarea>
+         </div>
+       </form>
+     </div>
+     <div class="modal-footer">
+       <button class="secondary" (click)="closeAppointmentModal()">Annuler</button>
+       <button class="primary" (click)="saveAppointment()">{{ isEditingRdv ? 'Mettre à jour' : 'Créer' }}</button>
+     </div>
+   </div>
+ </div>
+
+ <!-- Visit Modal -->
+ <div class="modal-overlay" [class.active]="showVisitModal">
+   <div class="modal">
+     <div class="modal-header">
+       <h2 class="modal-title">{{ isEditingVisite ? 'Modifier visite' : 'Nouvelle visite' }}</h2>
+       <button class="modal-close" (click)="closeVisitModal()">&times;</button>
+     </div>
+     <div class="modal-body">
+       <form [formGroup]="visitForm">
+         <div class="form-group">
+           <label for="type">Type</label>
+           <select id="type" formControlName="type" class="form-control">
+             <option value="VIPP">VIPP</option>
+             <option value="VIPI">VIPI</option>
+             <option value="VIP">VIP</option>
+             <option value="VMS">VMS</option>
+           </select>
+         </div>
+         <div class="form-group">
+           <label for="etat">État</label>
+           <select id="etat" formControlName="etat" class="form-control">
+             <option value="Programmée">Programmée</option>
+             <option value="Effectuée">Effectuée</option>
+             <option value="Annulée">Annulée</option>
+             <option value="Reportée">Reportée</option>
+           </select>
+         </div>
+         <div class="form-group">
+           <label for="envisagee">Date envisagée</label>
+           <input type="date" id="envisagee" formControlName="envisagee" class="form-control">
+         </div>
+         <div class="form-group" *ngIf="visitForm.get('etat')?.value === 'Effectuée'">
+           <label for="effectuee">Date effectuée</label>
+           <input type="date" id="effectuee" formControlName="effectuee" class="form-control">
+         </div>
+         <div class="form-group">
+           <label for="suivi">Suivi</label>
+           <select id="suivi" formControlName="suivi" class="form-control">
+             <option value="SIR A">SIR A</option>
+             <option value="SIR B">SIR B</option>
+             <option value="SIA">SIA</option>
+             <option value="SIG">SIG</option>
+           </select>
+         </div>
+         <div class="form-check">
+           <input type="checkbox" id="apte" formControlName="apte" class="form-check-input">
+           <label for="apte" class="form-check-label">Apte</label>
+         </div>
+       </form>
+     </div>
+     <div class="modal-footer">
+       <button class="secondary" (click)="closeVisitModal()">Annuler</button>
+       <button class="primary" (click)="saveVisit()">{{ isEditingVisite ? 'Mettre à jour' : 'Créer' }}</button>
+     </div>
+   </div>
+ </div>
+
+ <!-- Incident Modal -->
+ <div class="modal-overlay" [class.active]="showIncidentModal">
+   <div class="modal">
+     <div class="modal-header">
+       <h2 class="modal-title">Déclarer un incident</h2>
+       <button class="modal-close" (click)="closeIncidentModal()">&times;</button>
+     </div>
+     <div class="modal-body">
+       <form [formGroup]="incidentForm">
+         <div class="form-group">
+           <label for="type">Type d'incident</label>
+           <select id="type" formControlName="type" class="form-control">
+             <option value="">Sélectionnez un type</option>
+             <option value="absence">Absence non justifiée</option>
+             <option value="retard">Retard important</option>
+             <option value="comportement">Problème de comportement</option>
+             <option value="technique">Problème technique</option>
+             <option value="autre">Autre</option>
+           </select>
+         </div>
+         <div class="form-group">
+           <label for="severity">Gravité</label>
+           <select id="severity" formControlName="severity" class="form-control">
+             <option value="low">Faible</option>
+             <option value="medium">Moyenne</option>
+             <option value="high">Élevée</option>
+             <option value="critical">Critique</option>
+           </select>
+         </div>
+         <div class="form-group">
+           <label for="date">Date</label>
+           <input type="date" id="date" formControlName="date" class="form-control">
+         </div>
+         <div class="form-group">
+           <label for="description">Description</label>
+           <textarea id="description" formControlName="description" class="form-control" rows="5" placeholder="Décrivez l'incident"></textarea>
+         </div>
+       </form>
+     </div>
+     <div class="modal-footer">
+       <button class="secondary" (click)="closeIncidentModal()">Annuler</button>
+       <button class="primary" (click)="submitIncident()">Déclarer</button>
+     </div>
+   </div>
+ </div>
+
+ <!-- Confirmation Modal -->
+ <div class="modal-overlay" [class.active]="showConfirmationModal">
+   <div class="modal">
+     <div class="modal-header">
+       <h2 class="modal-title">Confirmation</h2>
+       <button class="modal-close" (click)="closeConfirmationModal()">&times;</button>
+     </div>
+     <div class="modal-body">
+       <div class="confirmation-icon">
+         <i class="fas fa-question-circle"></i>
+       </div>
+       <p>{{ confirmationMessage }}</p>
+     </div>
+     <div class="modal-footer">
+       <button class="secondary" (click)="closeConfirmationModal()">Annuler</button>
+       <button class="primary" (click)="confirmAction()">Confirmer</button>
+     </div>
+   </div>
+ </div>
+
+ <!-- Loading Overlay -->
+ <div class="loading-overlay" *ngIf="isLoading">
+   <div class="spinner"></div>
+   <p>Chargement en cours...</p>
+ </div>
 </div>

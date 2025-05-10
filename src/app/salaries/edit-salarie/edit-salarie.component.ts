@@ -48,24 +48,29 @@ export class EditSalarieComponent implements OnInit {
 
   loadSalarieData(id: number): void {
     this.isLoading = true;
-    
-    setTimeout(() => {
-      const salarie = this.salarieService.getSalarieById(id);
-      
-      if (salarie) {
-        this.salarieForm.patchValue({
-          nom: salarie.nom,
-          matricule: salarie.matricule,
-          poste: salarie.poste || '',
-          departement: salarie.departement || '',
-          dateEmbauche: salarie.dateEmbauche || ''
-        });
-      } else {
+
+    this.salarieService.getSalarieById(id).subscribe(
+      (salarie) => {
+        if (salarie) {
+          this.salarieForm.patchValue({
+            nom: salarie.nom,
+            matricule: salarie.matricule,
+            poste: salarie.poste || '',
+            departement: salarie.departement || '',
+            dateEmbauche: salarie.dateEmbauche || ''
+          });
+          this.notFound = false;
+        } else {
+          this.notFound = true;
+        }
+        this.isLoading = false;
+      },
+      (error) => {
+        console.error('Error loading employee:', error);
         this.notFound = true;
+        this.isLoading = false;
       }
-      
-      this.isLoading = false;
-    }, 800); // Simulated loading delay
+    );
   }
 
   onSidebarToggle(collapsed: boolean): void {
@@ -74,29 +79,33 @@ export class EditSalarieComponent implements OnInit {
 
   onSubmit(): void {
     this.submitted = true;
-    
+
     if (this.salarieForm.valid) {
       this.isLoading = true;
-      
-      setTimeout(() => {
-        const updatedSalarie: Salarie = {
-          id: this.salarieId,
-          ...this.salarieForm.value
-        };
-        
-        this.salarieService.updateSalarie(updatedSalarie);
-        this.isLoading = false;
-        
-        // Show success message
-        const successMessage = document.getElementById('success-message');
-        if (successMessage) {
-          successMessage.classList.remove('hidden');
-          setTimeout(() => {
-            successMessage.classList.add('hidden');
-            this.router.navigate(['/liste-salaries']);
-          }, 2000);
+
+      const updatedSalarie: Salarie = {
+        id: this.salarieId,
+        ...this.salarieForm.value
+      };
+
+      this.salarieService.updateSalarie(updatedSalarie).subscribe(
+        (salarie) => {
+          this.isLoading = false;
+          // Show success message
+          const successMessage = document.getElementById('success-message');
+          if (successMessage) {
+            successMessage.classList.remove('hidden');
+            setTimeout(() => {
+              successMessage.classList.add('hidden');
+              this.router.navigate(['/liste-salaries']);
+            }, 2000);
+          }
+        },
+        (error) => {
+          console.error('Error updating employee:', error);
+          this.isLoading = false;
         }
-      }, 800); // Simulate network delay
+      );
     }
   }
 }

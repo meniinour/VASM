@@ -21,7 +21,7 @@ export class AddSalarieComponent implements OnInit {
   departments = ['IT', 'Finances', 'RH', 'Marketing', 'Ventes', 'Créatif', 'Management', 'Production'];
 
   constructor(
-    private fb: FormBuilder, 
+    private fb: FormBuilder,
     private salarieService: SalarieService,
     private router: Router
   ) {
@@ -45,24 +45,29 @@ export class AddSalarieComponent implements OnInit {
 
   onSubmit(): void {
     this.submitted = true;
-    
+
     if (this.salarieForm.valid) {
       this.isLoading = true;
-      
-      setTimeout(() => {
-        this.salarieService.addSalarie(this.salarieForm.value);
-        this.isLoading = false;
-        
-        // Show success message
-        const successMessage = document.getElementById('success-message');
-        if (successMessage) {
-          successMessage.classList.remove('hidden');
-          setTimeout(() => {
-            successMessage.classList.add('hidden');
-            this.router.navigate(['/liste-salaries']);
-          }, 2000);
+
+      this.salarieService.addSalarie(this.salarieForm.value).subscribe(
+        (response) => {
+          this.isLoading = false;
+
+          // Show success message
+          const successMessage = document.getElementById('success-message');
+          if (successMessage) {
+            successMessage.classList.remove('hidden');
+            setTimeout(() => {
+              successMessage.classList.add('hidden');
+              this.router.navigate(['/liste-salaries']);
+            }, 2000);
+          }
+        },
+        (error) => {
+          console.error('Error adding employee:', error);
+          this.isLoading = false;
         }
-      }, 800); // Simulate network delay
+      );
     }
   }
 

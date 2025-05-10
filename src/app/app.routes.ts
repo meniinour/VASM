@@ -31,26 +31,34 @@ import { StatistiquesComponent } from './statistiques/statistiques.component';
 import { TableauBordComponent } from './tableau-bord/tableau-bord.component';
 import { SpstComponent } from './spst/spst.component';
 import { FeedbackComponent } from './feedback/feedback.component';
+import { GestionnaireprofComponent } from './gestionnaireprof/gestionnaireprof.component';
+import { AccesComponent } from './acces/acces.component';
+import { DashmangComponent } from './dashmang/dashmang.component';
+import { EmployeComponent } from './employe/employe.component';
+import { FormComponent } from './form/form.component';
+import { NotifComponent } from './notif/notif.component';
+import { UprofComponent } from './uprof/uprof.component';
+import { noop } from 'rxjs';
 export const routes: Routes = [
     { path: '', redirectTo: 'welcome', pathMatch: 'full' },
     {path: 'welcome',component: WelcomeComponent},
     { path: '', redirectTo: 'login', pathMatch: 'full' },
     { path: 'login', component: LoginComponent},
-    { path: 'forget-password', component: ForgetPasswordComponent}, 
-    { path: 'home', component: HomeComponent},    
+    { path: 'forget-password', component: ForgetPasswordComponent},
+    { path: 'home', component: HomeComponent},
     { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
-    { path: 'chatbot', component: ChatbotComponent},   
-    { path: 'besoin', component: BesoinComponent},    
-    { path: 'register', component: RegisterComponent},  
+    { path: 'chatbot', component: ChatbotComponent},
+    { path: 'besoin', component: BesoinComponent},
+    { path: 'register', component: RegisterComponent},
     { path: 'sidebar', component: SidebarComponent},
-    { path: 'my-header', component: MyHeaderComponent}, 
+    { path: 'my-header', component: MyHeaderComponent},
     { path: 'my-content', component: MyContentComponent},
     { path: 'mail', component: MailComponent},
     { path: 'affecter-mail', component: AffecterMailComponent},
     { path: 'debloquer-mail', component: DebloquerMailComponent},
     { path: 'liberer-mail', component: LibererMailComponent},
     { path: 'users', component: UserComponent },
-    { path: 'client-assign/:id', component: ClientAssignComponent }, 
+    { path: 'client-assign/:id', component: ClientAssignComponent },
     { path: 'documentation' , component: DocumentationComponent } ,// Redirige vers la page d'accueil pour les routes non trouvées
     { path: 'navbar',component: NavbarComponent},
     { path: 'gestionnaireprof' ,component: GestionnaireprofComponent},
@@ -74,7 +82,7 @@ export const routes: Routes = [
     { path: 'navbar',component: NavbarComponent},
     { path: 'sidebar-client', component: SidebarClientComponent },
     { path: 'mail-client', component: MailClientComponent },
-    { path: 'salaries', component: SalariesComponent },
+    { path: 'salaries/:clientId', component: ListeSalariesComponent },
     { path: 'add-salarie', component: AddSalarieComponent },
     { path: 'liste-salaries', component: ListeSalariesComponent },
     { path: 'edit-salarie/:id', component: EditSalarieComponent },

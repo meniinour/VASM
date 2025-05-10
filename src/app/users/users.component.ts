@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import clientsData from '../../assets/data/clients.json';
 import { SidebarComponent } from "../sidebar/sidebar.component";
 import { MyHeaderComponent } from "../my-header/my-header.component";
 
@@ -68,23 +67,22 @@ export class UserComponent implements OnInit {
   ngOnInit() {
     // Simulate loading data from an API
     setTimeout(() => {
-      // Add additional indicator fields that were in the legend but not in the data
-      this.clients = clientsData.map(client => {
-        // Convert original client data and add new fields
-        const enhancedClient: Client = {
-          ...client,
-          favorite: Math.random() > 0.7, // Randomly mark some as favorites for demo
-          indicators: {
-            ...client.indicators,
-            // Add missing indicators with random values for demonstration
-            importsEnAttente: Math.floor(Math.random() * 5),
-            facturesEnAttente: Math.floor(Math.random() * 8),
-            facturesRapprochement: Math.floor(Math.random() * 4),
-            rejetImport: Math.floor(Math.random() * 3)
-          }
-        };
-        return enhancedClient;
-      });
+      // Create 21 sample clients with the requested naming scheme
+      this.clients = Array.from({ length: 21 }, (_, i) => ({
+        id: i + 1,
+        name: `client${i + 1}`,
+        logo: 'assets/logos/client.png',
+        favorite: Math.random() > 0.7, // Randomly mark some as favorites for demo
+        indicators: {
+          mouvements: Math.floor(Math.random() * 15),
+          joursRetards: Math.floor(Math.random() * 10),
+          etablissementsInconnus: Math.floor(Math.random() * 8),
+          importsEnAttente: Math.floor(Math.random() * 5),
+          facturesEnAttente: Math.floor(Math.random() * 8),
+          facturesRapprochement: Math.floor(Math.random() * 4),
+          rejetImport: Math.floor(Math.random() * 3)
+        }
+      }));
       
       this.isLoading = false;
       this.sortClients(this.sortOption);
