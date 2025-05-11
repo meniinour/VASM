@@ -8,8 +8,8 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { ClientService } from '../services/client.service';
 import { EmployeeService } from '../services/employee.service';
-import { VisitService } from '../services/visit.service';
-import { AppointmentService } from '../services/appointment.service';
+import { VisitService, Visit } from '../services/visit.service';
+import { AppointmentService, Appointment } from '../services/appointment.service';
 import { CommunicationService } from '../services/communication.service';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -38,8 +38,8 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
   employee: any;
   spst: any = {};
   contact: any = {};
-  visites: any[] = [];
-  rendezVous: any[] = [];
+  visites: Visit[] = [];
+  rendezVous: Appointment[] = [];
 
   // Filters and sorting
   filterCriteria: any = {};
@@ -152,7 +152,7 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
   loadClient(clientId: number): void {
     this.isLoading = true;
 
-    this.clientService['getClientById'](clientId).pipe(takeUntil(this.destroy$)).subscribe({
+    this.clientService.getClientById(clientId).pipe(takeUntil(this.destroy$)).subscribe({
       next: (client: any) => {
         this.client = client;
 
@@ -187,7 +187,7 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
 
         this.isLoading = false;
       },
-      error: (error: any) => {
+      error: (error: Error) => {
         console.error('Error loading client:', error);
         this.isLoading = false;
         this.showToastMessage('Erreur lors du chargement du client', 'error');
@@ -214,7 +214,7 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
           this.rendezVous = [];
         }
       },
-      error: (error) => {
+      error: (error: Error) => {
         console.error('Error loading employees:', error);
         this.showToastMessage('Erreur lors du chargement des employés', 'error');
       }
@@ -222,11 +222,11 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
   }
 
   loadVisits(employeeId: number): void {
-    this.visitService.getVisits(employeeId).pipe(takeUntil(this.destroy$)).subscribe({
+    this.visitService.getVisits({ employee_id: employeeId }).pipe(takeUntil(this.destroy$)).subscribe({
       next: (visits) => {
         this.visites = visits;
       },
-      error: (error) => {
+      error: (error: Error) => {
         console.error('Error loading visits:', error);
         this.showToastMessage('Erreur lors du chargement des visites', 'error');
       }
@@ -234,11 +234,11 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
   }
 
   loadAppointments(employeeId: number): void {
-    this.appointmentService.getAppointments(employeeId).pipe(takeUntil(this.destroy$)).subscribe({
+    this.appointmentService.getAppointments({ employee_id: employeeId }).pipe(takeUntil(this.destroy$)).subscribe({
       next: (appointments) => {
         this.rendezVous = appointments;
       },
-      error: (error) => {
+      error: (error: Error) => {
         console.error('Error loading appointments:', error);
         this.showToastMessage('Erreur lors du chargement des rendez-vous', 'error');
       }
@@ -310,8 +310,8 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
     // Sort the data
     if (table === 'visites') {
       this.visites = [...this.visites].sort((a, b) => {
-        const aValue = a[field];
-        const bValue = b[field];
+        const aValue = a[field as keyof Visit];
+        const bValue = b[field as keyof Visit];
 
         if (aValue != null && bValue != null && aValue < bValue) return this.sortCriteria!.direction === 'asc' ? -1 : 1;
         if (aValue != null && bValue != null && aValue > bValue) return this.sortCriteria!.direction === 'asc' ? 1 : -1;
@@ -319,8 +319,8 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
       });
     } else if (table === 'rdv') {
       this.rendezVous = [...this.rendezVous].sort((a, b) => {
-        const aValue = a[field];
-        const bValue = b[field];
+        const aValue = a[field as keyof Appointment];
+        const bValue = b[field as keyof Appointment];
 
         if (aValue != null && bValue != null && aValue < bValue) return this.sortCriteria!.direction === 'asc' ? -1 : 1;
         if (aValue != null && bValue != null && aValue > bValue) return this.sortCriteria!.direction === 'asc' ? 1 : -1;
@@ -351,7 +351,7 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
           this.showToastMessage(`Employé ${this.currentEmployeeIndex}/${this.totalEmployees}`, 'success');
         }
       },
-      error: (error) => {
+      error: (error: Error) => {
         console.error('Error loading employees:', error);
         this.showToastMessage('Erreur lors du chargement des employés', 'error');
       }
@@ -381,19 +381,23 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
     const formValue = this.emailForm.value;
     this.isLoading = true;
 
+    const request = {
+      subject: formValue.subject,
+      message: formValue.message
+    };
+
     switch (this.emailTarget) {
       case 'manager':
-        this.communicationService.contactManager(
-          this.employee.id,
-          formValue.subject,
-          formValue.message
-        ).pipe(takeUntil(this.destroy$)).subscribe({
+        this.communicationService.contactManager({
+          employee_id: this.employee.id,
+          ...request
+        }).pipe(takeUntil(this.destroy$)).subscribe({
           next: (response) => {
             this.isLoading = false;
             this.showToastMessage('Email envoyé au manager avec succès', 'success');
             this.closeEmailModal();
           },
-          error: (error) => {
+          error: (error: Error) => {
             console.error('Error sending email:', error);
             this.isLoading = false;
             this.showToastMessage('Erreur lors de l\'envoi de l\'email', 'error');
@@ -402,17 +406,16 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
         break;
 
       case 'assistant':
-        this.communicationService.contactAssistant(
-          this.employee.id,
-          formValue.subject,
-          formValue.message
-        ).pipe(takeUntil(this.destroy$)).subscribe({
+        this.communicationService.contactAssistant({
+          employee_id: this.employee.id,
+          ...request
+        }).pipe(takeUntil(this.destroy$)).subscribe({
           next: (response) => {
             this.isLoading = false;
             this.showToastMessage('Email envoyé à l\'assistante SPST avec succès', 'success');
             this.closeEmailModal();
           },
-          error: (error) => {
+          error: (error: Error) => {
             console.error('Error sending email:', error);
             this.isLoading = false;
             this.showToastMessage('Erreur lors de l\'envoi de l\'email', 'error');
@@ -421,17 +424,16 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
         break;
 
       case 'rrh':
-        this.communicationService.contactRRH(
-          this.client.id,
-          formValue.subject,
-          formValue.message
-        ).pipe(takeUntil(this.destroy$)).subscribe({
+        this.communicationService.contactRRH({
+          client_id: this.client.id,
+          ...request
+        }).pipe(takeUntil(this.destroy$)).subscribe({
           next: (response) => {
             this.isLoading = false;
             this.showToastMessage('Email envoyé au RRH avec succès', 'success');
             this.closeEmailModal();
           },
-          error: (error) => {
+          error: (error: Error) => {
             console.error('Error sending email:', error);
             this.isLoading = false;
             this.showToastMessage('Erreur lors de l\'envoi de l\'email', 'error');
@@ -459,7 +461,15 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
     window.open(this.spst?.url || 'https://www.astbtp13.fr', '_blank');
   }
 
-  // Continuing client-assign.component.ts
+  declareIncident(): void {
+    this.incidentForm.reset({
+      type: '',
+      severity: 'medium',
+      date: new Date().toISOString().split('T')[0],
+      description: ''
+    });
+    this.showIncidentModal = true;
+  }
 
   // Export functions
   exportVisits(format: 'pdf' | 'excel'): void {
@@ -469,7 +479,7 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
     const employeeIds = this.employee ? [this.employee.id] : [];
 
     this.visitService.exportVisits(format, { employee_ids: employeeIds.join(',') }).pipe(takeUntil(this.destroy$)).subscribe({
-      next: (blob: Blob | MediaSource) => {
+      next: (blob: Blob) => {
         // Create a download link and trigger it
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -482,7 +492,7 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
         this.isLoading = false;
         this.showToastMessage(`Visites exportées en ${format.toUpperCase()} avec succès`, 'success');
       },
-      error: (error: any) => {
+      error: (error: Error) => {
         console.error(`Error exporting visits as ${format}:`, error);
         this.isLoading = false;
         this.showToastMessage(`Erreur lors de l'exportation des visites en ${format.toUpperCase()}`, 'error');
@@ -497,7 +507,7 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
     const employeeIds = this.employee ? [this.employee.id] : [];
 
     this.appointmentService.exportAppointments(format, { employee_ids: employeeIds.join(',') }).pipe(takeUntil(this.destroy$)).subscribe({
-      next: (blob: Blob | MediaSource) => {
+      next: (blob: Blob) => {
         // Create a download link and trigger it
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -510,7 +520,7 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
         this.isLoading = false;
         this.showToastMessage(`Rendez-vous exportés en ${format.toUpperCase()} avec succès`, 'success');
       },
-      error: (error: any) => {
+      error: (error: Error) => {
         console.error(`Error exporting appointments as ${format}:`, error);
         this.isLoading = false;
         this.showToastMessage(`Erreur lors de l'exportation des rendez-vous en ${format.toUpperCase()}`, 'error');
@@ -530,7 +540,7 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
     this.showVisitModal = true;
   }
 
-  editVisite(visite: any): void {
+  editVisite(visite: Visit): void {
     this.isEditingVisite = true;
     this.visitForm.patchValue({
       type: visite.type,
@@ -545,20 +555,20 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
     this.showVisitModal = true;
   }
 
-  viewVisiteDetails(visite: any): void {
+  viewVisiteDetails(visite: Visit): void {
     this.showToastMessage(`Détails de la visite ${visite.id}`, 'success');
     // In a real app, this would open a detail view or modal
     // For now, just log the details
     console.log('Visite details:', visite);
   }
 
-  confirmDeleteVisite(visite: any): void {
+  confirmDeleteVisite(visite: Visit): void {
     this.confirmationMessage = `Êtes-vous sûr de vouloir supprimer cette visite du ${visite.envisagee} ?`;
     this.confirmationCallback = () => this.deleteVisite(visite);
     this.showConfirmationModal = true;
   }
 
-  deleteVisite(visite: any): void {
+  deleteVisite(visite: Visit): void {
     this.isLoading = true;
 
     this.visitService.deleteVisit(visite.id).pipe(takeUntil(this.destroy$)).subscribe({
@@ -567,7 +577,7 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
         this.isLoading = false;
         this.showToastMessage('Visite supprimée avec succès', 'success');
       },
-      error: (error) => {
+      error: (error: Error) => {
         console.error('Error deleting visit:', error);
         this.isLoading = false;
         this.showToastMessage('Erreur lors de la suppression de la visite', 'error');
@@ -608,7 +618,7 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
           this.showToastMessage('Visite mise à jour avec succès', 'success');
           this.closeVisitModal();
         },
-        error: (error) => {
+        error: (error: Error) => {
           console.error('Error updating visit:', error);
           this.isLoading = false;
           this.showToastMessage('Erreur lors de la mise à jour de la visite', 'error');
@@ -620,13 +630,13 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
         employee_id: this.employee.id,
         ...formValue
       }).pipe(takeUntil(this.destroy$)).subscribe({
-        next: (newVisit) => {
+        next: (newVisit: Visit) => {
           this.visites.push(newVisit);
           this.isLoading = false;
           this.showToastMessage('Nouvelle visite créée avec succès', 'success');
           this.closeVisitModal();
         },
-        error: (error) => {
+        error: (error: Error) => {
           console.error('Error creating visit:', error);
           this.isLoading = false;
           this.showToastMessage('Erreur lors de la création de la visite', 'error');
@@ -649,7 +659,7 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
     this.showAppointmentModal = true;
   }
 
-  editRdv(rdv: any): void {
+  editRdv(rdv: Appointment): void {
     this.isEditingRdv = true;
     this.appointmentForm.patchValue({
       date: rdv.date,
@@ -668,20 +678,20 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
     this.showAppointmentModal = true;
   }
 
-  viewRdvDetails(rdv: any): void {
+  viewRdvDetails(rdv: Appointment): void {
     this.showToastMessage(`Détails du rendez-vous du ${rdv.date}`, 'success');
     // In a real app, this would open a detail view or modal
     // For now, just log the details
     console.log('RDV details:', rdv);
   }
 
-  confirmDeleteRdv(rdv: any): void {
+  confirmDeleteRdv(rdv: Appointment): void {
     this.confirmationMessage = `Êtes-vous sûr de vouloir supprimer ce rendez-vous du ${rdv.date} ?`;
     this.confirmationCallback = () => this.deleteRdv(rdv);
     this.showConfirmationModal = true;
   }
 
-  deleteRdv(rdv: any): void {
+  deleteRdv(rdv: Appointment): void {
     this.isLoading = true;
 
     this.appointmentService.deleteAppointment(rdv.id).pipe(takeUntil(this.destroy$)).subscribe({
@@ -690,7 +700,7 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
         this.isLoading = false;
         this.showToastMessage('Rendez-vous supprimé avec succès', 'success');
       },
-      error: (error) => {
+      error: (error: Error) => {
         console.error('Error deleting appointment:', error);
         this.isLoading = false;
         this.showToastMessage('Erreur lors de la suppression du rendez-vous', 'error');
@@ -731,7 +741,7 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
           this.showToastMessage('Rendez-vous mis à jour avec succès', 'success');
           this.closeAppointmentModal();
         },
-        error: (error) => {
+        error: (error: Error) => {
           console.error('Error updating appointment:', error);
           this.isLoading = false;
           this.showToastMessage('Erreur lors de la mise à jour du rendez-vous', 'error');
@@ -743,30 +753,19 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
         employee_id: this.employee.id,
         ...formValue
       }).pipe(takeUntil(this.destroy$)).subscribe({
-        next: (newAppointment) => {
+        next: (newAppointment: Appointment) => {
           this.rendezVous.push(newAppointment);
           this.isLoading = false;
           this.showToastMessage('Nouveau rendez-vous créé avec succès', 'success');
           this.closeAppointmentModal();
         },
-        error: (error) => {
+        error: (error: Error) => {
           console.error('Error creating appointment:', error);
           this.isLoading = false;
           this.showToastMessage('Erreur lors de la création du rendez-vous', 'error');
         }
       });
     }
-  }
-
-  // Incident handling
-  declareIncident(): void {
-    this.incidentForm.reset({
-      type: '',
-      severity: 'medium',
-      date: new Date().toISOString().split('T')[0],
-      description: ''
-    });
-    this.showIncidentModal = true;
   }
 
   closeIncidentModal(): void {
@@ -783,7 +782,10 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
     this.isLoading = true;
 
     // Process incident submission using communication service
-    this.communicationService.declareIncident(this.client.id, formValue)
+    this.communicationService.declareIncident({
+      client_id: this.client.id,
+      ...formValue
+    })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
@@ -791,7 +793,7 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
           this.showToastMessage(`Incident déclaré avec succès (Ref: ${response.incident_id})`, 'success');
           this.closeIncidentModal();
         },
-        error: (error) => {
+        error: (error: Error) => {
           console.error('Error submitting incident:', error);
           this.isLoading = false;
           this.showToastMessage('Erreur lors de la déclaration de l\'incident', 'error');

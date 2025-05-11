@@ -96,13 +96,13 @@ export class ListeSalariesComponent implements OnInit, OnDestroy {
   }
 
   loadClientInfo(clientId: number): void {
-    this.clientService['getClientById'](clientId).pipe(takeUntil(this.destroy$)).subscribe({
-      next: (client: { name: string; id: any; }) => {
+    this.clientService.getClientById(clientId).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (client: any) => {
         this.currentClient = client;
         this.clientName = client.name;
         console.log('Loaded client:', client.name, 'with ID:', client.id);
       },
-      error: (error: any) => {
+      error: (error: Error) => {
         console.error('Error loading client:', error);
         this.showToastMessage('Erreur lors du chargement du client', 'error');
       }
@@ -114,14 +114,14 @@ export class ListeSalariesComponent implements OnInit, OnDestroy {
     this.isLoading = true;
 
     // Utilisation du service pour récupérer les salariés, filtré par clientId si spécifié
-    this.salarieService.getSalaries(clientId).pipe(takeUntil(this.destroy$)).subscribe({
+    this.salarieService.getSalaries().pipe(takeUntil(this.destroy$)).subscribe({
       next: (salaries) => {
         console.log("Received salaries:", salaries);
         this.salaries = salaries;
         this.extractDepartements();
         this.isLoading = false;
       },
-      error: (error) => {
+      error: (error: Error) => {
         console.error('Erreur lors du chargement des employés:', error);
         this.isLoading = false;
         this.showToastMessage('Erreur lors du chargement des employés', 'error');
@@ -177,7 +177,7 @@ export class ListeSalariesComponent implements OnInit, OnDestroy {
           this.salaries = this.salaries.filter(s => s.id !== id);
           this.showToastMessage('Salarié supprimé avec succès', 'success');
         },
-        error: (error) => {
+        error: (error: Error) => {
           console.error('Erreur lors de la suppression de l\'employé:', error);
           this.showToastMessage('Erreur lors de la suppression de l\'employé', 'error');
         }

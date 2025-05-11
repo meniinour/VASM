@@ -55,14 +55,14 @@ export class SpstService {
   constructor(private http: HttpClient) { }
 
   // Get all SPST centers
-  getSpstCenters(): Observable<SPST[]> {
+  getAllSPSTs(): Observable<SPST[]> {
     return this.http.get<any>(this.apiUrl).pipe(
       map(response => {
         // If the API returns a data property, extract it
         const spsts = response.data ? response.data : response;
         return spsts as SPST[];
       }),
-      catchError(this.handleError<SPST[]>('getSpstCenters', []))
+      catchError(this.handleError<SPST[]>('getAllSPSTs', []))
     );
   }
 
@@ -122,8 +122,12 @@ export class SpstService {
   }
 
   // Get visits (medical appointments)
-  getVisits(): Observable<SPSTVisit[]> {
-    const url = `${this.apiUrl}/visits`;
+  getVisits(employeeId?: number): Observable<SPSTVisit[]> {
+    let url = `${this.apiUrl}/visits`;
+    if (employeeId) {
+      url += `?employee_id=${employeeId}`;
+    }
+
     return this.http.get<any>(url).pipe(
       map(response => {
         // If the API returns a data, extract it
@@ -131,6 +135,29 @@ export class SpstService {
         return visits as SPSTVisit[];
       }),
       catchError(this.handleError<SPSTVisit[]>('getVisits', []))
+    );
+  }
+
+  // Get documents
+  getDocuments(): Observable<any[]> {
+    const url = `${this.apiUrl}/documents`;
+    return this.http.get<any>(url).pipe(
+      map(response => {
+        // If the API returns a data, extract it
+        const documents = response.data ? response.data : response;
+        return documents as any[];
+      }),
+      catchError(this.handleError<any[]>('getDocuments', []))
+    );
+  }
+
+  // Download document
+  downloadDocument(documentId: number): Observable<Blob> {
+    const url = `${this.apiUrl}/documents/${documentId}/download`;
+    return this.http.get(url, {
+      responseType: 'blob'
+    }).pipe(
+      catchError(this.handleError<Blob>('downloadDocument'))
     );
   }
 

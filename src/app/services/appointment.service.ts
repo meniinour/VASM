@@ -21,6 +21,7 @@ export interface Appointment {
     name: string;
     [key: string]: any;
   };
+  [key: string]: any; // Pour permettre l'accès dynamique aux propriétés
 }
 
 @Injectable({
@@ -89,8 +90,8 @@ export class AppointmentService {
     );
   }
 
-  // Add a new appointment
-  addAppointment(appointment: Omit<Appointment, 'id'>): Observable<Appointment> {
+  // Create a new appointment
+  createAppointment(appointment: Omit<Appointment, 'id'>): Observable<Appointment> {
     return this.http.post<any>(this.apiUrl, appointment, this.httpOptions).pipe(
       map(response => {
         // If the API returns a data property, extract it
@@ -102,13 +103,13 @@ export class AppointmentService {
 
         return newAppointment as Appointment;
       }),
-      catchError(this.handleError<Appointment>('addAppointment'))
+      catchError(this.handleError<Appointment>('createAppointment'))
     );
   }
 
   // Update an appointment
-  updateAppointment(appointment: Appointment): Observable<Appointment> {
-    const url = `${this.apiUrl}/${appointment.id}`;
+  updateAppointment(id: number, appointment: Partial<Appointment>): Observable<Appointment> {
+    const url = `${this.apiUrl}/${id}`;
     return this.http.put<any>(url, appointment, this.httpOptions).pipe(
       map(response => {
         // If the API returns a data property, extract it
@@ -116,7 +117,7 @@ export class AppointmentService {
 
         // Update the local data
         const appointments = this.appointmentsSubject.getValue();
-        const index = appointments.findIndex(a => a.id === appointment.id);
+        const index = appointments.findIndex(a => a.id === id);
         if (index !== -1) {
           appointments[index] = updatedAppointment;
           this.appointmentsSubject.next([...appointments]);
@@ -124,7 +125,7 @@ export class AppointmentService {
 
         return updatedAppointment as Appointment;
       }),
-      catchError(this.handleError<Appointment>(`updateAppointment id=${appointment.id}`))
+      catchError(this.handleError<Appointment>(`updateAppointment id=${id}`))
     );
   }
 
@@ -142,25 +143,26 @@ export class AppointmentService {
   }
 
   // Export appointments
-  exportAppointments(format: string, filters?: any): Observable<any> {
+  exportAppointments(format: string, filters?: any): Observable<Blob> {
     const url = `${this.apiUrl}/export/${format}`;
 
-    let params = new HttpParams();
     // Add filters if provided
+    const params = new HttpParams();
     if (filters) {
-      if (filters.employee_ids) params = params.append('employee_ids', JSON.stringify(filters.employee_ids));
-      if (filters.date_from) params = params.append('date_from', filters.date_from);
-      if (filters.date_to) params = params.append('date_to', filters.date_to);
-      if (filters.honore !== undefined) params = params.append('honore', filters.honore.toString());
+      Object.keys(filters).forEach(key => {
+        if (filters[key]) {
+          params.append(key, filters[key]);
+        }
+      });
     }
 
-    return this.http.post<any>(url, { params }, {
-      responseType: 'blob' as 'json',
+    return this.http.post(url, { params }, {
+      responseType: 'blob',
       headers: new HttpHeaders({
         'Accept': 'application/octet-stream'
       })
     }).pipe(
-      catchError(this.handleError<any>(`exportAppointments format=${format}`))
+      catchError(this.handleError<Blob>(`exportAppointments format=${format}`))
     );
   }
 
@@ -174,4 +176,5 @@ export class AppointmentService {
       // Let the app keep running by returning an empty result
       return of(result as T);
     };
-  }}
+  }
+}

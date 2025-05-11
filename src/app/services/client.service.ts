@@ -40,6 +40,7 @@ export interface Client {
 })
 export class ClientService {
   private apiUrl = 'http://localhost:8000/api/clients';
+  private apiUrlWithId = `${this.apiUrl}/:id`;
   private clientsSubject = new BehaviorSubject<Client[]>([]);
 
   // HTTP options

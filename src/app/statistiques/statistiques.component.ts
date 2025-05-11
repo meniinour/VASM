@@ -1,5 +1,5 @@
 // src/app/statistiques/statistiques.component.ts
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarClientComponent } from '../sidebar-client/sidebar-client.component';
 import { FormsModule } from '@angular/forms';
@@ -7,6 +7,7 @@ import { MyHeaderComponent } from '../my-header/my-header.component';
 import Chart from 'chart.js/auto';
 import { StatisticsService, StatsPeriod } from '../services/statistics.service';
 import { ImportExportService } from '../services/import-export.service';
+import { Subject, takeUntil } from 'rxjs';
 
 interface VisitDetail {
   type: string;
@@ -30,7 +31,7 @@ interface SortConfig {
   templateUrl: './statistiques.component.html',
   styleUrl: './statistiques.component.css',
 })
-export class StatistiquesComponent implements OnInit, AfterViewInit {
+export class StatistiquesComponent implements OnInit, AfterViewInit, OnDestroy {
   sidebarCollapsed = false;
   currentView: 'month' | 'quarter' | 'year' = 'month';
   currentDate = new Date();
@@ -107,6 +108,9 @@ export class StatistiquesComponent implements OnInit, AfterViewInit {
   private statusDistributionChart: Chart | null = null;
   private topClientsChart: Chart | null = null;
 
+  // For cleanup
+  private destroy$ = new Subject<void>();
+
   constructor(
     private statisticsService: StatisticsService,
     private importExportService: ImportExportService
@@ -136,6 +140,25 @@ export class StatistiquesComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.animateStatValues();
     this.initCharts();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+
+    // Cleanup chart instances
+    if (this.visitTypeChart) {
+      this.visitTypeChart.destroy();
+    }
+    if (this.visitsOverTimeChart) {
+      this.visitsOverTimeChart.destroy();
+    }
+    if (this.statusDistributionChart) {
+      this.statusDistributionChart.destroy();
+    }
+    if (this.topClientsChart) {
+      this.topClientsChart.destroy();
+    }
   }
 
   // Animate stat values (replaces countUp directive)
@@ -194,37 +217,42 @@ export class StatistiquesComponent implements OnInit, AfterViewInit {
       ...this.filters
     };
 
-    this.statisticsService.getVisitStats(period, filters).subscribe({
+    this.statisticsService.getVisitStats(period, filters).pipe(takeUntil(this.destroy$)).subscribe({
       next: (stats) => {
         // Update your component properties with the received stats
-        this.generalStats.totalVisits = stats.total;
-        this.generalStats.completionRate = this.getAverageCompletionRate();
+        this.generalStats.totalVisits = stats.total || this.generalStats.totalVisits;
+        this.generalStats.completionRate = stats.completion_rate || this.getAverageCompletionRate();
 
         // Update visit details data
-        this.visitDetailsData = stats.byType.map((item: { type: any; count: any; percentage: any; }) => {
-          return {
-            type: item.type,
-            scheduled: stats.scheduled,
-            completed: item.count,
-            cancelled: 0, // You might want to calculate this from stats
-            noResponse: 0, // You might want to calculate this from stats
-            total: stats.total,
-            completionRate: item.percentage
-          };
-        });
+        if (stats.by_type && stats.by_type.length > 0) {
+          this.visitDetailsData = stats.by_type.map((item: any) => {
+            return {
+              type: item.type,
+              scheduled: item.scheduled || 0,
+              completed: item.completed || 0,
+              cancelled: item.cancelled || 0,
+              noResponse: (item.scheduled || 0) - (item.completed || 0) - (item.cancelled || 0),
+              total: item.scheduled || 0,
+              completionRate: Math.round((item.completed || 0) / (item.scheduled || 1) * 100)
+            };
+          });
+        }
 
         // Update trends
-        this.trends.visits = stats.trend;
+        if (stats.trend !== undefined) {
+          this.trends.visits = stats.trend;
+        }
 
         this.isLoading = false;
         this.updateCharts();
       },
-      error: (error) => {
+      error: (error: Error) => {
         console.error('Error loading statistics:', error);
         this.isLoading = false;
       }
     });
   }
+
   refreshData(): void {
     // Simply call the loadStatistics method to refresh the data
     this.loadStatistics();
@@ -381,12 +409,12 @@ export class StatistiquesComponent implements OnInit, AfterViewInit {
       label: this.currentPeriodLabel
     };
 
-    this.statisticsService.exportStatisticsReport(format, period, this.filters).subscribe({
-      next: (blob) => {
+    this.statisticsService.exportStatisticsReport(format, period, this.filters).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (blob: Blob) => {
         // Use the download helper from ImportExportService
         this.importExportService.downloadFile(blob, `statistiques.${format}`);
       },
-      error: (error) => {
+      error: (error: Error) => {
         console.error(`Error exporting statistics as ${format}:`, error);
       }
     });

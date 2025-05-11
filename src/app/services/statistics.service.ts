@@ -3,10 +3,11 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
-export interface Period {
+export interface StatsPeriod {
   type: 'month' | 'quarter' | 'year';
   start: string;
   end: string;
+  label?: string;
 }
 
 export interface VisitStatistics {
@@ -77,7 +78,7 @@ export class StatisticsService {
   constructor(private http: HttpClient) { }
 
   // Get visit statistics
-  getVisitStatistics(period: Period, filters?: any): Observable<VisitStatistics> {
+  getVisitStats(period: StatsPeriod, filters?: any): Observable<any> {
     const url = `${this.apiUrl}/visits`;
 
     const data = {
@@ -89,14 +90,14 @@ export class StatisticsService {
       map(response => {
         // If the API returns a data property, extract it
         const statistics = response.data ? response.data : response;
-        return statistics as VisitStatistics;
+        return statistics;
       }),
-      catchError(this.handleError<VisitStatistics>('getVisitStatistics', {} as VisitStatistics))
+      catchError(this.handleError<any>('getVisitStats', {} as any))
     );
   }
 
   // Get appointment statistics
-  getAppointmentStatistics(period: Period, filters?: any): Observable<AppointmentStatistics> {
+  getAppointmentStatistics(period: StatsPeriod, filters?: any): Observable<AppointmentStatistics> {
     const url = `${this.apiUrl}/appointments`;
 
     const data = {
@@ -115,7 +116,7 @@ export class StatisticsService {
   }
 
   // Get dashboard statistics
-  getDashboardStatistics(period: Period, filters?: any): Observable<DashboardStatistics> {
+  getDashboardSummary(period: StatsPeriod, filters?: any): Observable<any> {
     const url = `${this.apiUrl}/dashboard`;
 
     const data = {
@@ -127,9 +128,28 @@ export class StatisticsService {
       map(response => {
         // If the API returns a data property, extract it
         const statistics = response.data ? response.data : response;
-        return statistics as DashboardStatistics;
+        return statistics;
       }),
-      catchError(this.handleError<DashboardStatistics>('getDashboardStatistics', {} as DashboardStatistics))
+      catchError(this.handleError<any>('getDashboardSummary', {} as any))
+    );
+  }
+
+  // Export statistics report
+  exportStatisticsReport(format: string, period: StatsPeriod, filters?: any): Observable<Blob> {
+    const url = `${this.apiUrl}/export/${format}`;
+
+    const data = {
+      period: period,
+      filters: filters || {}
+    };
+
+    return this.http.post(url, data, {
+      responseType: 'blob',
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    }).pipe(
+      catchError(this.handleError<Blob>('exportStatisticsReport'))
     );
   }
 

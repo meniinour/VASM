@@ -18,6 +18,7 @@ export interface Visit {
     name: string;
     [key: string]: any;
   };
+  [key: string]: any; // Pour permettre l'accès dynamique aux propriétés
 }
 
 @Injectable({
@@ -88,8 +89,8 @@ export class VisitService {
     );
   }
 
-  // Add a new visit
-  addVisit(visit: Omit<Visit, 'id'>): Observable<Visit> {
+  // Create a new visit
+  createVisit(visit: Omit<Visit, 'id'>): Observable<Visit> {
     return this.http.post<any>(this.apiUrl, visit, this.httpOptions).pipe(
       map(response => {
         // If the API returns a data property, extract it
@@ -101,13 +102,13 @@ export class VisitService {
 
         return newVisit as Visit;
       }),
-      catchError(this.handleError<Visit>('addVisit'))
+      catchError(this.handleError<Visit>('createVisit'))
     );
   }
 
   // Update a visit
-  updateVisit(visit: Visit): Observable<Visit> {
-    const url = `${this.apiUrl}/${visit.id}`;
+  updateVisit(id: number, visit: Partial<Visit>): Observable<Visit> {
+    const url = `${this.apiUrl}/${id}`;
     return this.http.put<any>(url, visit, this.httpOptions).pipe(
       map(response => {
         // If the API returns a data property, extract it
@@ -115,7 +116,7 @@ export class VisitService {
 
         // Update the local data
         const visits = this.visitsSubject.getValue();
-        const index = visits.findIndex(v => v.id === visit.id);
+        const index = visits.findIndex(v => v.id === id);
         if (index !== -1) {
           visits[index] = updatedVisit;
           this.visitsSubject.next([...visits]);
@@ -123,7 +124,7 @@ export class VisitService {
 
         return updatedVisit as Visit;
       }),
-      catchError(this.handleError<Visit>(`updateVisit id=${visit.id}`))
+      catchError(this.handleError<Visit>(`updateVisit id=${id}`))
     );
   }
 
@@ -141,27 +142,26 @@ export class VisitService {
   }
 
   // Export visits
-  exportVisits(format: string, filters?: any): Observable<any> {
+  exportVisits(format: string, filters?: any): Observable<Blob> {
     const url = `${this.apiUrl}/export/${format}`;
 
-    let params = new HttpParams();
     // Add filters if provided
+    const params = new HttpParams();
     if (filters) {
-      if (filters.employee_ids) params = params.append('employee_ids', JSON.stringify(filters.employee_ids));
-      if (filters.client_id) params = params.append('client_id', filters.client_id);
-      if (filters.type) params = params.append('type', filters.type);
-      if (filters.etat) params = params.append('etat', filters.etat);
-      if (filters.date_from) params = params.append('date_from', filters.date_from);
-      if (filters.date_to) params = params.append('date_to', filters.date_to);
+      Object.keys(filters).forEach(key => {
+        if (filters[key]) {
+          params.append(key, filters[key]);
+        }
+      });
     }
 
-    return this.http.post<any>(url, { params }, {
-      responseType: 'blob' as 'json',
+    return this.http.post(url, { params }, {
+      responseType: 'blob',
       headers: new HttpHeaders({
         'Accept': 'application/octet-stream'
       })
     }).pipe(
-      catchError(this.handleError<any>(`exportVisits format=${format}`))
+      catchError(this.handleError<Blob>(`exportVisits format=${format}`))
     );
   }
 

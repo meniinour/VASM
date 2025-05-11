@@ -23,6 +23,9 @@ export interface ImportHistoryItem {
   providedIn: 'root'
 })
 export class ImportExportService {
+  downloadFile(blob: Blob, arg1: string) {
+    throw new Error('Method not implemented.');
+  }
   private apiUrl = 'http://localhost:8000/api/import-export';
 
   constructor(private http: HttpClient) { }
