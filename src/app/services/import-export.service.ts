@@ -1,7 +1,23 @@
-// src/app/services/import-export.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+
+export interface ImportTemplateInfo {
+  id: string;
+  name: string;
+  formats: string[];
+}
+
+export interface ImportHistoryItem {
+  id: number;
+  type: string;
+  file_name: string;
+  status: string;
+  records_processed: number;
+  errors: number;
+  date: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -11,12 +27,7 @@ export class ImportExportService {
 
   constructor(private http: HttpClient) { }
 
-  /**
-   * Import data from a file
-   * @param file The file to import
-   * @param type Type of data being imported (visits, clients, etc.)
-   * @param clientId Optional client ID to associate with the import
-   */
+  // Import file
   importFile(file: File, type: string, clientId?: number): Observable<any> {
     const formData = new FormData();
     formData.append('file', file);
@@ -26,98 +37,113 @@ export class ImportExportService {
       formData.append('client_id', clientId.toString());
     }
 
-    return this.http.post<any>(`${this.apiUrl}/import`, formData);
+    return this.http.post<any>(`${this.apiUrl}/import`, formData).pipe(
+      map(response => {
+        // If the API returns a data property, extract it
+        return response.data ? response.data : response;
+      }),
+      catchError(this.handleError<any>('importFile'))
+    );
   }
 
-  /**
-   * Export data to a specific format
-   * @param type Type of data to export (visits, clients, employees, etc.)
-   * @param format Format to export to (pdf, xlsx, csv)
-   * @param filters Filters to apply to the exported data
-   */
-  exportData(type: string, format: string, filters: any): Observable<Blob> {
-    return this.http.post(`${this.apiUrl}/export/${type}/${format}`, filters, {
+  // Export data
+  exportData(type: string, format: string, filters?: any): Observable<Blob> {
+    let url = `${this.apiUrl}/export/${type}/${format}`;
+
+    return this.http.post(url, { filters: filters || {} }, {
+      responseType: 'blob',
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    }).pipe(
+      catchError(this.handleError<Blob>('exportData'))
+    );
+  }
+
+  // Get available import templates
+  getTemplates(): Observable<ImportTemplateInfo[]> {
+    return this.http.get<any>(`${this.apiUrl}/templates`).pipe(
+      map(response => {
+        // If the API returns a data property, extract it
+        const templates = response.data ? response.data : response;
+        return templates as ImportTemplateInfo[];
+      }),
+      catchError(this.handleError<ImportTemplateInfo[]>('getTemplates', []))
+    );
+  }
+
+  // Download template
+  downloadTemplate(templateId: string, format: string): Observable<Blob> {
+    const url = `${this.apiUrl}/templates/${templateId}/${format}`;
+
+    return this.http.get(url, {
       responseType: 'blob'
-    });
+    }).pipe(
+      catchError(this.handleError<Blob>('downloadTemplate'))
+    );
   }
 
-  /**
-   * Download a blob as a file
-   * @param blob The blob to download
-   * @param filename Name for the downloaded file
-   */
-  downloadFile(blob: Blob, filename: string): void {
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    document.body.appendChild(a);
-    a.style.display = 'none';
-    a.href = url;
-    a.download = filename;
-    a.click();
-    window.URL.revokeObjectURL(url);
-    document.body.removeChild(a);
-  }
-
-  /**
-   * Get a list of templates available for import
-   */
-  getImportTemplates(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/templates`);
-  }
-
-  /**
-   * Download an import template
-   * @param templateId ID of the template to download
-   * @param format Format of the template (xlsx, csv)
-   */
-  downloadImportTemplate(templateId: string, format: string): Observable<Blob> {
-    return this.http.get(`${this.apiUrl}/templates/${templateId}/${format}`, {
-      responseType: 'blob'
-    });
-  }
-
-  /**
-   * Validate an import file before committing it
-   * @param file The file to validate
-   * @param type Type of data being validated
-   */
+  // Validate import file before importing
   validateImportFile(file: File, type: string): Observable<any> {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('type', type);
 
-    return this.http.post<any>(`${this.apiUrl}/validate`, formData);
+    return this.http.post<any>(`${this.apiUrl}/validate`, formData).pipe(
+      map(response => {
+        // If the API returns a data property, extract it
+        return response.data ? response.data : response;
+      }),
+      catchError(this.handleError<any>('validateImportFile'))
+    );
   }
 
-  /**
-   * Get import history
-   * @param limit Number of history items to return
-   * @param offset Offset for pagination
-   */
-  getImportHistory(limit: number = 10, offset: number = 0): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/history?limit=${limit}&offset=${offset}`);
+  // Get import/export history
+  getHistory(limit?: number, offset?: number): Observable<{ history: ImportHistoryItem[], total: number }> {
+    let params = new HttpParams();
+
+    if (limit) {
+      params = params.append('limit', limit.toString());
+    }
+
+    if (offset !== undefined) {
+      params = params.append('offset', offset.toString());
+    }
+
+    return this.http.get<any>(`${this.apiUrl}/history`, { params }).pipe(
+      map(response => {
+        // If the API returns a data property, extract it
+        const data = response.data ? response.data : response;
+        return {
+          history: data.history || [],
+          total: data.total || 0
+        };
+      }),
+      catchError(this.handleError<{ history: ImportHistoryItem[], total: number }>('getHistory', { history: [], total: 0 }))
+    );
   }
 
-  /**
-   * Schedule a recurring export
-   * @param schedule Schedule configuration
-   */
-  scheduleExport(schedule: any): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/schedule`, schedule);
+  // Helper function to save a blob as file
+  saveBlobAsFile(blob: Blob, fileName: string): void {
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', fileName);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
   }
 
-  /**
-   * Get list of scheduled exports
-   */
-  getScheduledExports(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/schedule`);
-  }
+  // Error handling
+  private handleError<T>(operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+      // Log the error to console
+      console.error(`${operation} failed: ${error.message}`);
+      console.error('Server error:', error);
 
-  /**
-   * Delete a scheduled export
-   * @param scheduleId ID of the schedule to delete
-   */
-  deleteScheduledExport(scheduleId: string): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/schedule/${scheduleId}`);
+      // Let the app keep running by returning an empty result
+      return of(result as T);
+    };
   }
 }

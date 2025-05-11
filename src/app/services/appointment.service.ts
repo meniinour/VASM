@@ -1,43 +1,177 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { Observable, of, BehaviorSubject } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
+
+export interface Appointment {
+  id: number;
+  employee_id: number;
+  date: string;
+  envoi?: string;
+  ar?: boolean;
+  ordonnance?: boolean;
+  accepte?: boolean;
+  excusable?: boolean;
+  reporte?: boolean;
+  honore?: boolean;
+  motif?: string;
+  commentaire?: string;
+  employee?: {
+    id: number;
+    name: string;
+    [key: string]: any;
+  };
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class AppointmentService {
-  exportAppointments(format: string, options: { employee_ids: any }): Observable<Blob> {
-    const url = `${this.apiUrl}/export/${format}`;
-    return this.http.post(url, options, {
-      responseType: 'blob'
-    });
-  }
   private apiUrl = 'http://localhost:8000/api/appointments';
+  private appointmentsSubject = new BehaviorSubject<Appointment[]>([]);
 
-  constructor(private http: HttpClient) { }
+  // HTTP options
+  private httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json'
+    })
+  };
 
-  getAppointments(employeeId?: number): Observable<any[]> {
-    let url = this.apiUrl;
-    if (employeeId) {
-      url += `?employee_id=${employeeId}`;
+  constructor(private http: HttpClient) {
+    // Initial load of appointments
+    this.loadAppointments();
+  }
+
+  // Load all appointments from the backend
+  private loadAppointments(filters?: any): void {
+    let params = new HttpParams();
+
+    // Add filters if provided
+    if (filters) {
+      if (filters.employee_id) params = params.append('employee_id', filters.employee_id);
+      if (filters.date_from) params = params.append('date_from', filters.date_from);
+      if (filters.date_to) params = params.append('date_to', filters.date_to);
+      if (filters.honore !== undefined) params = params.append('honore', filters.honore.toString());
     }
-    return this.http.get<any[]>(url);
+
+    this.http.get<any>(this.apiUrl, { params })
+      .pipe(
+        map(response => {
+          // If the API returns a data property, extract it
+          const appointments = response.data ? response.data : response;
+          return appointments as Appointment[];
+        }),
+        catchError(this.handleError<Appointment[]>('loadAppointments', []))
+      )
+      .subscribe(appointments => {
+        this.appointmentsSubject.next(appointments);
+      });
   }
 
-  getAppointment(id: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/${id}`);
+  // Get all appointments as an observable
+  getAppointments(filters?: any): Observable<Appointment[]> {
+    if (filters) {
+      this.loadAppointments(filters);
+    }
+    return this.appointmentsSubject.asObservable();
   }
 
-  createAppointment(appointment: any): Observable<any> {
-    return this.http.post<any>(this.apiUrl, appointment);
+  // Get a specific appointment by ID
+  getAppointmentById(id: number): Observable<Appointment> {
+    const url = `${this.apiUrl}/${id}`;
+    return this.http.get<any>(url).pipe(
+      map(response => {
+        // If the API returns a data property, extract it
+        const appointment = response.data ? response.data : response;
+        return appointment as Appointment;
+      }),
+      catchError(this.handleError<Appointment>(`getAppointment id=${id}`))
+    );
   }
 
-  updateAppointment(id: number, appointment: any): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/${id}`, appointment);
+  // Add a new appointment
+  addAppointment(appointment: Omit<Appointment, 'id'>): Observable<Appointment> {
+    return this.http.post<any>(this.apiUrl, appointment, this.httpOptions).pipe(
+      map(response => {
+        // If the API returns a data property, extract it
+        const newAppointment = response.data ? response.data : response;
+
+        // Update the local data
+        const currentAppointments = this.appointmentsSubject.getValue();
+        this.appointmentsSubject.next([...currentAppointments, newAppointment]);
+
+        return newAppointment as Appointment;
+      }),
+      catchError(this.handleError<Appointment>('addAppointment'))
+    );
   }
 
-  deleteAppointment(id: number): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/${id}`);
+  // Update an appointment
+  updateAppointment(appointment: Appointment): Observable<Appointment> {
+    const url = `${this.apiUrl}/${appointment.id}`;
+    return this.http.put<any>(url, appointment, this.httpOptions).pipe(
+      map(response => {
+        // If the API returns a data property, extract it
+        const updatedAppointment = response.data ? response.data : response;
+
+        // Update the local data
+        const appointments = this.appointmentsSubject.getValue();
+        const index = appointments.findIndex(a => a.id === appointment.id);
+        if (index !== -1) {
+          appointments[index] = updatedAppointment;
+          this.appointmentsSubject.next([...appointments]);
+        }
+
+        return updatedAppointment as Appointment;
+      }),
+      catchError(this.handleError<Appointment>(`updateAppointment id=${appointment.id}`))
+    );
   }
 
-}
+  // Delete an appointment
+  deleteAppointment(id: number): Observable<void> {
+    const url = `${this.apiUrl}/${id}`;
+    return this.http.delete<any>(url, this.httpOptions).pipe(
+      tap(_ => {
+        // Update the local data
+        const appointments = this.appointmentsSubject.getValue();
+        this.appointmentsSubject.next(appointments.filter(a => a.id !== id));
+      }),
+      catchError(this.handleError<void>(`deleteAppointment id=${id}`))
+    );
+  }
+
+  // Export appointments
+  exportAppointments(format: string, filters?: any): Observable<any> {
+    const url = `${this.apiUrl}/export/${format}`;
+
+    let params = new HttpParams();
+    // Add filters if provided
+    if (filters) {
+      if (filters.employee_ids) params = params.append('employee_ids', JSON.stringify(filters.employee_ids));
+      if (filters.date_from) params = params.append('date_from', filters.date_from);
+      if (filters.date_to) params = params.append('date_to', filters.date_to);
+      if (filters.honore !== undefined) params = params.append('honore', filters.honore.toString());
+    }
+
+    return this.http.post<any>(url, { params }, {
+      responseType: 'blob' as 'json',
+      headers: new HttpHeaders({
+        'Accept': 'application/octet-stream'
+      })
+    }).pipe(
+      catchError(this.handleError<any>(`exportAppointments format=${format}`))
+    );
+  }
+
+  // Error handling
+  private handleError<T>(operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+      // Log the error to console
+      console.error(`${operation} failed: ${error.message}`);
+      console.error('Server error:', error);
+
+      // Let the app keep running by returning an empty result
+      return of(result as T);
+    };
+  }}

@@ -1,7 +1,43 @@
-// src/app/services/spst.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+
+export interface SPST {
+  id: number;
+  name: string;
+  address?: string;
+  postal_code?: string;
+  city?: string;
+  phone?: string;
+  url?: string;
+  message?: string;
+}
+
+export interface SPSTNotification {
+  id: number;
+  message: string;
+  date: Date;
+  icon: string;
+  read: boolean;
+}
+
+export interface SPSTService {
+  id: number;
+  name: string;
+  description: string;
+  icon: string;
+}
+
+export interface SPSTVisit {
+  id: number;
+  type: string;
+  date: Date;
+  doctor: string;
+  location: string;
+  status: 'upcoming' | 'completed';
+  icon: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -9,143 +45,137 @@ import { Observable } from 'rxjs';
 export class SpstService {
   private apiUrl = 'http://localhost:8000/api/spsts';
 
+  // HTTP options
+  private httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json'
+    })
+  };
+
   constructor(private http: HttpClient) { }
 
-  /**
-   * Get all SPST centers
-   */
-  getAllSPSTs(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl);
+  // Get all SPST centers
+  getSpstCenters(): Observable<SPST[]> {
+    return this.http.get<any>(this.apiUrl).pipe(
+      map(response => {
+        // If the API returns a data property, extract it
+        const spsts = response.data ? response.data : response;
+        return spsts as SPST[];
+      }),
+      catchError(this.handleError<SPST[]>('getSpstCenters', []))
+    );
   }
 
-  /**
-   * Get a specific SPST center by ID
-   * @param id SPST center ID
-   */
-  getSpstById(id: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/${id}`);
+  // Get SPST center by ID
+  getSpstById(id: number): Observable<SPST> {
+    const url = `${this.apiUrl}/${id}`;
+    return this.http.get<any>(url).pipe(
+      map(response => {
+        // If the API returns a data property, extract it
+        const spst = response.data ? response.data : response;
+        return spst as SPST;
+      }),
+      catchError(this.handleError<SPST>(`getSpst id=${id}`))
+    );
   }
 
-  /**
-   * Create a new SPST center
-   * @param spst SPST center data
-   */
-  createSpst(spst: any): Observable<any> {
-    return this.http.post<any>(this.apiUrl, spst);
+  // Get SPST notifications
+  getNotifications(): Observable<SPSTNotification[]> {
+    const url = `${this.apiUrl}/notifications`;
+    return this.http.get<any>(url).pipe(
+      map(response => {
+        // If the API returns a data, extract it
+        const notifications = response.data ? response.data : response;
+        return notifications as SPSTNotification[];
+      }),
+      catchError(this.handleError<SPSTNotification[]>('getNotifications', []))
+    );
   }
 
-  /**
-   * Update an existing SPST center
-   * @param id SPST center ID
-   * @param spst Updated SPST center data
-   */
-  updateSpst(id: number, spst: any): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/${id}`, spst);
-  }
-
-  /**
-   * Delete a SPST center
-   * @param id SPST center ID
-   */
-  deleteSpst(id: number): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/${id}`);
-  }
-
-  /**
-   * Get notifications for the current user
-   */
-  getNotifications(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/notifications`);
-  }
-
-  /**
-   * Mark a notification as read
-   * @param notificationId Notification ID
-   */
+  // Mark notification as read
   markNotificationAsRead(notificationId: number): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/notifications/${notificationId}/read`, {});
+    const url = `${this.apiUrl}/notifications/${notificationId}/read`;
+    return this.http.put<any>(url, {}, this.httpOptions).pipe(
+      catchError(this.handleError<any>(`markNotificationAsRead id=${notificationId}`))
+    );
   }
 
-  /**
-   * Get available services from the SPST
-   */
-  getServices(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/services`);
+  // Get available services
+  getServices(): Observable<SPSTService[]> {
+    const url = `${this.apiUrl}/services`;
+    return this.http.get<any>(url).pipe(
+      map(response => {
+        // If the API returns a data, extract it
+        const services = response.data ? response.data : response;
+        return services as SPSTService[];
+      }),
+      catchError(this.handleError<SPSTService[]>('getServices', []))
+    );
   }
 
-  /**
-   * Request a service from the SPST
-   * @param serviceId Service ID
-   * @param requestData Additional request data
-   */
-  requestService(serviceId: number, requestData: any): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/services/${serviceId}/request`, requestData);
+  // Request a service
+  requestService(serviceId: number, details?: any): Observable<any> {
+    const url = `${this.apiUrl}/services/${serviceId}/request`;
+    return this.http.post<any>(url, details || {}, this.httpOptions).pipe(
+      catchError(this.handleError<any>(`requestService id=${serviceId}`))
+    );
   }
 
-  /**
-   * Get visits for an employee
-   * @param employeeId Employee ID
-   */
-  getVisits(employeeId?: number): Observable<any[]> {
-    let url = `${this.apiUrl}/visits`;
-    if (employeeId) {
-      url += `?employee_id=${employeeId}`;
-    }
-    return this.http.get<any[]>(url);
+  // Get visits (medical appointments)
+  getVisits(): Observable<SPSTVisit[]> {
+    const url = `${this.apiUrl}/visits`;
+    return this.http.get<any>(url).pipe(
+      map(response => {
+        // If the API returns a data, extract it
+        const visits = response.data ? response.data : response;
+        return visits as SPSTVisit[];
+      }),
+      catchError(this.handleError<SPSTVisit[]>('getVisits', []))
+    );
   }
 
-  /**
-   * Get documents available to the current user
-   */
-  getDocuments(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/documents`);
+  // Create a new SPST center
+  createSpst(spst: Omit<SPST, 'id'>): Observable<SPST> {
+    return this.http.post<any>(this.apiUrl, spst, this.httpOptions).pipe(
+      map(response => {
+        // If the API returns a data, extract it
+        const newSpst = response.data ? response.data : response;
+        return newSpst as SPST;
+      }),
+      catchError(this.handleError<SPST>('createSpst'))
+    );
   }
 
-  /**
-   * Download a specific document
-   * @param documentId Document ID
-   */
-  downloadDocument(documentId: number): Observable<Blob> {
-    return this.http.get(`${this.apiUrl}/documents/${documentId}/download`, {
-      responseType: 'blob'
-    });
+  // Update a SPST center
+  updateSpst(spst: SPST): Observable<SPST> {
+    const url = `${this.apiUrl}/${spst.id}`;
+    return this.http.put<any>(url, spst, this.httpOptions).pipe(
+      map(response => {
+        // If the API returns a data, extract it
+        const updatedSpst = response.data ? response.data : response;
+        return updatedSpst as SPST;
+      }),
+      catchError(this.handleError<SPST>(`updateSpst id=${spst.id}`))
+    );
   }
 
-  /**
-   * Schedule a visit for an employee
-   * @param employeeId Employee ID
-   * @param visitData Visit scheduling data
-   */
-  scheduleVisit(employeeId: number, visitData: any): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/visits/schedule`, {
-      employee_id: employeeId,
-      ...visitData
-    });
+  // Delete a SPST center
+  deleteSpst(id: number): Observable<void> {
+    const url = `${this.apiUrl}/${id}`;
+    return this.http.delete<any>(url, this.httpOptions).pipe(
+      catchError(this.handleError<void>(`deleteSpst id=${id}`))
+    );
   }
 
-  /**
-   * Reschedule an existing visit
-   * @param visitId Visit ID
-   * @param visitData New visit scheduling data
-   */
-  rescheduleVisit(visitId: number, visitData: any): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/visits/${visitId}/reschedule`, visitData);
-  }
+  // Error handling
+  private handleError<T>(operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+      // Log the error to console
+      console.error(`${operation} failed: ${error.message}`);
+      console.error('Server error:', error);
 
-  /**
-   * Cancel a scheduled visit
-   * @param visitId Visit ID
-   * @param reason Cancellation reason
-   */
-  cancelVisit(visitId: number, reason: string): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/visits/${visitId}/cancel`, { reason });
-  }
-
-  /**
-   * Get contacts for a specific SPST center
-   * @param spstId SPST center ID
-   */
-  getContacts(spstId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/${spstId}/contacts`);
+      // Let the app keep running by returning an empty result
+      return of(result as T);
+    };
   }
 }

@@ -152,7 +152,7 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
   loadClient(clientId: number): void {
     this.isLoading = true;
 
-    this.clientService.getClientById(clientId).pipe(takeUntil(this.destroy$)).subscribe({
+    this.clientService['getClientById'](clientId).pipe(takeUntil(this.destroy$)).subscribe({
       next: (client: any) => {
         this.client = client;
 

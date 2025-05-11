@@ -96,13 +96,13 @@ export class ListeSalariesComponent implements OnInit, OnDestroy {
   }
 
   loadClientInfo(clientId: number): void {
-    this.clientService.getClientById(clientId).pipe(takeUntil(this.destroy$)).subscribe({
-      next: (client) => {
+    this.clientService['getClientById'](clientId).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (client: { name: string; id: any; }) => {
         this.currentClient = client;
         this.clientName = client.name;
         console.log('Loaded client:', client.name, 'with ID:', client.id);
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error loading client:', error);
         this.showToastMessage('Erreur lors du chargement du client', 'error');
       }

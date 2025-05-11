@@ -125,13 +125,13 @@
         <div class="contact-info">
           <div class="title">Contact Entreprise</div>
           <div class="content" *ngIf="contact">
-            <p><strong>Adresse:</strong> {{ contact.address }}</p>
-            <p><strong>Ville:</strong> {{ contact.city }}</p>
-            <p><strong>Téléphone:</strong> {{ contact.phone }}</p>
-            <p><strong>Email:</strong> {{ contact.email }}</p>
-            <p><strong>Site web:</strong> {{ contact.website }}</p>
-            <p><strong>Contact principal:</strong> {{ contact.person }}</p>
-            <p *ngIf="contact.assistant"><strong>Assistant(e):</strong> {{ contact.assistant }}</p>
+            <p><strong>Adresse:</strong> {{ contact['address'] }}</p>
+            <p><strong>Ville:</strong> {{ contact['city'] }}</p>
+            <p><strong>Téléphone:</strong> {{ contact['phone'] }}</p>
+            <p><strong>Email:</strong> {{ contact['email'] }}</p>
+            <p><strong>Site web:</strong> {{ contact['website'] }}</p>
+            <p><strong>Contact principal:</strong> {{ contact['person'] }}</p>
+            <p *ngIf="contact['assistant']"><strong>Assistant(e):</strong> {{ contact['assistant'] }}</p>
           </div>
         </div>
       </div>
