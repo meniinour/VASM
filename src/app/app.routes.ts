@@ -29,6 +29,8 @@ import { EditSalarieComponent } from './salaries/edit-salarie/edit-salarie.compo
 import { StatistiquesComponent } from './statistiques/statistiques.component';
 import { TableauBordComponent } from './tableau-bord/tableau-bord.component';
 import { SpstComponent } from './spst/spst.component';
+import { MedecinsRendezVousComponent } from './medecins-rendezvous/medecins-rendezvous.component';
+import { DetailsMedecinComponent } from './medecins-rendezvous/details-medecin/details-medecin.component';
 import { FeedbackComponent } from './feedback/feedback.component';
 import { GestionnaireprofComponent } from './gestionnaireprof/gestionnaireprof.component';
 import { ImportsExportsComponent } from './imports-exports/imports-exports.component';
@@ -90,6 +92,8 @@ export const routes: Routes = [
     { path: 'imports', component: ImportsExportsComponent },
     { path: 'tableau-bord', component: TableauBordComponent },
     { path: 'spst', component: SpstComponent },
+    { path: 'medecins-rendezvous', component: MedecinsRendezVousComponent },
+    { path: 'details-medecin/:id', component: DetailsMedecinComponent },
     {path: 'feedback', component: FeedbackComponent},
 ];
 

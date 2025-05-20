@@ -1,4 +1,4 @@
-// Updated client-assign.component.ts
+// Updated client-assign.component.ts with fixed modal functionality
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -359,6 +359,30 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
   }
 
   // Action buttons - Email Modal Handling
+  contactManager(): void {
+    if (!this.employee) {
+      this.showToastMessage('Aucun employé sélectionné', 'error');
+      return;
+    }
+    this.openEmailModal('manager');
+  }
+
+  contactAssistant(): void {
+    if (!this.employee) {
+      this.showToastMessage('Aucun employé sélectionné', 'error');
+      return;
+    }
+    this.openEmailModal('assistant');
+  }
+
+  contactRRH(): void {
+    if (!this.client) {
+      this.showToastMessage('Aucun client disponible', 'error');
+      return;
+    }
+    this.openEmailModal('rrh');
+  }
+
   openEmailModal(target: 'manager' | 'assistant' | 'rrh'): void {
     this.emailTarget = target;
     this.emailForm.reset({
@@ -443,25 +467,17 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Action buttons
-  contactManager(): void {
-    this.openEmailModal('manager');
-  }
-
-  contactAssistant(): void {
-    this.openEmailModal('assistant');
-  }
-
-  contactRRH(): void {
-    this.openEmailModal('rrh');
-  }
-
   accessSPST(): void {
     this.showToastMessage('Accès au portail SPST', 'success');
     window.open(this.spst?.url || 'https://www.astbtp13.fr', '_blank');
   }
 
   declareIncident(): void {
+    if (!this.client) {
+      this.showToastMessage('Aucun client disponible', 'error');
+      return;
+    }
+
     this.incidentForm.reset({
       type: '',
       severity: 'medium',
@@ -473,12 +489,17 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
 
   // Export functions
   exportVisits(format: 'pdf' | 'excel'): void {
+    if (!this.employee || this.visites.length === 0) {
+      this.showToastMessage('Aucune visite à exporter', 'error');
+      return;
+    }
+
     this.isLoading = true;
 
     // Create filters specific to this client's employees
     const employeeIds = this.employee ? [this.employee.id] : [];
 
-    this.visitService.exportVisits(format, { employee_ids: employeeIds.join(',') }).pipe(takeUntil(this.destroy$)).subscribe({
+    this.visitService.exportVisits(format, { employee_ids: employeeIds }).pipe(takeUntil(this.destroy$)).subscribe({
       next: (blob: Blob) => {
         // Create a download link and trigger it
         const url = window.URL.createObjectURL(blob);
@@ -501,12 +522,17 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
   }
 
   exportAppointments(format: 'pdf' | 'excel'): void {
+    if (!this.employee || this.rendezVous.length === 0) {
+      this.showToastMessage('Aucun rendez-vous à exporter', 'error');
+      return;
+    }
+
     this.isLoading = true;
 
     // Create filters specific to this client's employees
     const employeeIds = this.employee ? [this.employee.id] : [];
 
-    this.appointmentService.exportAppointments(format, { employee_ids: employeeIds.join(',') }).pipe(takeUntil(this.destroy$)).subscribe({
+    this.appointmentService.exportAppointments(format, { employee_ids: employeeIds }).pipe(takeUntil(this.destroy$)).subscribe({
       next: (blob: Blob) => {
         // Create a download link and trigger it
         const url = window.URL.createObjectURL(blob);
@@ -530,6 +556,11 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
 
   // Visit CRUD operations
   openNewVisitModal(): void {
+    if (!this.employee) {
+      this.showToastMessage('Veuillez sélectionner un employé d\'abord', 'error');
+      return;
+    }
+
     this.isEditingVisite = false;
     this.visitForm.reset({
       type: 'VIPP',
@@ -558,7 +589,6 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
   viewVisiteDetails(visite: Visit): void {
     this.showToastMessage(`Détails de la visite ${visite.id}`, 'success');
     // In a real app, this would open a detail view or modal
-    // For now, just log the details
     console.log('Visite details:', visite);
   }
 
@@ -647,6 +677,11 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
 
   // Appointment CRUD operations
   openNewAppointmentModal(): void {
+    if (!this.employee) {
+      this.showToastMessage('Veuillez sélectionner un employé d\'abord', 'error');
+      return;
+    }
+
     this.isEditingRdv = false;
     this.appointmentForm.reset({
       ar: false,
@@ -681,7 +716,6 @@ export class ClientAssignComponent implements OnInit, OnDestroy {
   viewRdvDetails(rdv: Appointment): void {
     this.showToastMessage(`Détails du rendez-vous du ${rdv.date}`, 'success');
     // In a real app, this would open a detail view or modal
-    // For now, just log the details
     console.log('RDV details:', rdv);
   }
 

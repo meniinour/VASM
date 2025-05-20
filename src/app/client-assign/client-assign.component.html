@@ -27,7 +27,7 @@
         </div>
 
         <div class="actions">
-          <button (click)="contactManager()">
+         <button (click)="contactManager()" [disabled]="!employee">
             <i class="fas fa-user-tie"></i> Manager
           </button>
           <button (click)="contactAssistant()">

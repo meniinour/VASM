@@ -1,0 +1,214 @@
+<div class="ok">
+    <app-my-header></app-my-header>
+    <div class="container">
+      <app-sidebar-client></app-sidebar-client>
+      <div class="content-area" [ngClass]="{'sidebar-expanded': !sidebarCollapsed}">
+        <!-- Header Section -->
+        <div class="header-section">
+          <h1>Gestion des Rendez-vous Médicaux</h1>
+          <div class="breadcrumb">
+            <a routerLink="/dashboard">Accueil</a> <span class="separator">/</span>
+            <span class="current">Rendez-vous médicaux</span>
+          </div>
+        </div>
+  
+        <!-- Médecins Section -->
+        <div class="medecins-section">
+          <h2 class="section-title">Liste des Médecins</h2>
+          
+          <div class="filters-section">
+            <div class="search-and-btn">
+              <div class="search-container">
+                <input type="text" placeholder="Rechercher par nom, spécialité..."
+                  [(ngModel)]="searchText" class="search-input" />
+                <div class="search-icon">🔍</div>
+              </div>
+            </div>
+  
+            <div class="advanced-filters">
+              <div class="filter-group">
+                <label for="specialite-filter">Filtrer par spécialité:</label>
+                <select id="specialite-filter"
+                        [(ngModel)]="selectedSpecialite"
+                        class="filter-select">
+                  <option value="">Toutes les spécialités</option>
+                  <option *ngFor="let specialite of specialites" [value]="specialite">{{ specialite }}</option>
+                </select>
+              </div>
+              <button (click)="clearFilters()" class="btn-reset" *ngIf="searchText || selectedSpecialite !== ''">
+                <i class="fas fa-times"></i> Réinitialiser les filtres
+              </button>
+            </div>
+          </div>
+  
+          <div class="card">
+            <div *ngIf="isLoading" class="loading-container">
+              <div class="loading-spinner-large"></div>
+              <p>Chargement des données...</p>
+            </div>
+  
+            <div *ngIf="!isLoading">
+              <div *ngIf="filteredMedecins.length === 0" class="empty-state">
+                <div class="empty-icon">👨‍⚕️</div>
+                <p>Aucun médecin ne correspond à vos critères de recherche.</p>
+                <button class="btn-primary" (click)="clearFilters()">
+                  <i class="fas fa-sync"></i> Réinitialiser les filtres
+                </button>
+              </div>
+  
+              <table *ngIf="filteredMedecins.length > 0" class="medecins-table">
+                <thead>
+                  <tr>
+                    <th (click)="sortBy('nom')">Nom {{ getSortIcon('nom') }}</th>
+                    <th (click)="sortBy('specialite')">Spécialité {{ getSortIcon('specialite') }}</th>
+                    <th>Coordonnées</th>
+                    <th>Disponibilité</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let medecin of filteredMedecins" class="medecin-row">
+                    <td>{{ medecin.nom }}</td>
+                    <td>
+                      <span class="specialite-badge" [ngClass]="getSpecialiteClass(medecin.specialite)">
+                        {{ medecin.specialite }}
+                      </span>
+                    </td>
+                    <td>
+                      <div class="contact-details">
+                        <div>📞 {{ medecin.telephone }}</div>
+                        <div>✉️ {{ medecin.email }}</div>
+                      </div>
+                    </td>
+                    <td class="disponibilite-cell">
+                      <div *ngFor="let dispo of medecin.disponibilite" class="disponibilite-item">
+                        {{ dispo }}
+                      </div>
+                    </td>
+                    <td class="actions-cell">
+                      <button class="btn-rdv" title="Prendre rendez-vous" (click)="selectMedecin(medecin)">
+                        Prendre RDV
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Formulaire de rendez-vous -->
+        <div *ngIf="showRdvForm" id="rdv-form" class="rendez-vous-form card">
+          <h2 class="section-title">Programmer un rendez-vous</h2>
+          <p class="info-text" *ngIf="selectedMedecinId">
+            Médecin sélectionné: <strong>{{ getMedecinName(selectedMedecinId) }}</strong>
+          </p>
+  
+          <form [formGroup]="rdvForm" (ngSubmit)="submitRdvForm()" class="form">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="salarie">Salarié:</label>
+                <select id="salarie" [(ngModel)]="selectedSalarieId" [ngModelOptions]="{standalone: true}" class="form-select" 
+                  [class.input-error]="rdvSubmitted && !selectedSalarieId">
+                  <option [ngValue]="null">Sélectionner un salarié</option>
+                  <option *ngFor="let salarie of salaries" [ngValue]="salarie.id">{{ salarie.nom }} ({{ salarie.matricule }})</option>
+                </select>
+                <div *ngIf="rdvSubmitted && !selectedSalarieId" class="error-msg">
+                  Veuillez sélectionner un salarié.
+                </div>
+              </div>
+  
+              <div class="form-group">
+                <label for="date">Date du rendez-vous:</label>
+                <input id="date" formControlName="date" type="date" class="form-input"
+                  [class.input-error]="rdvSubmitted && rdvForm.get('date')?.invalid" />
+                <div *ngIf="rdvSubmitted && rdvForm.get('date')?.errors?.['required']" class="error-msg">
+                  La date est requise.
+                </div>
+              </div>
+            </div>
+  
+            <div class="form-row">
+              <div class="form-group">
+                <label for="heure">Heure du rendez-vous:</label>
+                <input id="heure" formControlName="heure" type="time" class="form-input"
+                  [class.input-error]="rdvSubmitted && rdvForm.get('heure')?.invalid" />
+                <div *ngIf="rdvSubmitted && rdvForm.get('heure')?.errors?.['required']" class="error-msg">
+                  L'heure est requise.
+                </div>
+              </div>
+  
+              <div class="form-group">
+                <label for="motif">Motif:</label>
+                <input id="motif" formControlName="motif" type="text" placeholder="Motif du rendez-vous" class="form-input"
+                  [class.input-error]="rdvSubmitted && rdvForm.get('motif')?.invalid" />
+                <div *ngIf="rdvSubmitted && rdvForm.get('motif')?.errors" class="error-msg">
+                  <span *ngIf="rdvForm.get('motif')?.errors?.['required']">Le motif est requis.</span>
+                  <span *ngIf="rdvForm.get('motif')?.errors?.['minlength']">Le motif doit contenir au moins 5 caractères.</span>
+                </div>
+              </div>
+            </div>
+  
+            <div class="form-row">
+              <div class="form-group full-width">
+                <label for="notes">Notes additionelles:</label>
+                <textarea id="notes" formControlName="notes" rows="3" class="form-textarea"
+                  placeholder="Ajoutez des notes ou instructions supplémentaires (optionnel)"></textarea>
+              </div>
+            </div>
+  
+            <div class="form-actions">
+              <button type="button" (click)="resetForm()" class="btn-secondary">Annuler</button>
+              <button type="submit" class="btn-primary">Confirmer le rendez-vous</button>
+            </div>
+          </form>
+        </div>
+  
+        <!-- Rendez-vous planifiés -->
+        <div class="rendez-vous-section card">
+          <h2 class="section-title">Rendez-vous planifiés</h2>
+          
+          <div *ngIf="rendezVous.length === 0" class="empty-state">
+            <div class="empty-icon">📅</div>
+            <p>Aucun rendez-vous planifié pour le moment.</p>
+          </div>
+  
+          <table *ngIf="rendezVous.length > 0" class="rdv-table">
+            <thead>
+              <tr>
+                <th>Médecin</th>
+                <th>Salarié</th>
+                <th>Date & heure</th>
+                <th>Motif</th>
+                <th>Statut</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let rdv of rendezVous" class="rdv-row">
+                <td>{{ getMedecinName(rdv.medecinId) }}</td>
+                <td>{{ getSalarieName(rdv.salarieId) }}</td>
+                <td>{{ rdv.date | date: 'dd/MM/yyyy' }} à {{ rdv.heure }}</td>
+                <td>{{ rdv.motif }}</td>
+                <td>
+                  <span class="status-badge" [ngClass]="'status-' + rdv.statut">
+                    {{ rdv.statut }}
+                  </span>
+                </td>
+                <td class="actions-cell">
+                  <button class="btn-action delete" title="Annuler" (click)="deleteRdv(rdv.id)">
+                    Annuler
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Toast notification -->
+    <div class="toast" [class.show]="showToast" [ngClass]="toastType">
+      {{ toastMessage }}
+    </div>
+  </div>
